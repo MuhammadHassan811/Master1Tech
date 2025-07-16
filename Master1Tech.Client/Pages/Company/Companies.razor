@@ -1,0 +1,370 @@
+﻿@page "/companies/pakistan"
+@using Master1Tech.Models
+@using Master1Tech.Services
+@inject ICompanyService CompanyService
+@inject IJSRuntime JSRuntime
+
+<h3>Top Companies in @Country.ToUpper()</h3>
+
+<div class="filter-bar">
+    <div class="filter-group">
+        <div class="filter-item">
+            <span>Location <b>(@(!string.IsNullOrEmpty(companyFilter.Headquarters) ? "1" : "0"))</b></span>
+            <select @bind="companyFilter.Headquarters">
+                <option value="">All</option>
+                <option value="Lahore">Lahore</option>
+                <option value="Karachi">Karachi</option>
+                <option value="Rawalpindi">Rawalpindi</option>
+                <option value="Okara">Okara</option>
+            </select>
+        </div>
+
+        @* <div class="filter-item">
+            <span>Services</span>
+            <select @bind="companyFilter.ServiceName">
+                <option value="">All</option>
+                <option value="Web Development">Web Development</option>
+                <option value="Mobile App Development">Mobile App Development</option>
+                <option value="Custom Software Development">Custom Software Development</option>
+            </select>
+        </div> *@
+
+        <div class="filter-item active">
+            <span>Team size</span>
+            <select @bind="companyFilter.EmployeesCount">
+                <option value="">All</option>
+                <option value="10">10+ employees</option>
+                <option value="50">50+ employees</option>
+                <option value="250">250+ employees</option>
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <span>Founded After</span>
+            <select @bind="companyFilter.FoundedYear">
+                <option value="">All</option>
+                <option value="2010">After 2010</option>
+                <option value="2015">After 2015</option>
+                <option value="2020">After 2020</option>
+            </select>
+        </div>
+
+        <div class="filter-item sort">
+            <span>Sort by</span>
+            <select @bind="companyFilter.SortBy">
+                <option value="Featured">Featured</option>
+                <option value="Name">Name</option>
+                <option value="Rating">Rating</option>
+                <option value="Employees">Employees</option>
+            </select>
+        </div>
+
+        <button @onclick="ApplyFilters" class="btn-filter">Filter</button>
+    </div>
+</div>
+
+<!-- Header Section -->
+<h4 class="mb-4">
+    Explore Top Companies in <span style="color: #007bff;">@Country.ToUpper()</span>
+</h4>
+
+<!-- Company Count and Last Updated -->
+<div class="p-4 mb-4" style="background-color: #f8f9fa;">
+    <p>We found <strong>@CompanyCount companies</strong>.</p>
+    <p class="text-muted">That's a hell of a search to do now. Why not use the smart filters above?</p>
+    <small class="float-right text-muted">LAST UPDATED IN: JULY, 2025</small>
+</div>
+
+<!-- Companies Grid -->
+@if (IsLoading)
+{
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var company in Companie ?? Enumerable.Empty<Company>())
+        {
+            <div class="col-12 col-sm-6 col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+
+                        <!-- Company Header -->
+                        <div class="row align-items-center mb-2">
+                            <div class="col-3 text-center">
+                                @if (!string.IsNullOrEmpty(company.LogoURL))
+                                {
+                                    <img src="@company.LogoURL" alt="@company.Name" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <strong>@company.Name.Substring(0, 1)</strong>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-9">
+                                <h6 class="mb-0">
+                                    @company.Name
+                                    @if (company.IsVerified)
+                                    {
+                                        <span title="Verified" class="text-success">&#10004;</span>
+                                    }
+                                </h6>
+                                <small class="text-muted">&#x1F4CD; @company.Headquarters</small>
+                            </div>
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="mb-2">
+                            @{
+                                var avgRating = company.Reviews.Any() ? company.Reviews.Average(r => r.Rating) : 0;
+                                var roundedRating = (int)Math.Round(avgRating);
+                            }
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= roundedRating)
+                                {
+                                    <span class="text-warning">&#9733;</span> <!-- Filled star -->
+                                }
+                                else
+                                {
+                                    <span class="text-secondary">&#9734;</span> <!-- Empty star -->
+                                }
+                            }
+                            <small>(@company.Reviews.Count reviews)</small>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="text-muted">@(company.Description.Length > 100 ? company.Description.Substring(0, 100) + "..." : company.Description)</p>
+
+                        <!-- Employees and Founded Year -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <small class="text-muted">Employees</small>
+                                <div style="color: #007bff;">@company.EmployeesCount</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Founded</small>
+                                <div style="color: #007bff;">@company.FoundedYear</div>
+                            </div>
+                        </div>
+
+                        <!-- Services -->
+                        <small class="text-muted mb-1 d-block">Services</small>
+                        <div class="row mb-3">
+                            @foreach (var service in company.CompanyServices.Take(3).Select(cs => cs.Service.Name))
+                            {
+                                <div class="col-12">
+                                    <span class="badge bg-info text-dark me-1">@service</span>
+                                </div>
+                            }
+                            @if (company.CompanyServices.Count > 3)
+                            {
+                                <div class="col-12">
+                                    <small style="color: #007bff; cursor: pointer;">+ See more</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
+                        <NavLink class="btn btn-outline-primary btn-sm" href="@($"/company/{company.CompanyID}")">
+                            View profile
+                        </NavLink>
+                        <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowContactForm(company)">Get In Touch</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Load More Button -->
+@if (Companie.Any())
+{
+    <div class="text-center mt-4">
+        <button class="btn btn-primary" @onclick="LoadMoreCompanies">
+            Load More Companies
+        </button>
+    </div>
+}
+
+<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination pagination-sm">
+            <!-- Previous Arrow -->
+            <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+                <button class="page-link" @onclick="() => GoToPage(CurrentPage - 1)" aria-label="Previous">
+                    <span>&#x276E;</span>
+                </button>
+            </li>
+
+            <!-- Page Numbers -->
+            @for (int i = 1; i <= TotalPages; i++)
+            {
+                if (i == 1 || i == TotalPages || Math.Abs(CurrentPage - i) <= 2)
+                {
+                    <li class="page-item @(i == CurrentPage ? "active" : "")">
+                        <button class="page-link" @onclick="() => GoToPage(i)">@i</button>
+                    </li>
+                }
+                else if (i == CurrentPage - 3 || i == CurrentPage + 3)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                }
+            }
+
+            <!-- Next Arrow -->
+            <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
+                <button class="page-link" @onclick="() => GoToPage(CurrentPage + 1)" aria-label="Next">
+                    <span>&#x276F;</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+@code {
+    [Parameter]
+    public int Page { get; set; } = 1;
+
+    [Parameter] public string Country { get; set; } = "pakistan";
+
+    private List<Company> Companie = new();
+
+    private CompanyFilter companyFilter = new();
+    private int CompanyCount = 0;
+    private bool IsLoading = false;
+
+    protected override async Task OnInitializedAsync() => await LoadCompanies();
+
+    private override async Task LoadCompanies()
+    {
+        IsLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            
+                Companie = await CompanyService.GetCompaniesAsync(null, Page);
+            
+            CompanyCount = await CompanyService.GetCompanyCountAsync(null,Page);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading companies: {ex.Message}");
+            Companie = new List<Company>();
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ApplyFilters()
+    {
+        CurrentPage = 1;
+        await LoadCompanies();
+    }
+
+    private async Task LoadMoreCompanies()
+    {
+        CurrentPage++;
+        // In a real app, you would fetch the next page of data
+        await LoadCompanies();
+    }
+
+    private async Task ShowContactForm(Company company)
+    {
+        try
+        {
+            // Get primary contact information if available
+            var primaryContact = company.Contacts.FirstOrDefault(c => c.IsPrimary);
+            string contactInfo = primaryContact != null
+                ? $"{primaryContact.ContactType}: {primaryContact.ContactValue}"
+                : "No contact information available";
+
+            // Show contact options to user
+            bool confirmContact = await JSRuntime.InvokeAsync<bool>("confirm",
+                $"Contact {company.Name}?\n\n{contactInfo}\n\nWould you like to proceed?");
+
+            if (confirmContact)
+            {
+                if (primaryContact != null)
+                {
+                    // Handle different contact types
+                    switch (primaryContact.ContactType.ToLower())
+                    {
+                        case "email":
+                            await JSRuntime.InvokeVoidAsync("window.open",
+                                $"mailto:{primaryContact.ContactValue}?subject=Inquiry about {company.Name}");
+                            break;
+                        case "phone":
+                            await JSRuntime.InvokeVoidAsync("window.open",
+                                $"tel:{primaryContact.ContactValue}");
+                            break;
+                        case "social":
+                        case "linkedin":
+                            await JSRuntime.InvokeVoidAsync("window.open",
+                                primaryContact.ContactValue, "_blank");
+                            break;
+                        default:
+                            await JSRuntime.InvokeVoidAsync("alert",
+                                $"Please contact {company.Name} at: {primaryContact.ContactValue}");
+                            break;
+                    }
+                }
+                else
+                {
+                    // Fallback to company website if no direct contact
+                    if (!string.IsNullOrEmpty(company.WebsiteURL))
+                    {
+                        await JSRuntime.InvokeVoidAsync("window.open",
+                            company.WebsiteURL, "_blank");
+                    }
+                    else
+                    {
+                        await JSRuntime.InvokeVoidAsync("alert",
+                            $"No contact information available for {company.Name}");
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error showing contact form: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert",
+                "An error occurred while trying to contact the company.");
+        }
+    }
+
+    int CurrentPage = 1;
+    int TotalPages = 5;
+
+    void GoToPage(int page)
+    {
+        if (page >= 1 && page <= TotalPages)
+        {
+            CurrentPage = page;
+            LoadCompanies().ConfigureAwait(false);
+        }
+    }
+
+    // public class CompanyFilter
+    // {
+    //     public string Headquarters { get; set; }
+    //     public string ServiceName { get; set; }
+    //     public int? MinEmployees { get; set; }
+    //     public int? MinFoundedYear { get; set; }
+    //     public string SortBy { get; set; } = "Featured";
+    // }
+}

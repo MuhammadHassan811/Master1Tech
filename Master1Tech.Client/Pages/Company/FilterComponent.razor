@@ -1,0 +1,132 @@
+﻿@* @using Master1Tech.Models
+
+<div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center;">
+
+        <!-- Location Filter -->
+        <select @bind="SelectedLocation" style="min-width: 150px; padding: 6px;">
+            @foreach (var location in Locations)
+            {
+                <option value="@location">@location</option>
+            }
+        </select>
+
+        <!-- Services Filter -->
+        <select @bind="SelectedService" style="min-width: 150px; padding: 6px;">
+            @foreach (var service in Services)
+            {
+                <option value="@service">@service</option>
+            }
+        </select>
+
+        <!-- Team Size Filter -->
+        <select @bind="SelectedTeamSize" style="min-width: 150px; padding: 6px;">
+            @foreach (var teamSize in TeamSizes)
+            {
+                <option value="@teamSize">@teamSize</option>
+            }
+        </select>
+
+        <!-- Hourly Rate Filter -->
+        <select @bind="SelectedHourlyRate" style="min-width: 150px; padding: 6px;">
+            @foreach (var rate in HourlyRates)
+            {
+                <option value="@rate">@rate</option>
+            }
+        </select>
+
+        <!-- Sort By -->
+        <select @bind="SelectedSortBy" style="min-width: 120px; padding: 6px;">
+            @foreach (var sortOption in SortOptions)
+            {
+                <option value="@sortOption">@sortOption</option>
+            }
+        </select>
+
+        <!-- Filter Button -->
+        <button @onclick="OnFilterChange"
+                style="padding: 8px 16px; background-color: #3f51b5; color: white; border: none; border-radius: 4px;">
+            Filter
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback<CompanyFilter> OnFilterChanged { get; set; }
+
+    public string SelectedLocation { get; set; } = string.Empty;
+    public string SelectedService { get; set; } = string.Empty;
+    public string SelectedTeamSize { get; set; } = string.Empty;
+    public string SelectedHourlyRate { get; set; } = string.Empty;
+    public string SelectedSortBy { get; set; } = string.Empty;
+
+    private List<string> Locations = new()
+    {
+        "All Locations",
+        "Lahore, Pakistan",
+        "Karachi, Pakistan",
+        "Rawalpindi, Pakistan",
+        "Okara, Pakistan",
+        "United States",
+        "United Kingdom",
+        "United Arab Emirates"
+    };
+
+    private List<string> Services = new()
+    {
+        "All Services",
+        "Custom Software Development",
+        "Web Development",
+        "Mobile App Development",
+        "E-Commerce Development",
+        "Web Design",
+        "IT Staff Augmentation",
+        "Custom Software Design"
+    };
+
+    private List<string> TeamSizes = new()
+    {
+        "All Team Sizes",
+        "2-9",
+        "10-49",
+        "50-249",
+        "250-999",
+        "1000+"
+    };
+
+    private List<string> HourlyRates = new()
+    {
+        "All Rates",
+        "$25-$49",
+        "$50-$99",
+        "$100-$149",
+        "$150-$199",
+        "$200+",
+        "Not revealed"
+    };
+
+    private List<string> SortOptions = new()
+    {
+        "Most Relevant",
+        "Newest First",
+        "Oldest First",
+        "Highest Rating",
+        "Lowest Rate",
+        "Highest Rate"
+    };
+
+    private async Task OnFilterChange()
+    {
+        var filter = new CompanyFilter
+            {
+                Location = SelectedLocation,
+                Services = SelectedService,
+                TeamSize = SelectedTeamSize,
+                HourlyRate = SelectedHourlyRate,
+                SortBy = SelectedSortBy
+            };
+
+        await OnFilterChanged.InvokeAsync(filter);
+    }
+}
+ *@

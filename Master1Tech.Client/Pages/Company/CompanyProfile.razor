@@ -1,0 +1,422 @@
+﻿@page "/companyprofile"
+@using Master1Tech.Models
+@using Master1Tech.Services
+@inject ICompanyService CompanyService
+
+<!-- CompanyProfile.razor -->
+<div class="company-profile-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="logo-name-wrapper">
+            @if (!string.IsNullOrEmpty(Company.LogoURL))
+            {
+                <img src="@Company.LogoURL" alt="Company Logo" class="company-logo" />
+            }
+            else
+            {
+                <div class="logo-placeholder">@Company.Name.Substring(0, Math.Min(5, Company.Name.Length))</div>
+            }
+            <div class="company-info">
+                <h1 class="company-name">@Company.Name</h1>
+                <p class="company-location">
+                    @Company.Headquarters
+                    @if (Company.IsVerified)
+                    {
+                        <span class="verified-badge">&#10003;</span>
+                    }
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Bar Section -->
+    <div class="info-bar">
+        <div class="info-item">
+            <span class="info-label">Founding Year</span>
+            <span class="info-value">@Company.FoundedYear</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Team Size</span>
+            <span class="info-value">@Company.EmployeesCount employees</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Location</span>
+            <span class="info-value">@Company.Headquarters</span>
+        </div>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+        <p class="company-description">@Company.Description</p>
+
+        <h3 class="section-title">We Are Specialized in:</h3>
+        <ul class="specializations-list">
+            @foreach (var service in Company.CompanyServices.Select(cs => cs.Service.Name))
+            {
+                <li>@service</li>
+            }
+        </ul>
+
+        <h3 class="section-title">Our Categories:</h3>
+        <div class="categories-container">
+            @foreach (var category in Company.CompanyCategories.Select(cc => cc.Category.Name))
+            {
+                <span class="category-tag">@category</span>
+            }
+        </div>
+
+        <h3 class="section-title">Our Technologies:</h3>
+        <div class="technologies-container">
+            @foreach (var tech in Company.Technologies)
+            {
+                <div class="technology-item">
+                    <span class="tech-name">@tech.Technology.Name</span>
+                    <span class="tech-level">(@tech.ProficiencyLevel)</span>
+                </div>
+            }
+        </div>
+
+        <h3 class="section-title">Our Projects:</h3>
+        <div class="projects-container">
+            @foreach (var project in Company.Projects)
+            {
+                <div class="project-item">
+                    <h4 class="project-name">@project.ProjectName</h4>
+                    <p class="project-client">Client: @project.ClientName</p>
+                    <p class="project-dates">@project.StartDate?.ToString("yyyy") - @(project.EndDate?.ToString("yyyy") ?? "Present")</p>
+                    <p class="project-description">@project.Description</p>
+                </div>
+            }
+        </div>
+
+        <h3 class="section-title">Our Team:</h3>
+        <div class="team-container">
+            @foreach (var member in Company.TeamMembers)
+            {
+                <div class="team-member">
+                    @if (!string.IsNullOrEmpty(member.PhotoURL))
+                    {
+                        <img src="@member.PhotoURL" alt="@member.Name" class="member-photo" />
+                    }
+                    <div class="member-info">
+                        <h4 class="member-name">@member.Name @(member.IsFounder ? "⭐" : "")</h4>
+                        <p class="member-position">@member.Position</p>
+                        @if (!string.IsNullOrEmpty(member.LinkedInURL))
+                        {
+                            <a href="@member.LinkedInURL" target="_blank" class="linkedin-link">LinkedIn</a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <h3 class="section-title">Contact Us:</h3>
+        <div class="contacts-container">
+            @foreach (var contact in Company.Contacts)
+            {
+                <div class="contact-item">
+                    <span class="contact-type">@contact.ContactType:</span>
+                    <span class="contact-value">@contact.ContactValue</span>
+                </div>
+            }
+        </div>
+
+        <h3 class="section-title">Reviews:</h3>
+        <div class="reviews-container">
+            @foreach (var review in Company.Reviews.Where(r => r.IsApproved))
+            {
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="reviewer-name">@review.ReviewerName</span>
+                        <span class="review-rating">@review.Rating ★</span>
+                    </div>
+                    <h4 class="review-title">@review.Title</h4>
+                    <p class="review-comment">@review.Comment</p>
+                    <p class="review-date">@review.ReviewDate.ToString("MMMM dd, yyyy")</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Company Company { get; set; } = new Company
+        {
+            CompanyID = 1,
+            Name = "ZAPTA Technologies",
+            Description = "ZAPTA Technologies is a software design and development company known for its customized and innovative solutions...",
+            FoundedYear = 2020,
+            EmployeesCount = 150,
+            Headquarters = "Lahore, Pakistan",
+            WebsiteURL = "https://www.zapta.com",
+            LogoURL = "/images/zapta-logo.png",
+            IsVerified = true,
+            DateAdded = DateTime.Now.AddYears(-2),
+            LastUpdated = DateTime.Now,
+
+            // Sample data for relationships
+            CompanyServices = new List<CompaniesService>
+        {
+            new CompaniesService { Service = new Service { ServiceID = 1, Name = "Custom Software Development" } },
+            new CompaniesService { Service = new Service { ServiceID = 2, Name = "Web Development" } },
+            new CompaniesService { Service = new Service { ServiceID = 3, Name = "Mobile App Development" } }
+        },
+
+            CompanyCategories = new List<CompaniesCategory>
+        {
+            new CompaniesCategory { Category = new Category { Id = 1, Name = "Software Development" } },
+            new CompaniesCategory { Category = new Category { Id = 2, Name = "IT Services" } }
+        },
+
+            Technologies = new List<CompanyTechnology>
+        {
+            new CompanyTechnology
+            {
+                Technology = new Technology { TechnologyID = 1, Name = "C#", Category = "Programming Language" },
+                ProficiencyLevel = "Expert"
+            },
+            new CompanyTechnology
+            {
+                Technology = new Technology { TechnologyID = 2, Name = "ASP.NET Core", Category = "Framework" },
+                ProficiencyLevel = "Expert"
+            }
+        },
+
+            Projects = new List<Project>
+        {
+            new Project
+            {
+                ProjectID = 1,
+                ClientName = "ABC Corp",
+                ProjectName = "Enterprise Management System",
+                Description = "A comprehensive management system for enterprise operations...",
+                StartDate = new DateTime(2021, 3, 1),
+                EndDate = new DateTime(2021, 12, 15)
+            }
+        },
+
+            TeamMembers = new List<TeamMember>
+        {
+            new TeamMember
+            {
+                MemberID = 1,
+                Name = "John Doe",
+                Position = "CEO",
+                IsFounder = true,
+                LinkedInURL = "https://linkedin.com/in/johndoe"
+            }
+        },
+
+            Contacts = new List<CompanyContact>
+        {
+            new CompanyContact
+            {
+                ContactID = 1,
+                ContactType = "Email",
+                ContactValue = "info@zapta.com",
+                IsPrimary = true
+            }
+        },
+
+            Reviews = new List<Review>
+        {
+            new Review
+            {
+                ReviewID = 1,
+                ReviewerName = "Jane Smith",
+                Rating = 4.5m,
+                Title = "Great work!",
+                Comment = "ZAPTA delivered excellent results on our project...",
+                IsApproved = true
+            }
+        }
+        };
+}
+
+<style>
+    /* Previous styles remain the same... */
+
+    /* Additional styles for new sections */
+    .categories-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 25px;
+    }
+
+    .category-tag {
+        background-color: #e0f7fa;
+        color: #00838f;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
+    }
+
+    .technologies-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+
+    .technology-item {
+        background-color: #f5f5f5;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .tech-name {
+        font-weight: 500;
+    }
+
+    .tech-level {
+        color: #666;
+        font-size: 0.8em;
+    }
+
+    .projects-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .project-item {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .project-name {
+        margin-top: 0;
+        color: #007bff;
+    }
+
+    .project-client {
+        color: #666;
+        font-size: 0.9em;
+    }
+
+    .project-dates {
+        color: #666;
+        font-size: 0.85em;
+        font-style: italic;
+    }
+
+    .project-description {
+        margin-bottom: 0;
+    }
+
+    .team-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .team-member {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .member-photo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .member-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .member-name {
+        margin: 0;
+        font-size: 1em;
+    }
+
+    .member-position {
+        margin: 0;
+        font-size: 0.85em;
+        color: #666;
+    }
+
+    .linkedin-link {
+        font-size: 0.8em;
+        color: #0077b5;
+    }
+
+    .contacts-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 25px;
+    }
+
+    .contact-item {
+        display: flex;
+        gap: 10px;
+    }
+
+    .contact-type {
+        font-weight: 500;
+        min-width: 80px;
+    }
+
+    .reviews-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .review-item {
+        background-color: #fff;
+        border: 1px solid #eee;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .reviewer-name {
+        font-weight: 500;
+    }
+
+    .review-rating {
+        color: #ffc107;
+    }
+
+    .review-title {
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 1.1em;
+    }
+
+    .review-comment {
+        margin-bottom: 8px;
+    }
+
+    .review-date {
+        color: #666;
+        font-size: 0.8em;
+        margin-bottom: 0;
+    }
+
+    @@media (max-width: 600px) {
+        .technologies-container {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+
+        .team-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
