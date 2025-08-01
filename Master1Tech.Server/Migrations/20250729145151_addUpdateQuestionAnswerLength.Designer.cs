@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Master1Tech.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250716111722_initial")]
-    partial class initial
+    [Migration("20250729145151_addUpdateQuestionAnswerLength")]
+    partial class addUpdateQuestionAnswerLength
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,29 +27,39 @@ namespace Master1Tech.Server.Migrations
 
             modelBuilder.Entity("Master1Tech.Models.Company", b =>
                 {
-                    b.Property<int>("CompanyID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EmployeesCount")
-                        .HasColumnType("int");
+                    b.Property<string>("EmployeesCount")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FoundedYear")
-                        .HasColumnType("int");
+                    b.Property<string>("FoundedYear")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Headquarters")
+                    b.Property<string>("Headquarter")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("HourlyRate")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool?>("IsTopCompany")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
@@ -57,22 +67,35 @@ namespace Master1Tech.Server.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LogoURL")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("WebsiteURL")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
 
-                    b.HasKey("CompanyID");
+                    b.Property<string>("TeamSize")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("WebsiteURL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Companies");
                 });
@@ -260,6 +283,53 @@ namespace Master1Tech.Server.Migrations
                     b.HasIndex("TechnologyID");
 
                     b.ToTable("CompanyTechnologies");
+                });
+
+            modelBuilder.Entity("Master1Tech.Shared.Models.FirstAnswerQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Answer")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("CompanyID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Question")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyID");
+
+                    b.ToTable("FirstAnswerQuestions");
+                });
+
+            modelBuilder.Entity("Master1Tech.Shared.Models.Industry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Industries");
                 });
 
             modelBuilder.Entity("Master1Tech.Shared.Models.Person", b =>
@@ -568,7 +638,7 @@ namespace Master1Tech.Server.Migrations
                         .IsRequired();
 
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany("CompanyCategories")
+                        .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -581,7 +651,7 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.CompaniesService", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany("CompanyServices")
+                        .WithMany()
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -600,7 +670,7 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.CompanyContact", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany("Contacts")
+                        .WithMany()
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -611,7 +681,7 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.CompanyLocation", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany("Locations")
+                        .WithMany()
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -622,7 +692,7 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.CompanyTechnology", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany("Technologies")
+                        .WithMany()
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -638,10 +708,21 @@ namespace Master1Tech.Server.Migrations
                     b.Navigation("Technology");
                 });
 
+            modelBuilder.Entity("Master1Tech.Shared.Models.FirstAnswerQuestion", b =>
+                {
+                    b.HasOne("Master1Tech.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("Master1Tech.Shared.Models.Project", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany("Projects")
+                        .WithMany()
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -652,7 +733,7 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.Review", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany("Reviews")
+                        .WithMany()
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -663,31 +744,12 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.TeamMember", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany("TeamMembers")
+                        .WithMany()
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("Master1Tech.Models.Company", b =>
-                {
-                    b.Navigation("CompanyCategories");
-
-                    b.Navigation("CompanyServices");
-
-                    b.Navigation("Contacts");
-
-                    b.Navigation("Locations");
-
-                    b.Navigation("Projects");
-
-                    b.Navigation("Reviews");
-
-                    b.Navigation("TeamMembers");
-
-                    b.Navigation("Technologies");
                 });
 
             modelBuilder.Entity("Master1Tech.Shared.Models.Category", b =>

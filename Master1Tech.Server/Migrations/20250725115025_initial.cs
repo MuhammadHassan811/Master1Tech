@@ -36,22 +36,30 @@ namespace Master1Tech.Server.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    CompanyID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FoundedYear = table.Column<int>(type: "int", nullable: true),
-                    EmployeesCount = table.Column<int>(type: "int", nullable: true),
-                    Headquarters = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    WebsiteURL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    LogoURL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TeamSize = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Headquarter = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    HourlyRate = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: true),
                     IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    IsTopCompany = table.Column<bool>(type: "bit", nullable: true),
+                    LogoText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LogoColor = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmployeesCount = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FoundedYear = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WebsiteURL = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateAdded = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Companies", x => x.CompanyID);
+                    table.PrimaryKey("PK_Companies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,7 +163,7 @@ namespace Master1Tech.Server.Migrations
                         name: "FK_CompanyCategories_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "CompanyID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -177,7 +185,7 @@ namespace Master1Tech.Server.Migrations
                         name: "FK_CompanyContacts_Companies_CompanyID",
                         column: x => x.CompanyID,
                         principalTable: "Companies",
-                        principalColumn: "CompanyID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -202,7 +210,7 @@ namespace Master1Tech.Server.Migrations
                         name: "FK_CompanyLocations_Companies_CompanyID",
                         column: x => x.CompanyID,
                         principalTable: "Companies",
-                        principalColumn: "CompanyID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -227,7 +235,7 @@ namespace Master1Tech.Server.Migrations
                         name: "FK_Projects_Companies_CompanyID",
                         column: x => x.CompanyID,
                         principalTable: "Companies",
-                        principalColumn: "CompanyID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -253,7 +261,7 @@ namespace Master1Tech.Server.Migrations
                         name: "FK_Reviews_Companies_CompanyID",
                         column: x => x.CompanyID,
                         principalTable: "Companies",
-                        principalColumn: "CompanyID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -278,7 +286,7 @@ namespace Master1Tech.Server.Migrations
                         name: "FK_TeamMembers_Companies_CompanyID",
                         column: x => x.CompanyID,
                         principalTable: "Companies",
-                        principalColumn: "CompanyID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -318,7 +326,7 @@ namespace Master1Tech.Server.Migrations
                         name: "FK_CompanyServices_Companies_CompanyID",
                         column: x => x.CompanyID,
                         principalTable: "Companies",
-                        principalColumn: "CompanyID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CompanyServices_Services_ServiceID",
@@ -343,7 +351,7 @@ namespace Master1Tech.Server.Migrations
                         name: "FK_CompanyTechnologies_Companies_CompanyID",
                         column: x => x.CompanyID,
                         principalTable: "Companies",
-                        principalColumn: "CompanyID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CompanyTechnologies_Technologies_TechnologyID",

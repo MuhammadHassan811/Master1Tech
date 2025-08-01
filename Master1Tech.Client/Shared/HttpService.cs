@@ -38,6 +38,10 @@ namespace Master1Tech.Client.Shared
             _configuration = configuration;
         }
 
+        public HttpService()
+        {
+        }
+
         public async Task<T> Get<T>(string uri)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);

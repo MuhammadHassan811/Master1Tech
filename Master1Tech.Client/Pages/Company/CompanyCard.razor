@@ -5,16 +5,7 @@
     <div style="display: flex; align-items: flex-start; gap: 20px;">
         <!-- Company Logo -->
         <div style="flex-shrink: 0;">
-            @if (!string.IsNullOrEmpty(Company.LogoURL))
-            {
-                <img src="@Company.LogoURL" alt="@Company.Name" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover;" />
-            }
-            else
-            {
-                <div style="width: 80px; height: 80px; border-radius: 8px; background-color: #2563eb; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold;">
-                    @Company.Name.Substring(0, Math.Min(2, Company.Name.Length))
-                </div>
-            }
+            <img src="@Company.LogoUrl" alt="@Company.Name" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover;" />
         </div>
 
         <!-- Company Details -->
@@ -29,14 +20,14 @@
 
             <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 8px;">
                 <span style="color: #6b7280;">📍</span>
-                <span style="color: #6b7280;">@Company.Headquarters</span>
+                <span style="color: #6b7280;">@Company.Location</span>
             </div>
 
-            @if (!string.IsNullOrEmpty(Company.WebsiteURL))
+            @if (!string.IsNullOrEmpty(Company.Country))
             {
                 <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 12px;">
-                    <span style="color: #6b7280;">🌐</span>
-                    <a href="@Company.WebsiteURL" target="_blank" style="color: #6b7280; text-decoration: none;">Website</a>
+                    <span style="color: #6b7280;">🏳️</span>
+                    <span style="color: #6b7280;">@Company.Country</span>
                 </div>
             }
 
@@ -47,42 +38,40 @@
             <!-- Company Stats -->
             <div style="display: flex; gap: 40px; margin-bottom: 16px;">
                 <div>
-                    <div style="color: #6b7280; font-size: 12px; margin-bottom: 4px;">Founded</div>
-                    <div style="color: #2563eb; font-weight: 600;">@Company.FoundedYear</div>
+                    <div style="color: #6b7280; font-size: 12px; margin-bottom: 4px;">Team size</div>
+                    <div style="color: #2563eb; font-weight: 600;">@Company.TeamSize</div>
                 </div>
                 <div>
-                    <div style="color: #6b7280; font-size: 12px; margin-bottom: 4px;">Employees</div>
-                    <div style="color: #2563eb; font-weight: 600;">@Company.EmployeesCount</div>
+                    <div style="color: #6b7280; font-size: 12px; margin-bottom: 4px;">Hourly Rate</div>
+                    <div style="color: #2563eb; font-weight: 600;">@Company.HourlyRate</div>
                 </div>
             </div>
 
             <!-- Services -->
-            <div style="margin-bottom: 16px;">
+           @*  <div style="margin-bottom: 16px;">
                 <div style="color: #6b7280; font-size: 12px; margin-bottom: 8px;">Services</div>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    @foreach (var service in Company.CompanyServices.Take(3).Select(cs => cs.Service.Name))
+                    @foreach (var service in Company.Services.Take(3))
                     {
                         <span style="background-color: #f3f4f6; color: #374151; font-size: 12px; padding: 4px 8px; border-radius: 12px;">@service</span>
                     }
-                    @if (Company.CompanyServices.Count > 3)
+                    @if (Company.Services.Count > 3)
                     {
                         <button style="background: none; border: none; color: #2563eb; font-size: 12px; cursor: pointer;">+ See more</button>
                     }
                 </div>
-            </div>
+            </div> *@
         </div>
 
         <!-- Rating Badge -->
         <div style="flex-shrink: 0;">
-            @if (Company.Reviews.Any())
+            @if (Company.Rating > 0)
             {
-                var avgRating = Company.Reviews.Where(r => r.IsApproved).Average(r => r.Rating);
                 <div style="display: flex; align-items: center; gap: 4px; background-color: #fbbf24; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">
-                    @for (int i = 0; i < Math.Round(avgRating); i++)
+                    @for (int i = 0; i < Company.Rating; i++)
                     {
                         <span style="color: white;">★</span>
                     }
-                    <span>@avgRating.ToString("0.0")</span>
                 </div>
             }
         </div>
@@ -96,5 +85,5 @@
 </div>
 
 @code {
-    [Parameter] public Company Company { get; set; } = new Company();
+    [Parameter] public Company Company { get; set; } = new();
 }

@@ -1,0 +1,228 @@
+﻿<!-- StatsComponent.razor -->
+@using Master1Tech.Models
+
+<div class="stats-container">
+    <h2>Company Statistics</h2>
+    <div class="stats-grid">
+        @foreach (var stat in CompanyStats)
+        {
+            <div class="stat-card">
+                <div class="stat-icon">
+                    @((MarkupString)stat.Icon)
+                </div>
+
+
+                <h3>@stat.Title</h3>
+                <p class="stat-number">
+                    @stat.Value
+                </p>
+                <p class="stat-description">
+                    @stat.Description
+                </p>
+            </div>
+        }
+
+    </div>
+    @if (ShowChart)
+    {
+        <div class="chart-section">
+            <h3>
+                Growth Over Time
+            </h3>
+
+
+            <div class="chart-placeholder">
+                <p>
+                    Chart visualization would go here
+                </p>
+                <p>
+                    Projects completed by year, client satisfaction rates, etc.
+                </p>
+            </div>
+        </div>
+
+
+    }
+
+</div>
+
+@code
+{
+    [Parameter]
+    public List<StatItem> CompanyStats { get; set; } = new List<StatItem>{new StatItem
+{ Title ="Projects Completed", Value ="150+", Description ="Successfully delivered projects", Icon ="📊"
+},
+new StatItem
+{ Title = "Active Clients", Value ="45", Description ="Currently serving clients",Icon ="👥"
+},
+new StatItem
+{Title ="Team Members",Value ="50-249",Description ="Skilled professionals", Icon ="💼"
+},
+new StatItem{Title="YearsofExperience",Value="5+",Description="Insoftwaredevelopment",Icon="🏆"},
+new StatItem {Title="ClientSatisfaction",Value="98%",Description="Averagesatisfactionrate",Icon="⭐"},
+new StatItem {Title="CountriesServed",Value="12+",Description="Globalreach",Icon="🌍"}};
+
+    [Parameter]
+    public bool ShowChart { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<StatItem> OnStatClick { get; set; }
+
+
+
+    private async Task HandleStatClick(StatItem stat)
+    {
+        await OnStatClick.InvokeAsync(stat);
+    }
+
+    public class StatItem
+    {
+        public string Title { get; set; } = "";
+        public string Value { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Icon { get; set; } = "";
+    }
+}
+
+
+<style>
+    .stats-container {
+        padding: 30px;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stats-container h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .stat-card {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 25px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #007bff;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+    .stat-icon {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .stat-card h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+        font-weight: 600;
+    }
+
+    .stat-number {
+        font-size: 2.2em;
+        font-weight: bold;
+        color: #007bff;
+        margin: 10px 0;
+        line-height: 1;
+    }
+
+    .stat-description {
+        color: #666;
+        font-size: 0.9em;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .chart-section {
+        margin-top: 40px;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+        .chart-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+    .chart-placeholder {
+        background-color: #f0f0f0;
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        color: #666;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    @@media (max-width: 768px) {
+        .stats-container {
+            padding: 20px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-card {
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+        }
+    }
+</style>

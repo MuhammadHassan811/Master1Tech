@@ -9,8 +9,8 @@
 <div class="filter-bar">
     <div class="filter-group">
         <div class="filter-item">
-            <span>Location <b>(@(!string.IsNullOrEmpty(companyFilter.Headquarters) ? "1" : "0"))</b></span>
-            <select @bind="companyFilter.Headquarters">
+            <span>Location <b>(@(!string.IsNullOrEmpty(companyFilter.Location) ? "1" : "0"))</b></span>
+            <select @bind="companyFilter.Location">
                 <option value="">All</option>
                 <option value="Lahore">Lahore</option>
                 <option value="Karachi">Karachi</option>
@@ -19,33 +19,32 @@
             </select>
         </div>
 
-        @* <div class="filter-item">
+        <div class="filter-item">
             <span>Services</span>
-            <select @bind="companyFilter.ServiceName">
+            <select @bind="companyFilter.Services">
                 <option value="">All</option>
                 <option value="Web Development">Web Development</option>
                 <option value="Mobile App Development">Mobile App Development</option>
                 <option value="Custom Software Development">Custom Software Development</option>
             </select>
-        </div> *@
+        </div>
 
         <div class="filter-item active">
             <span>Team size</span>
-            <select @bind="companyFilter.EmployeesCount">
+            <select @bind="companyFilter.TeamSize">
                 <option value="">All</option>
-                <option value="10">10+ employees</option>
-                <option value="50">50+ employees</option>
-                <option value="250">250+ employees</option>
+                <option value="10-49">10-49</option>
+                <option value="50-249">50-249</option>
+                <option value="250-999">250-999</option>
             </select>
         </div>
 
         <div class="filter-item">
-            <span>Founded After</span>
-            <select @bind="companyFilter.FoundedYear">
+            <span>Hourly rate</span>
+            <select @bind="companyFilter.HourlyRate">
                 <option value="">All</option>
-                <option value="2010">After 2010</option>
-                <option value="2015">After 2015</option>
-                <option value="2020">After 2020</option>
+                <option value="0-49">0-49</option>
+                <option value="50-99">50-99</option>
             </select>
         </div>
 
@@ -55,7 +54,7 @@
                 <option value="Featured">Featured</option>
                 <option value="Name">Name</option>
                 <option value="Rating">Rating</option>
-                <option value="Employees">Employees</option>
+                <option value="Team Size">Team Size</option>
             </select>
         </div>
 
@@ -87,7 +86,7 @@
 else
 {
     <div class="row">
-        @foreach (var company in Companie ?? Enumerable.Empty<Company>())
+        @foreach (var company in Companiees.Results)
         {
             <div class="col-12 col-sm-6 col-md-4 mb-4">
                 <div class="card h-100">
@@ -96,16 +95,9 @@ else
                         <!-- Company Header -->
                         <div class="row align-items-center mb-2">
                             <div class="col-3 text-center">
-                                @if (!string.IsNullOrEmpty(company.LogoURL))
-                                {
-                                    <img src="@company.LogoURL" alt="@company.Name" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;" />
-                                }
-                                else
-                                {
-                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <strong>@company.Name.Substring(0, 1)</strong>
-                                    </div>
-                                }
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <strong>@company.Name.Substring(0, 1)</strong>
+                                </div>
                             </div>
                             <div class="col-9">
                                 <h6 class="mb-0">
@@ -115,19 +107,15 @@ else
                                         <span title="Verified" class="text-success">&#10004;</span>
                                     }
                                 </h6>
-                                <small class="text-muted">&#x1F4CD; @company.Headquarters</small>
+                                <small class="text-muted">&#x1F4CD; @company.Location</small>
                             </div>
                         </div>
 
                         <!-- Rating -->
                         <div class="mb-2">
-                            @{
-                                var avgRating = company.Reviews.Any() ? company.Reviews.Average(r => r.Rating) : 0;
-                                var roundedRating = (int)Math.Round(avgRating);
-                            }
                             @for (int i = 1; i <= 5; i++)
                             {
-                                if (i <= roundedRating)
+                                if (i <= company.Rating)
                                 {
                                     <span class="text-warning">&#9733;</span> <!-- Filled star -->
                                 }
@@ -136,48 +124,50 @@ else
                                     <span class="text-secondary">&#9734;</span> <!-- Empty star -->
                                 }
                             }
-                            <small>(@company.Reviews.Count reviews)</small>
                         </div>
 
                         <!-- Description -->
-                        <p class="text-muted">@(company.Description.Length > 100 ? company.Description.Substring(0, 100) + "..." : company.Description)</p>
+                        <p class="text-muted">@company.Description</p>
 
-                        <!-- Employees and Founded Year -->
+                        <!-- Team Size and Hourly Rate -->
                         <div class="row mb-3">
                             <div class="col-6">
-                                <small class="text-muted">Employees</small>
-                                <div style="color: #007bff;">@company.EmployeesCount</div>
+                                <small class="text-muted">Team size</small>
+                                <div style="color: #007bff;">@company.TeamSize</div>
                             </div>
                             <div class="col-6">
-                                <small class="text-muted">Founded</small>
-                                <div style="color: #007bff;">@company.FoundedYear</div>
+                                <small class="text-muted">Hourly Rate</small>
+                                <div style="color: #007bff;">@company.HourlyRate</div>
                             </div>
                         </div>
 
                         <!-- Services -->
-                        <small class="text-muted mb-1 d-block">Services</small>
+                        @* <small class="text-muted mb-1 d-block">Services</small>
                         <div class="row mb-3">
-                            @foreach (var service in company.CompanyServices.Take(3).Select(cs => cs.Service.Name))
+                            @foreach (var service in company.Services.Take(3))
                             {
                                 <div class="col-12">
                                     <span class="badge bg-info text-dark me-1">@service</span>
                                 </div>
                             }
-                            @if (company.CompanyServices.Count > 3)
+                            @if (company.Services.Count > 3)
                             {
                                 <div class="col-12">
                                     <small style="color: #007bff; cursor: pointer;">+ See more</small>
                                 </div>
                             }
-                        </div>
+                        </div> *@
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
-                        <NavLink class="btn btn-outline-primary btn-sm" href="@($"/company/{company.CompanyID}")">
+                        <NavLink class="btn btn-outline-primary btn-sm" href="@($"/companyprofile/{company.Id}")">
                             View profile
                         </NavLink>
-                        <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowContactForm(company)">Get In Touch</button>
+                        <NavLink class="btn btn-outline-primary btn-sm" href="/contact">
+                            Get In Touch
+                        </NavLink>
+                       
                     </div>
                 </div>
             </div>
@@ -186,7 +176,7 @@ else
 }
 
 <!-- Load More Button -->
-@if (Companie.Any())
+@if (Companiees.Results.Count > 0)
 {
     <div class="text-center mt-4">
         <button class="btn btn-primary" @onclick="LoadMoreCompanies">
@@ -195,13 +185,33 @@ else
     </div>
 }
 
+@* @if (IsLoading)
+{
+    <p>Loading companies...</p>
+}
+else if (Companiees?.Any() == true)
+{
+    <p>Showing @CompanyCount companies</p>
+    <ul>
+        @foreach (var company in Companiees)
+        {
+            <li>@company.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No companies found.</p>
+} *@
+
 <div class="d-flex justify-content-center mt-4">
     <nav>
         <ul class="pagination pagination-sm">
+
             <!-- Previous Arrow -->
             <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
                 <button class="page-link" @onclick="() => GoToPage(CurrentPage - 1)" aria-label="Previous">
-                    <span>&#x276E;</span>
+                    <span>&#x276E;</span> <!-- Left arrow -->
                 </button>
             </li>
 
@@ -225,7 +235,7 @@ else
             <!-- Next Arrow -->
             <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
                 <button class="page-link" @onclick="() => GoToPage(CurrentPage + 1)" aria-label="Next">
-                    <span>&#x276F;</span>
+                    <span>&#x276F;</span> <!-- Right arrow -->
                 </button>
             </li>
         </ul>
@@ -233,35 +243,32 @@ else
 </div>
 
 @code {
-    [Parameter]
-    public int Page { get; set; } = 1;
-
     [Parameter] public string Country { get; set; } = "pakistan";
 
-    private List<Company> Companie = new();
-
+    private PagedResult<Company> Companiees = new();
     private CompanyFilter companyFilter = new();
     private int CompanyCount = 0;
     private bool IsLoading = false;
 
-    protected override async Task OnInitializedAsync() => await LoadCompanies();
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCompanies();
+    }
 
-    private override async Task LoadCompanies()
+    private async Task LoadCompanies()
     {
         IsLoading = true;
         StateHasChanged();
 
         try
         {
-            
-                Companie = await CompanyService.GetCompaniesAsync(null, Page);
-            
-            CompanyCount = await CompanyService.GetCompanyCountAsync(null,Page);
+            var pagedResult= await CompanyService.GenerateSampleCompanies();
+            Companiees = pagedResult;
+            //CompanyCount = await CompanyService.GetTotalCompaniesAsync(companyFilter);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error loading companies: {ex.Message}");
-            Companie = new List<Company>();
         }
         finally
         {
@@ -272,99 +279,25 @@ else
 
     private async Task ApplyFilters()
     {
-        CurrentPage = 1;
         await LoadCompanies();
     }
 
     private async Task LoadMoreCompanies()
     {
-        CurrentPage++;
-        // In a real app, you would fetch the next page of data
-        await LoadCompanies();
-    }
-
-    private async Task ShowContactForm(Company company)
-    {
-        try
-        {
-            // Get primary contact information if available
-            var primaryContact = company.Contacts.FirstOrDefault(c => c.IsPrimary);
-            string contactInfo = primaryContact != null
-                ? $"{primaryContact.ContactType}: {primaryContact.ContactValue}"
-                : "No contact information available";
-
-            // Show contact options to user
-            bool confirmContact = await JSRuntime.InvokeAsync<bool>("confirm",
-                $"Contact {company.Name}?\n\n{contactInfo}\n\nWould you like to proceed?");
-
-            if (confirmContact)
-            {
-                if (primaryContact != null)
-                {
-                    // Handle different contact types
-                    switch (primaryContact.ContactType.ToLower())
-                    {
-                        case "email":
-                            await JSRuntime.InvokeVoidAsync("window.open",
-                                $"mailto:{primaryContact.ContactValue}?subject=Inquiry about {company.Name}");
-                            break;
-                        case "phone":
-                            await JSRuntime.InvokeVoidAsync("window.open",
-                                $"tel:{primaryContact.ContactValue}");
-                            break;
-                        case "social":
-                        case "linkedin":
-                            await JSRuntime.InvokeVoidAsync("window.open",
-                                primaryContact.ContactValue, "_blank");
-                            break;
-                        default:
-                            await JSRuntime.InvokeVoidAsync("alert",
-                                $"Please contact {company.Name} at: {primaryContact.ContactValue}");
-                            break;
-                    }
-                }
-                else
-                {
-                    // Fallback to company website if no direct contact
-                    if (!string.IsNullOrEmpty(company.WebsiteURL))
-                    {
-                        await JSRuntime.InvokeVoidAsync("window.open",
-                            company.WebsiteURL, "_blank");
-                    }
-                    else
-                    {
-                        await JSRuntime.InvokeVoidAsync("alert",
-                            $"No contact information available for {company.Name}");
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error showing contact form: {ex.Message}");
-            await JSRuntime.InvokeVoidAsync("alert",
-                "An error occurred while trying to contact the company.");
-        }
+        // Simulate loading more companies
+        await Task.Delay(500);
+        // In a real application, you would fetch more companies from the API
     }
 
     int CurrentPage = 1;
-    int TotalPages = 5;
+    int TotalPages = 45;
 
     void GoToPage(int page)
     {
         if (page >= 1 && page <= TotalPages)
         {
             CurrentPage = page;
-            LoadCompanies().ConfigureAwait(false);
+            // Call your data-fetching logic here
         }
     }
-
-    // public class CompanyFilter
-    // {
-    //     public string Headquarters { get; set; }
-    //     public string ServiceName { get; set; }
-    //     public int? MinEmployees { get; set; }
-    //     public int? MinFoundedYear { get; set; }
-    //     public string SortBy { get; set; } = "Featured";
-    // }
 }

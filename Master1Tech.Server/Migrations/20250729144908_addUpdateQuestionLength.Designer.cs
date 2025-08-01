@@ -4,6 +4,7 @@ using Master1Tech.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Master1Tech.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250729144908_addUpdateQuestionLength")]
+    partial class addUpdateQuestionLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,32 +223,6 @@ namespace Master1Tech.Server.Migrations
                     b.ToTable("CompanyContacts");
                 });
 
-            modelBuilder.Entity("Master1Tech.Shared.Models.CompanyIndustryFocus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompanyID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FocusPercentage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IndustryID")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyID");
-
-                    b.HasIndex("IndustryID");
-
-                    b.ToTable("CompanyIndustryFocuses");
-                });
-
             modelBuilder.Entity("Master1Tech.Shared.Models.CompanyLocation", b =>
                 {
                     b.Property<int>("LocationID")
@@ -317,15 +294,15 @@ namespace Master1Tech.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Answer")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("CompanyID")
                         .HasColumnType("int");
 
                     b.Property<string>("Question")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
 
@@ -674,7 +651,7 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.CompaniesService", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany("CompanyServices")
+                        .WithMany()
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -699,25 +676,6 @@ namespace Master1Tech.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("Master1Tech.Shared.Models.CompanyIndustryFocus", b =>
-                {
-                    b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Master1Tech.Shared.Models.Industry", "Industry")
-                        .WithMany()
-                        .HasForeignKey("IndustryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("Industry");
                 });
 
             modelBuilder.Entity("Master1Tech.Shared.Models.CompanyLocation", b =>
@@ -792,11 +750,6 @@ namespace Master1Tech.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("Master1Tech.Models.Company", b =>
-                {
-                    b.Navigation("CompanyServices");
                 });
 
             modelBuilder.Entity("Master1Tech.Shared.Models.Category", b =>

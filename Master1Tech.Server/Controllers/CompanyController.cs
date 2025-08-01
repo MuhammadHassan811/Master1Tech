@@ -3,6 +3,7 @@ using Master1Tech.Server.Authorization;
 using Master1Tech.Server.Models;
 using Master1Tech.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Master1Tech.Server.Controllers
 {
@@ -23,12 +24,32 @@ namespace Master1Tech.Server.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult GetCompaniesFromDatabase([FromQuery] string? name, int page)
+        public ActionResult GetCompaniesFromDatabase()
         {
             try
             {
-                var companies = _CompanyRepository.GetCompaniesFromDatabase(name, page);
+                var companies = _CompanyRepository.GetCompaniesFromDatabase();
                 return Ok(companies);
+            }
+            catch (Exception ex)
+            {
+                // Log the error if you have logging configured
+                // _logger.LogError(ex, "Error fetching companies");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public ActionResult GetCompaniesById(int id)
+        {
+            try
+            {
+                var companies = _CompanyRepository.GetCompaniesById(id);
+                if (companies == null)
+                    return NotFound();
+
+                return Ok(companies); // return the actual object
             }
             catch (Exception ex)
             {

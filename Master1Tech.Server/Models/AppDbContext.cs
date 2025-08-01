@@ -29,6 +29,9 @@ namespace Master1Tech.Server.Models
         public DbSet<CompanyTechnology> CompanyTechnologies { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<TeamMember> TeamMembers { get; set; }
+        public DbSet<Industry> Industries { get; set; }
+        public DbSet<FirstAnswerQuestion> FirstAnswerQuestions { get; set; }
+        public DbSet<CompanyIndustryFocus> CompanyIndustryFocuses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

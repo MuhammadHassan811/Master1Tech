@@ -1,0 +1,450 @@
+﻿@page "/companytabdetails"
+@using Master1Tech.Models
+@using Master1Tech.Services
+@inject ICompanyService CompanyService
+
+<div class="company-container">
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+        <button class="tab-button @(activeTab == "locations" ? "active" : "")"
+                @onclick="@(() => SetActiveTab("locations"))">
+            Locations
+        </button>
+
+        <button class="tab-button @(activeTab == "speciality" ? "active" : "")"
+                @onclick="@(() => SetActiveTab("speciality"))">
+            Speciality
+        </button>
+
+        <button class="tab-button @(activeTab == "stats" ? "active" : "")"
+                @onclick="@(() => SetActiveTab("stats"))">
+            Stats
+        </button>
+
+        <button class="tab-button @(activeTab == "portfolio" ? "active" : "")"
+                @onclick="@(() => SetActiveTab("portfolio"))">
+            Portfolio
+        </button>
+
+        <button class="tab-button @(activeTab == "reviews" ? "active" : "")"
+                @onclick="@(() => SetActiveTab("reviews"))">
+            Reviews
+        </button>
+
+        <button class="tab-button @(activeTab == "inquire" ? "active" : "")"
+                @onclick="@(() => SetActiveTab("inquire"))">
+            Inquire Company
+        </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        @if (activeTab == "locations")
+        {
+            <LocationPage/>
+        }
+        else if (activeTab == "speciality")
+        {
+            <div class="tab-panel">
+                <!-- Your existing CompanyProfile component -->
+                <CompanyProfile />
+            </div>
+        }
+        else if (activeTab == "stats")
+        {
+            <StatisticPage/>
+        }
+        else if (activeTab == "portfolio")
+        {
+            <PortfolioPage/>
+        }
+        else if (activeTab == "reviews")
+        {
+           <ReviewsPage/>
+        }
+        else if (activeTab == "inquire")
+        {
+            <div class="tab-panel">
+                <h2>Inquire Company</h2>
+                <div class="inquiry-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" @bind="inquiryForm.Name" placeholder="Enter your full name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" @bind="inquiryForm.Email" placeholder="Enter your email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company Name</label>
+                        <input type="text" id="company" @bind="inquiryForm.Company" placeholder="Enter your company name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="project">Project Description</label>
+                        <textarea id="project" @bind="inquiryForm.ProjectDescription" placeholder="Describe your project requirements" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="budget">Budget Range</label>
+                        <select id="budget" @bind="inquiryForm.BudgetRange">
+                            <option value="">Select budget range</option>
+                            <option value="Under $10,000">Under $10,000</option>
+                            <option value="$10,000 - $25,000">$10,000 - $25,000</option>
+                            <option value="$25,000 - $50,000">$25,000 - $50,000</option>
+                            <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+                            <option value="Over $100,000">Over $100,000</option>
+                        </select>
+                    </div>
+                    <button class="submit-button" @onclick="SubmitInquiry">Submit Inquiry</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string activeTab = "speciality"; // Default to speciality tab to show CompanyProfile
+
+    private InquiryForm inquiryForm = new InquiryForm();
+
+    private void SetActiveTab(string tabName)
+    {
+        activeTab = tabName;
+    }
+
+    private void SubmitInquiry()
+    {
+        // Handle form submission logic here
+        // You can call your service or API to process the inquiry
+        Console.WriteLine($"Inquiry submitted for {inquiryForm.Name}");
+        // Reset form or show success message
+    }
+
+    public class InquiryForm
+    {
+        public string Name { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Company { get; set; } = "";
+        public string ProjectDescription { get; set; } = "";
+        public string BudgetRange { get; set; } = "";
+    }
+}
+
+<style>
+    .company-container {
+        font-family: 'Inter', sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .tab-navigation {
+        display: flex;
+        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px 8px 0 0;
+        overflow-x: auto;
+    }
+
+    .tab-button {
+        background: none;
+        border: none;
+        padding: 15px 20px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: #666;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+        border-bottom: 3px solid transparent;
+        min-width: 120px;
+    }
+
+        .tab-button:hover {
+            color: #007bff;
+            background-color: #e9ecef;
+        }
+
+        .tab-button.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background-color: #fff;
+            font-weight: 600;
+        }
+
+    .tab-content {
+        background-color: #fff;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        min-height: 400px;
+    }
+
+    .tab-panel {
+        padding: 30px;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .tab-panel h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+    }
+
+    /* Locations Tab Styles */
+    .locations-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    .location-info h3 {
+        color: #333;
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+
+    .location-info p {
+        color: #666;
+        margin: 5px 0;
+        line-height: 1.4;
+    }
+
+    .map-placeholder {
+        background-color: #f0f0f0;
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        color: #666;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    /* Stats Tab Styles */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .stat-card {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+    .stat-number {
+        font-size: 2em;
+        font-weight: bold;
+        color: #007bff;
+        margin: 0;
+    }
+
+    /* Portfolio Tab Styles */
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .portfolio-item {
+        background-color: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+        .portfolio-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .portfolio-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .portfolio-item p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+    .tech-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .tech-tag {
+        background-color: #007bff;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        font-weight: 500;
+    }
+
+    /* Reviews Tab Styles */
+    .reviews-container {
+        margin-top: 20px;
+    }
+
+    .review-item {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .review-header h4 {
+            color: #333;
+            margin: 0;
+        }
+
+    .rating {
+        color: #ffc107;
+        font-size: 1.2em;
+    }
+
+    .review-item p {
+        color: #666;
+        line-height: 1.6;
+        margin: 0;
+        font-style: italic;
+    }
+
+    /* Inquiry Form Styles */
+    .inquiry-form {
+        max-width: 600px;
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-group input:focus,
+            .form-group textarea:focus,
+            .form-group select:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+            }
+
+    .submit-button {
+        background-color: #007bff;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .company-container
+
+    {
+        padding: 10px;
+    }
+
+    .tab-navigation {
+        flex-wrap: wrap;
+    }
+
+    .tab-button {
+        min-width: 100px;
+        padding: 12px 15px;
+        font-size: 12px;
+    }
+
+    .tab-panel {
+        padding: 20px;
+    }
+
+    .locations-content {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+    }
+
+    }
+</style>

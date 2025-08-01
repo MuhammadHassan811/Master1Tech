@@ -1,26 +1,28 @@
-﻿@page "/companyprofile"
+﻿@page "/companyprofile/{id:int}"
 @using Master1Tech.Models
 @using Master1Tech.Services
 @inject ICompanyService CompanyService
 
+@if (company != null)
+{
 <!-- CompanyProfile.razor -->
 <div class="company-profile-container">
     <!-- Header Section -->
     <div class="header-section">
         <div class="logo-name-wrapper">
-            @if (!string.IsNullOrEmpty(Company.LogoURL))
+            @if (!string.IsNullOrEmpty(company.LogoUrl))
             {
-                <img src="@Company.LogoURL" alt="Company Logo" class="company-logo" />
+                <img src="@company.LogoUrl" alt="Company Logo" class="company-logo" />
             }
             else
             {
-                <div class="logo-placeholder">@Company.Name.Substring(0, Math.Min(5, Company.Name.Length))</div>
+                <div class="logo-placeholder">@company.Name.Substring(0, Math.Min(5, company.Name.Length))</div>
             }
             <div class="company-info">
-                <h1 class="company-name">@Company.Name</h1>
+                <h1 class="company-name">@company.Name</h1>
                 <p class="company-location">
-                    @Company.Headquarters
-                    @if (Company.IsVerified)
+                    @company.Location, @company.Country
+                    @if (company.IsVerified)
                     {
                         <span class="verified-badge">&#10003;</span>
                     }
@@ -33,390 +35,413 @@
     <div class="info-bar">
         <div class="info-item">
             <span class="info-label">Founding Year</span>
-            <span class="info-value">@Company.FoundedYear</span>
+            <span class="info-value">@company.FoundedYear</span> <!-- Kept separate as not in Company model -->
         </div>
         <div class="info-item">
             <span class="info-label">Team Size</span>
-            <span class="info-value">@Company.EmployeesCount employees</span>
+            <span class="info-value">@company.TeamSize</span>
         </div>
         <div class="info-item">
-            <span class="info-label">Location</span>
-            <span class="info-value">@Company.Headquarters</span>
+            <span class="info-label">Hourly Rate</span>
+            <span class="info-value">@company.HourlyRate</span>
         </div>
     </div>
 
     <!-- Main Content Section -->
     <div class="main-content">
-        <p class="company-description">@Company.Description</p>
+        <p class="company-description">@company.Description</p>
 
-        <h3 class="section-title">We Are Specialized in:</h3>
+        @* <h3 class="section-title">We Are Specialized in:</h3>
         <ul class="specializations-list">
-            @foreach (var service in Company.CompanyServices.Select(cs => cs.Service.Name))
+            @foreach (var service in CompanyData.Services)
             {
                 <li>@service</li>
             }
-        </ul>
+        </ul> *@
 
-        <h3 class="section-title">Our Categories:</h3>
-        <div class="categories-container">
-            @foreach (var category in Company.CompanyCategories.Select(cc => cc.Category.Name))
+       @*  <h3 class="section-title">What Makes Us Your Trusted Development Partner?</h3>
+        <div class="partner-benefits">
+            @foreach (var benefit in PartnerBenefits)
             {
-                <span class="category-tag">@category</span>
-            }
-        </div>
-
-        <h3 class="section-title">Our Technologies:</h3>
-        <div class="technologies-container">
-            @foreach (var tech in Company.Technologies)
-            {
-                <div class="technology-item">
-                    <span class="tech-name">@tech.Technology.Name</span>
-                    <span class="tech-level">(@tech.ProficiencyLevel)</span>
+                <div class="benefit-item">
+                    <h4 class="benefit-title">@benefit.Title</h4>
+                    <p class="benefit-description">@benefit.Description</p>
                 </div>
             }
         </div>
 
-        <h3 class="section-title">Our Projects:</h3>
-        <div class="projects-container">
-            @foreach (var project in Company.Projects)
-            {
-                <div class="project-item">
-                    <h4 class="project-name">@project.ProjectName</h4>
-                    <p class="project-client">Client: @project.ClientName</p>
-                    <p class="project-dates">@project.StartDate?.ToString("yyyy") - @(project.EndDate?.ToString("yyyy") ?? "Present")</p>
-                    <p class="project-description">@project.Description</p>
-                </div>
-            }
+        <div class="call-to-action">
+            <p>@CallToActionText</p>
         </div>
 
-        <h3 class="section-title">Our Team:</h3>
-        <div class="team-container">
-            @foreach (var member in Company.TeamMembers)
+        <h3 class="section-title">@AccordionTitle</h3>
+        <div class="accordion-container">
+            @foreach (var item in AccordionItems)
             {
-                <div class="team-member">
-                    @if (!string.IsNullOrEmpty(member.PhotoURL))
+                <div class="accordion-item">
+                    <button class="accordion-header" @onclick="() => ToggleAccordion(item)">
+                        @item.Question
+                        <span class="accordion-icon">@(item.IsExpanded ? "-" : "+")</span>
+                    </button>
+                    @if (item.IsExpanded)
                     {
-                        <img src="@member.PhotoURL" alt="@member.Name" class="member-photo" />
+                        <div class="accordion-content">
+                            <p>@item.Answer</p>
+                        </div>
                     }
-                    <div class="member-info">
-                        <h4 class="member-name">@member.Name @(member.IsFounder ? "⭐" : "")</h4>
-                        <p class="member-position">@member.Position</p>
-                        @if (!string.IsNullOrEmpty(member.LinkedInURL))
-                        {
-                            <a href="@member.LinkedInURL" target="_blank" class="linkedin-link">LinkedIn</a>
-                        }
-                    </div>
                 </div>
             }
-        </div>
-
-        <h3 class="section-title">Contact Us:</h3>
-        <div class="contacts-container">
-            @foreach (var contact in Company.Contacts)
-            {
-                <div class="contact-item">
-                    <span class="contact-type">@contact.ContactType:</span>
-                    <span class="contact-value">@contact.ContactValue</span>
-                </div>
-            }
-        </div>
-
-        <h3 class="section-title">Reviews:</h3>
-        <div class="reviews-container">
-            @foreach (var review in Company.Reviews.Where(r => r.IsApproved))
-            {
-                <div class="review-item">
-                    <div class="review-header">
-                        <span class="reviewer-name">@review.ReviewerName</span>
-                        <span class="review-rating">@review.Rating ★</span>
-                    </div>
-                    <h4 class="review-title">@review.Title</h4>
-                    <p class="review-comment">@review.Comment</p>
-                    <p class="review-date">@review.ReviewDate.ToString("MMMM dd, yyyy")</p>
-                </div>
-            }
-        </div>
-    </div>
+        </div> *@
+    </div>@* 
+    <CompanyTabDetails /> *@
 </div>
-
+}
+else{
+    <p>Loading company profile...</p>
+}
 @code {
+  
     [Parameter]
-    public Company Company { get; set; } = new Company
+    public int id { get; set; }
+
+    private CompanyDTO? company;
+
+    protected override async Task OnInitializedAsync()
+    {
+        company = await CompanyService.GetCompanyByIdAsync(id);
+    }
+
+
+    [Parameter]
+    public Company CompanyData { get; set; } = new Company
         {
-            CompanyID = 1,
             Name = "ZAPTA Technologies",
-            Description = "ZAPTA Technologies is a software design and development company known for its customized and innovative solutions...",
-            FoundedYear = 2020,
-            EmployeesCount = 150,
-            Headquarters = "Lahore, Pakistan",
-            WebsiteURL = "https://www.zapta.com",
-            LogoURL = "/images/zapta-logo.png",
-            IsVerified = true,
-            DateAdded = DateTime.Now.AddYears(-2),
-            LastUpdated = DateTime.Now,
-
-            // Sample data for relationships
-            CompanyServices = new List<CompaniesService>
-        {
-            new CompaniesService { Service = new Service { ServiceID = 1, Name = "Custom Software Development" } },
-            new CompaniesService { Service = new Service { ServiceID = 2, Name = "Web Development" } },
-            new CompaniesService { Service = new Service { ServiceID = 3, Name = "Mobile App Development" } }
-        },
-
-            CompanyCategories = new List<CompaniesCategory>
-        {
-            new CompaniesCategory { Category = new Category { Id = 1, Name = "Software Development" } },
-            new CompaniesCategory { Category = new Category { Id = 2, Name = "IT Services" } }
-        },
-
-            Technologies = new List<CompanyTechnology>
-        {
-            new CompanyTechnology
-            {
-                Technology = new Technology { TechnologyID = 1, Name = "C#", Category = "Programming Language" },
-                ProficiencyLevel = "Expert"
-            },
-            new CompanyTechnology
-            {
-                Technology = new Technology { TechnologyID = 2, Name = "ASP.NET Core", Category = "Framework" },
-                ProficiencyLevel = "Expert"
-            }
-        },
-
-            Projects = new List<Project>
-        {
-            new Project
-            {
-                ProjectID = 1,
-                ClientName = "ABC Corp",
-                ProjectName = "Enterprise Management System",
-                Description = "A comprehensive management system for enterprise operations...",
-                StartDate = new DateTime(2021, 3, 1),
-                EndDate = new DateTime(2021, 12, 15)
-            }
-        },
-
-            TeamMembers = new List<TeamMember>
-        {
-            new TeamMember
-            {
-                MemberID = 1,
-                Name = "John Doe",
-                Position = "CEO",
-                IsFounder = true,
-                LinkedInURL = "https://linkedin.com/in/johndoe"
-            }
-        },
-
-            Contacts = new List<CompanyContact>
-        {
-            new CompanyContact
-            {
-                ContactID = 1,
-                ContactType = "Email",
-                ContactValue = "info@zapta.com",
-                IsPrimary = true
-            }
-        },
-
-            Reviews = new List<Review>
-        {
-            new Review
-            {
-                ReviewID = 1,
-                ReviewerName = "Jane Smith",
-                Rating = 4.5m,
-                Title = "Great work!",
-                Comment = "ZAPTA delivered excellent results on our project...",
-                IsApproved = true
-            }
-        }
+            Location = "Lahore",
+            Country = "Pakistan",
+            TeamSize = "50-249",
+            HourlyRate = "$$$$",
+            Description = @"ZAPTA Technologies is a software design and development company also known for its customized and innovative solutions. ZAPTA is the apex of innovation, using only the most skilled individuals and cutting-edge technology to give our clients targeted, high-quality, customized solutions. We work with small to mid-size businesses, enterprises, and funded start-ups. We collaborate with organizations to build MVPs to full-scale products, and also provide dedicated teams. Customer satisfaction is the company's first concern, and it is founded on cooperation and a love for creation.",
+        //     Services = new List<string>
+        // {
+        //     "Custom Software Development",
+        //     "Web Development",
+        //     "Mobile App Development",
+        //     "UX/UI Design",
+        //     "Staff Augmentation/Dedicated Teams",
+        //     "Software Consultation"
+        // },
+            IsVerified = true
         };
+
+    [Parameter]
+    public string FoundingYear { get; set; } = "2020"; // Kept separate as not in Company model
+
+    [Parameter]
+    public List<PartnerBenefit> PartnerBenefits { get; set; } = new List<PartnerBenefit>
+    {
+        new PartnerBenefit
+        {
+            Title = "Working With Top Talent Always Pays Off",
+            Description = "We hire the top 5% of talent and train in the latest programming languages, tools, and technologies. Yes, we have a dedicated in-house team, ready to take your project to the next level."
+        },
+        new PartnerBenefit
+        {
+            Title = "Well Organized Teams & Structured Processes",
+            Description = "Customer satisfaction is our first priority, and we back this with our well-organized and experienced teams along with structured software development processes."
+        },
+        new PartnerBenefit
+        {
+            Title = "Quality and Excellence",
+            Description = "We take the responsibility to document, design, develop, deploy, maintain, modify and collaborate for years with quality and excellence."
+        },
+        new PartnerBenefit
+        {
+            Title = "Dedicated Support after Development",
+            Description = "After successful deployment, we train your team and provide you with a dedicated support team to assist you along the way."
+        }
+    };
+
+    [Parameter]
+    public string CallToActionText { get; set; } = "If you have an idea, ongoing or existing system, contact us today and we would love to be your trusted software development partner.";
+
+    [Parameter]
+    public string AccordionTitle { get; set; } = "ZAPTA Technologies at a Glance";
+
+    [Parameter]
+    public List<AccordionItem> AccordionItems { get; set; } = new List<AccordionItem>
+    {
+        new AccordionItem { Question = "Who Founded ZAPTA Technologies?", Answer = "ZAPTA Technologies was founded by a team of experienced software professionals dedicated to innovation." },
+        new AccordionItem { Question = "How many projects a year does ZAPTA Technologies deliver?", Answer = "We deliver dozens of projects annually, ranging from small-scale applications to large enterprise solutions." },
+        new AccordionItem { Question = "What is ZAPTA Technologies average cost per project?", Answer = "Project costs vary widely depending on scope and complexity. Please contact us for a custom quote." },
+        new AccordionItem { Question = "What are ZAPTA Technologies company values?", Answer = "Our core values include innovation, quality, customer satisfaction, and continuous learning." }
+    };
+
+    // Helper classes for dynamic data
+    public class PartnerBenefit
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class AccordionItem
+    {
+        public string Question { get; set; }
+        public string Answer { get; set; }
+        public bool IsExpanded { get; set; } = false;
+    }
+
+    private void ToggleAccordion(AccordionItem item)
+    {
+        item.IsExpanded = !item.IsExpanded;
+    }
 }
 
 <style>
-    /* Previous styles remain the same... */
-
-    /* Additional styles for new sections */
-    .categories-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 25px;
-    }
-
-    .category-tag {
-        background-color: #e0f7fa;
-        color: #00838f;
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 0.85em;
-    }
-
-    .technologies-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 10px;
-        margin-bottom: 25px;
-    }
-
-    .technology-item {
-        background-color: #f5f5f5;
-        padding: 8px 12px;
-        border-radius: 4px;
-        font-size: 0.9em;
-    }
-
-    .tech-name {
-        font-weight: 500;
-    }
-
-    .tech-level {
-        color: #666;
-        font-size: 0.8em;
-    }
-
-    .projects-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-
-    .project-item {
-        background-color: #f8f9fa;
-        padding: 15px;
+    /* General Styling */
+    .company-profile-container {
+        font-family: 'Inter', sans-serif; /* Using Inter as requested */
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
         border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        color: #333;
     }
 
-    .project-name {
-        margin-top: 0;
-        color: #007bff;
-    }
-
-    .project-client {
-        color: #666;
-        font-size: 0.9em;
-    }
-
-    .project-dates {
-        color: #666;
-        font-size: 0.85em;
-        font-style: italic;
-    }
-
-    .project-description {
-        margin-bottom: 0;
-    }
-
-    .team-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 15px;
-        margin-bottom: 25px;
-    }
-
-    .team-member {
+    /* Header Section */
+    .header-section {
         display: flex;
         align-items: center;
-        gap: 10px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 20px;
     }
 
-    .member-photo {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .member-info {
+    .logo-name-wrapper {
         display: flex;
-        flex-direction: column;
+        align-items: center;
     }
 
-    .member-name {
-        margin: 0;
-        font-size: 1em;
-    }
-
-    .member-position {
-        margin: 0;
-        font-size: 0.85em;
-        color: #666;
-    }
-
-    .linkedin-link {
-        font-size: 0.8em;
-        color: #0077b5;
-    }
-
-    .contacts-container {
+    .logo-placeholder {
+        width: 60px;
+        height: 60px;
+        background-color: #007bff; /* A blue color for the logo placeholder */
+        color: #fff;
         display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 25px;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.2em;
+        border-radius: 8px; /* Rounded corners */
+        margin-right: 15px;
+        flex-shrink: 0; /* Prevent shrinking */
     }
 
-    .contact-item {
-        display: flex;
-        gap: 10px;
-    }
-
-    .contact-type {
-        font-weight: 500;
-        min-width: 80px;
-    }
-
-    .reviews-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .review-item {
-        background-color: #fff;
-        border: 1px solid #eee;
-        padding: 15px;
+    .company-logo {
+        width: 60px;
+        height: 60px;
         border-radius: 8px;
+        margin-right: 15px;
+        object-fit: contain; /* Ensures the image fits within the bounds */
     }
 
-    .review-header {
+    .company-info {
         display: flex;
-        justify-content: space-between;
-        margin-bottom: 8px;
+        flex-direction: column;
     }
 
-    .reviewer-name {
-        font-weight: 500;
+    .company-name {
+        font-size: 1.8em;
+        margin: 0;
+        color: #222;
     }
 
-    .review-rating {
-        color: #ffc107;
+    .company-location {
+        font-size: 0.9em;
+        color: #666;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
     }
 
-    .review-title {
+    .verified-badge {
+        color: #28a745; /* Green for verified */
+        margin-left: 8px;
+        font-size: 1.2em;
+    }
+
+    /* Info Bar */
+    .info-bar {
+        display: flex;
+        justify-content: space-around;
+        background-color: #f8f9fa;
+        padding: 15px 0;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .info-item {
+        text-align: center;
+        flex: 1;
+        padding: 0 10px;
+    }
+
+    .info-label {
+        display: block;
+        font-size: 0.85em;
+        color: #777;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #333;
+    }
+
+    /* Main Content */
+    .main-content {
+        line-height: 1.6;
+    }
+
+    .company-description {
+        margin-bottom: 30px;
+        color: #444;
+        font-size: 0.95em;
+    }
+
+    .section-title {
+        font-size: 1.4em;
+        color: #222;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .specializations-list {
+        list-style: disc;
+        padding-left: 25px;
+        margin-bottom: 30px;
+    }
+
+        .specializations-list li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+    .partner-benefits {
+        margin-bottom: 30px;
+    }
+
+    .benefit-item {
+        background-color: #fdfdff;
+        border: 1px solid #eef;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    }
+
+    .benefit-title {
+        font-size: 1.1em;
+        color: #007bff;
         margin-top: 0;
         margin-bottom: 8px;
-        font-size: 1.1em;
     }
 
-    .review-comment {
-        margin-bottom: 8px;
-    }
-
-    .review-date {
-        color: #666;
-        font-size: 0.8em;
+    .benefit-description {
+        font-size: 0.9em;
+        color: #555;
         margin-bottom: 0;
     }
 
-    @@media (max-width: 600px) {
-        .technologies-container {
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    .call-to-action {
+        background-color: #e6f7ff; /* Light blue background */
+        border: 1px solid #cceeff;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        font-size: 1.1em;
+        font-weight: 500;
+        color: #0056b3;
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    /* Accordion */
+    .accordion-container {
+        margin-top: 20px;
+    }
+
+    .accordion-item {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        overflow: hidden; /* Ensures rounded corners apply correctly */
+    }
+
+    .accordion-header {
+        background-color: #f0f0f0;
+        color: #333;
+        cursor: pointer;
+        padding: 15px 20px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        font-size: 1em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s ease;
+        border-radius: 8px; /* Apply to header too */
+    }
+
+        .accordion-header:hover {
+            background-color: #e0e0e0;
         }
 
-        .team-container {
-            grid-template-columns: 1fr;
+    .accordion-icon {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+
+    .accordion-content {
+        padding: 15px 20px;
+        background-color: #fafafa;
+        border-top: 1px solid #eee;
+        font-size: 0.9em;
+        color: #444;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 600px) {
+        .info-bar {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+        }
+
+        .company-profile-container {
+            padding: 15px;
+        }
+
+        .company-name {
+            font-size: 1.5em;
+        }
+
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            font-size: 1em;
         }
     }
 </style>
+
