@@ -5,96 +5,152 @@
 
 @if (company != null)
 {
-<!-- CompanyProfile.razor -->
-<div class="company-profile-container">
-    <!-- Header Section -->
-    <div class="header-section">
-        <div class="logo-name-wrapper">
-            @if (!string.IsNullOrEmpty(company.LogoUrl))
-            {
-                <img src="@company.LogoUrl" alt="Company Logo" class="company-logo" />
-            }
-            else
-            {
-                <div class="logo-placeholder">@company.Name.Substring(0, Math.Min(5, company.Name.Length))</div>
-            }
-            <div class="company-info">
-                <h1 class="company-name">@company.Name</h1>
-                <p class="company-location">
-                    @company.Location, @company.Country
-                    @if (company.IsVerified)
-                    {
-                        <span class="verified-badge">&#10003;</span>
-                    }
-                </p>
+    <section class="light-background">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <div class="d-flex gap-3 align-items-center">
+                                <figure class="company-img figure">
+                                    <a href="@($"/companyprofile/{company.Id}")" target="_self" title="@company.Name" aria-label="@company.Name">
+                                        <picture class="s-imag loaded">
+                                            <img src="@( string.IsNullOrEmpty(company.LogoUrl) ? "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg" : company.LogoUrl)" alt="@company.LogoText" height="110" width="110" />
+                                        </picture>
+                                    </a>
+                                </figure>
+                                <div class="company-info d-flex flex-column gap-1">
+                                    <a href="@($"/companyprofile/{company.Id}")" aria-label="@company.Name Company Profile Page" target="_self" class="d-flex gap-2">
+                                        @company.Name
+                                        @if (company.IsVerified)
+                                        {
+                                            <i class="bi bi-patch-check-fill txt-blue"></i>
+                                        }
+                                    </a>
+                                    @if (!string.IsNullOrEmpty(company.Location))
+                                    {
+                                        <p>
+                                            <span class="text-muted"><i class="bi bi-geo-alt txt-blue"></i> @company.Location</span>
+                                        </p>
+                                    }
+                                    @if (!string.IsNullOrEmpty(company.Headquarter))
+                                    {
+                                        <p>
+                                            <span class="text-muted"><i class="bi bi-building txt-blue"></i> @company.Headquarter</span>
+                                        </p>
+                                    }
+
+                                </div>
+                            </div>
+
+                            <hr>
+
+
+                            <!-- Info Bar Section -->
+                            <div class="info-bar d-flex gap-4 py-3 px-5 justify-content-between">
+                                <div class="d-flex gap-3 align-items-center flex-row">
+                                    <span class="info-label">Founding Year</span>
+                                    <span class="info-value txt-blue">@company.FoundedYear</span> <!-- Kept separate as not in Company model -->
+                                </div>
+                                <div class="d-flex gap-3 align-items-center flex-row">
+                                    <span class="info-label">Team Size</span>
+                                    <span class="info-value txt-blue">@company.TeamSize</span>
+                                </div>
+                                <div class="d-flex gap-3 align-items-center flex-row">
+                                    <span class="info-label">Hourly Rate</span>
+                                    <span class="info-value txt-blue">@company.HourlyRate</span>
+                                </div>
+                            </div>
+
+
+                            <p class="company-description">@company.Description</p>
+
+                            @if (company.FirstAnswerQuestions.Count > 0)
+                            {
+                                <h5 class="mb-3">@company.Name at a Glance</h5>
+
+                                <div class="accordion" id="accordionExample">
+                               
+                                    @foreach (var item in company.FirstAnswerQuestions)
+                                    {
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@item.Id" aria-expanded="false" aria-controls="collapse-@item.Id">
+                                                    @item.Question
+                                                </button>
+                                            </h2>
+                                            <div id="collapse-@item.Id" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                                <div class="accordion-body">
+                                                    @item.Answer
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                            }
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+            <!-- CompanyProfile.razor -->
+            <div class="company-profile-container">
+                <!-- Header Section -->
+                 
+                <!-- Main Content Section -->
+                <div class="main-content">
+                    
+                    @* <h3 class="section-title">We Are Specialized in:</h3>
+                    <ul class="specializations-list">
+                        @foreach (var service in CompanyData.Services)
+                        {
+                            <li>@service</li>
+                        }
+                    </ul> *@
+
+                                @*  <h3 class="section-title">What Makes Us Your Trusted Development Partner?</h3>
+                    <div class="partner-benefits">
+                        @foreach (var benefit in PartnerBenefits)
+                        {
+                            <div class="benefit-item">
+                                <h4 class="benefit-title">@benefit.Title</h4>
+                                <p class="benefit-description">@benefit.Description</p>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="call-to-action">
+                        <p>@CallToActionText</p>
+                    </div>
+
+                    <h3 class="section-title">@AccordionTitle</h3>
+                    <div class="accordion-container">
+                        @foreach (var item in AccordionItems)
+                        {
+                            <div class="accordion-item">
+                                <button class="accordion-header" @onclick="() => ToggleAccordion(item)">
+                                    @item.Question
+                                    <span class="accordion-icon">@(item.IsExpanded ? "-" : "+")</span>
+                                </button>
+                                @if (item.IsExpanded)
+                                {
+                                    <div class="accordion-content">
+                                        <p>@item.Answer</p>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div> *@
+                </div>@* 
+    <CompanyTabDetails /> *@
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Info Bar Section -->
-    <div class="info-bar">
-        <div class="info-item">
-            <span class="info-label">Founding Year</span>
-            <span class="info-value">@company.FoundedYear</span> <!-- Kept separate as not in Company model -->
-        </div>
-        <div class="info-item">
-            <span class="info-label">Team Size</span>
-            <span class="info-value">@company.TeamSize</span>
-        </div>
-        <div class="info-item">
-            <span class="info-label">Hourly Rate</span>
-            <span class="info-value">@company.HourlyRate</span>
-        </div>
-    </div>
-
-    <!-- Main Content Section -->
-    <div class="main-content">
-        <p class="company-description">@company.Description</p>
-
-        @* <h3 class="section-title">We Are Specialized in:</h3>
-        <ul class="specializations-list">
-            @foreach (var service in CompanyData.Services)
-            {
-                <li>@service</li>
-            }
-        </ul> *@
-
-       @*  <h3 class="section-title">What Makes Us Your Trusted Development Partner?</h3>
-        <div class="partner-benefits">
-            @foreach (var benefit in PartnerBenefits)
-            {
-                <div class="benefit-item">
-                    <h4 class="benefit-title">@benefit.Title</h4>
-                    <p class="benefit-description">@benefit.Description</p>
-                </div>
-            }
-        </div>
-
-        <div class="call-to-action">
-            <p>@CallToActionText</p>
-        </div>
-
-        <h3 class="section-title">@AccordionTitle</h3>
-        <div class="accordion-container">
-            @foreach (var item in AccordionItems)
-            {
-                <div class="accordion-item">
-                    <button class="accordion-header" @onclick="() => ToggleAccordion(item)">
-                        @item.Question
-                        <span class="accordion-icon">@(item.IsExpanded ? "-" : "+")</span>
-                    </button>
-                    @if (item.IsExpanded)
-                    {
-                        <div class="accordion-content">
-                            <p>@item.Answer</p>
-                        </div>
-                    }
-                </div>
-            }
-        </div> *@
-    </div>@* 
-    <CompanyTabDetails /> *@
-</div>
+    <CompanyHashRouter Company="company"/>
+   
 }
 else{
     <p>Loading company profile...</p>
@@ -104,7 +160,7 @@ else{
     [Parameter]
     public int id { get; set; }
 
-    private CompanyDTO? company;
+    private Company? company;
 
     protected override async Task OnInitializedAsync()
     {
@@ -197,251 +253,6 @@ else{
 }
 
 <style>
-    /* General Styling */
-    .company-profile-container {
-        font-family: 'Inter', sans-serif; /* Using Inter as requested */
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        color: #333;
-    }
-
-    /* Header Section */
-    .header-section {
-        display: flex;
-        align-items: center;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-        margin-bottom: 20px;
-    }
-
-    .logo-name-wrapper {
-        display: flex;
-        align-items: center;
-    }
-
-    .logo-placeholder {
-        width: 60px;
-        height: 60px;
-        background-color: #007bff; /* A blue color for the logo placeholder */
-        color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: bold;
-        font-size: 1.2em;
-        border-radius: 8px; /* Rounded corners */
-        margin-right: 15px;
-        flex-shrink: 0; /* Prevent shrinking */
-    }
-
-    .company-logo {
-        width: 60px;
-        height: 60px;
-        border-radius: 8px;
-        margin-right: 15px;
-        object-fit: contain; /* Ensures the image fits within the bounds */
-    }
-
-    .company-info {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .company-name {
-        font-size: 1.8em;
-        margin: 0;
-        color: #222;
-    }
-
-    .company-location {
-        font-size: 0.9em;
-        color: #666;
-        margin-top: 5px;
-        display: flex;
-        align-items: center;
-    }
-
-    .verified-badge {
-        color: #28a745; /* Green for verified */
-        margin-left: 8px;
-        font-size: 1.2em;
-    }
-
-    /* Info Bar */
-    .info-bar {
-        display: flex;
-        justify-content: space-around;
-        background-color: #f8f9fa;
-        padding: 15px 0;
-        border-radius: 8px;
-        margin-bottom: 25px;
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .info-item {
-        text-align: center;
-        flex: 1;
-        padding: 0 10px;
-    }
-
-    .info-label {
-        display: block;
-        font-size: 0.85em;
-        color: #777;
-        margin-bottom: 5px;
-    }
-
-    .info-value {
-        font-size: 1.1em;
-        font-weight: bold;
-        color: #333;
-    }
-
-    /* Main Content */
-    .main-content {
-        line-height: 1.6;
-    }
-
-    .company-description {
-        margin-bottom: 30px;
-        color: #444;
-        font-size: 0.95em;
-    }
-
-    .section-title {
-        font-size: 1.4em;
-        color: #222;
-        margin-top: 30px;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 10px;
-    }
-
-    .specializations-list {
-        list-style: disc;
-        padding-left: 25px;
-        margin-bottom: 30px;
-    }
-
-        .specializations-list li {
-            margin-bottom: 8px;
-            color: #555;
-        }
-
-    .partner-benefits {
-        margin-bottom: 30px;
-    }
-
-    .benefit-item {
-        background-color: #fdfdff;
-        border: 1px solid #eef;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-    }
-
-    .benefit-title {
-        font-size: 1.1em;
-        color: #007bff;
-        margin-top: 0;
-        margin-bottom: 8px;
-    }
-
-    .benefit-description {
-        font-size: 0.9em;
-        color: #555;
-        margin-bottom: 0;
-    }
-
-    .call-to-action {
-        background-color: #e6f7ff; /* Light blue background */
-        border: 1px solid #cceeff;
-        border-radius: 8px;
-        padding: 20px;
-        text-align: center;
-        font-size: 1.1em;
-        font-weight: 500;
-        color: #0056b3;
-        margin-top: 30px;
-        margin-bottom: 30px;
-    }
-
-    /* Accordion */
-    .accordion-container {
-        margin-top: 20px;
-    }
-
-    .accordion-item {
-        border: 1px solid #eee;
-        border-radius: 8px;
-        margin-bottom: 10px;
-        overflow: hidden; /* Ensures rounded corners apply correctly */
-    }
-
-    .accordion-header {
-        background-color: #f0f0f0;
-        color: #333;
-        cursor: pointer;
-        padding: 15px 20px;
-        width: 100%;
-        text-align: left;
-        border: none;
-        outline: none;
-        font-size: 1em;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: background-color 0.3s ease;
-        border-radius: 8px; /* Apply to header too */
-    }
-
-        .accordion-header:hover {
-            background-color: #e0e0e0;
-        }
-
-    .accordion-icon {
-        font-size: 1.2em;
-        font-weight: bold;
-        margin-left: 10px;
-    }
-
-    .accordion-content {
-        padding: 15px 20px;
-        background-color: #fafafa;
-        border-top: 1px solid #eee;
-        font-size: 0.9em;
-        color: #444;
-    }
-
-    /* Responsive adjustments */
-    @@media (max-width: 600px) {
-        .info-bar {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .info-item {
-            margin-bottom: 10px;
-        }
-
-        .company-profile-container {
-            padding: 15px;
-        }
-
-        .company-name {
-            font-size: 1.5em;
-        }
-
-        .logo-placeholder {
-            width: 50px;
-            height: 50px;
-            font-size: 1em;
-        }
-    }
+     
 </style>
 

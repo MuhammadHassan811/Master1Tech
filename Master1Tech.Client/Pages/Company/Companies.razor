@@ -1,13 +1,39 @@
 ﻿@page "/companies/pakistan"
+@using Master1Tech.Client.Extension
 @using Master1Tech.Models
 @using Master1Tech.Services
 @inject ICompanyService CompanyService
 @inject IJSRuntime JSRuntime
 
-<h3>Top Companies in @Country.ToUpper()</h3>
+<section>
+    <div class="container">
+        <div class="d-flex flex-row-reverse gap-5">
+            <div class="loc-intro__cov fsz-0 relative">
+                
+                <picture>
+                    <source media="(max-width: 768px)" srcset="https://rest.techbehemoths.com/storage/images/countries/pakistan/Pakistan-country-6022b1f906761.webp">
+                    <source media=" (min-width: 769px)" srcset="https://rest.techbehemoths.com/storage/images/countries/pakistan/Pakistan-country-6022b1f906761-x2.webp">
+                    <source media="(max-width: 768px)" srcset="https://rest.techbehemoths.com/storage/images/countries/pakistan/Pakistan-country-6022b1f906761.jpg">
+                    <source media=" (min-width: 769px)" srcset="https://rest.techbehemoths.com/storage/images/countries/pakistan/Pakistan-country-6022b1f906761-x2.jpg"> 
+                        <img src="https://rest.techbehemoths.com/storage/images/countries/pakistan/Pakistan-country-6022b1f906761.jpg" alt="Pakistan Photo" width="300" height="300">
+                </picture>
+            </div>
+            <div>
+                <h1 class="loc-intro__title">There are <span class="txt-blue">1093</span> Companies in <span class="txt-blue dashed">Pakistan</span><br>that cover <span class="txt-blue">112</span> Services &amp; Industries!</h1> 
+                <div class="loc-intro__smry">
+                    <p>Pakistan’s Information Technology (IT) sector has a promising future with its talented youth and is poised to become the largest export industry of the country, according to the Pakistani High Commissioner to the UK.&nbsp;</p>
+                    <p>Based on this information, it is also important to mention that the average salary in the IT industry in Pakistan is estimated at around 378 USD/mo, making the country one of the most accessible and competitive in the region in terms of prices.</p>
+                    <p>Discover top IT Companies in Pakistan specialized in web development, software development, web design, UI/UX design, digital marketing, branding and more.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="light-background">
+    <div class="container">
 
-<div class="filter-bar">
-    <div class="filter-group">
+        <div class="filter-bar">
+            <div class="filter-group">
         <div class="filter-item">
             <span>Location <b>(@(!string.IsNullOrEmpty(companyFilter.Location) ? "1" : "0"))</b></span>
             <select @bind="companyFilter.Location">
@@ -60,187 +86,192 @@
 
         <button @onclick="ApplyFilters" class="btn-filter">Filter</button>
     </div>
-</div>
-
-<!-- Header Section -->
-<h4 class="mb-4">
-    Explore Top Companies in <span style="color: #007bff;">@Country.ToUpper()</span>
-</h4>
-
-<!-- Company Count and Last Updated -->
-<div class="p-4 mb-4" style="background-color: #f8f9fa;">
-    <p>We found <strong>@CompanyCount companies</strong>.</p>
-    <p class="text-muted">That's a hell of a search to do now. Why not use the smart filters above?</p>
-    <small class="float-right text-muted">LAST UPDATED IN: JULY, 2025</small>
-</div>
-
-<!-- Companies Grid -->
-@if (IsLoading)
-{
-    <div class="text-center">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
         </div>
-    </div>
-}
-else
-{
-    <div class="row">
-        @foreach (var company in Companiees.Results)
+
+        <!-- Header Section -->
+        <h2 class="mb-4">
+            Explore Top Companies in <span style="color: #007bff;">@Country.ToUpper()</span>
+        </h2>
+
+        <!-- Company Count and Last Updated -->
+        <div class="d-flex justify-content-between mb-4">
+            <div class="d-flex flex-column">
+                <h5 class="font-weight-bold">We found <strong style="color:var(--accent-color)">@CompanyCount </strong> companies</h5>
+                <p class="pt-2">That's a hell of a search to do now. Why not use the smart filters above?</p>
+            </div>
+            
+            <div class="float-right text-uppercase mt-2" style="letter-spacing: .1em;"> LAST UPDATED IN: <strong class="font-weight-bold" style="color:var(--accent-color)"> JULY, 2025</strong> </div>
+        </div>
+
+        <!-- Companies Grid -->
+        @if (IsLoading)
         {
-            <div class="col-12 col-sm-6 col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-
-                        <!-- Company Header -->
-                        <div class="row align-items-center mb-2">
-                            <div class="col-3 text-center">
-                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                    <strong>@company.Name.Substring(0, 1)</strong>
-                                </div>
-                            </div>
-                            <div class="col-9">
-                                <h6 class="mb-0">
-                                    @company.Name
-                                    @if (company.IsVerified)
-                                    {
-                                        <span title="Verified" class="text-success">&#10004;</span>
-                                    }
-                                </h6>
-                                <small class="text-muted">&#x1F4CD; @company.Location</small>
-                            </div>
-                        </div>
-
-                        <!-- Rating -->
-                        <div class="mb-2">
-                            @for (int i = 1; i <= 5; i++)
-                            {
-                                if (i <= company.Rating)
-                                {
-                                    <span class="text-warning">&#9733;</span> <!-- Filled star -->
-                                }
-                                else
-                                {
-                                    <span class="text-secondary">&#9734;</span> <!-- Empty star -->
-                                }
-                            }
-                        </div>
-
-                        <!-- Description -->
-                        <p class="text-muted">@company.Description</p>
-
-                        <!-- Team Size and Hourly Rate -->
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <small class="text-muted">Team size</small>
-                                <div style="color: #007bff;">@company.TeamSize</div>
-                            </div>
-                            <div class="col-6">
-                                <small class="text-muted">Hourly Rate</small>
-                                <div style="color: #007bff;">@company.HourlyRate</div>
-                            </div>
-                        </div>
-
-                        <!-- Services -->
-                        @* <small class="text-muted mb-1 d-block">Services</small>
-                        <div class="row mb-3">
-                            @foreach (var service in company.Services.Take(3))
-                            {
-                                <div class="col-12">
-                                    <span class="badge bg-info text-dark me-1">@service</span>
-                                </div>
-                            }
-                            @if (company.Services.Count > 3)
-                            {
-                                <div class="col-12">
-                                    <small style="color: #007bff; cursor: pointer;">+ See more</small>
-                                </div>
-                            }
-                        </div> *@
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
-                        <NavLink class="btn btn-outline-primary btn-sm" href="@($"/companyprofile/{company.Id}")">
-                            View profile
-                        </NavLink>
-                        <NavLink class="btn btn-outline-primary btn-sm" href="/contact">
-                            Get In Touch
-                        </NavLink>
-                       
-                    </div>
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
         }
-    </div>
-}
-
-<!-- Load More Button -->
-@if (Companiees.Results.Count > 0)
-{
-    <div class="text-center mt-4">
-        <button class="btn btn-primary" @onclick="LoadMoreCompanies">
-            Load More Companies
-        </button>
-    </div>
-}
-
-@* @if (IsLoading)
-{
-    <p>Loading companies...</p>
-}
-else if (Companiees?.Any() == true)
-{
-    <p>Showing @CompanyCount companies</p>
-    <ul>
-        @foreach (var company in Companiees)
+        else
         {
-            <li>@company.Name</li>
+            <div class="row comapny-cards">
+                @foreach (var company in Companiees.Results)
+                {
+                    <div class="col-12 col-sm-6 col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex gap-3 align-items-center">
+                                    <figure class="company-img figure">
+                                        <a href="@($"/companyprofile/{company.Id}")" target="_self" title="@company.Name" aria-label="@company.Name">
+                                            <picture class="s-imag loaded">
+                                                <img src="@( string.IsNullOrEmpty(company.LogoUrl) ? "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg" : company.LogoUrl)" alt="@company.LogoText" height="110" width="110" />
+                                            </picture>
+                                        </a>
+                                    </figure>
+                                    <div class="company-info d-flex flex-column gap-1">
+                                        <a href="@($"/companyprofile/{company.Id}")" aria-label="@company.Name Company Profile Page" target="_self" class="d-flex gap-2">
+                                            @company.Name
+                                            @if (company.IsVerified)
+                                            {
+                                                <i class="bi bi-patch-check-fill txt-blue"></i>
+                                            }
+                                        </a>
+                                        @if (!string.IsNullOrEmpty(company.Location))
+                                        {
+                                            <p>
+                                                    <span class="text-muted"><i class="bi bi-geo-alt txt-blue"></i> @company.Location</span>
+                                            </p>
+                                        }
+                                        @if (!string.IsNullOrEmpty(company.Headquarter))
+                                        {
+                                            <p>
+                                                    <span class="text-muted"><i class="bi bi-building txt-blue"></i> @company.Headquarter</span>
+                                            </p>
+                                        }
+                                        
+                                    </div>
+                                </div>
+                                
+                                <!-- Rating -->
+                                <div class="text-end mb-2">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= company.Rating)
+                                        {
+                                            <span class="text-warning">&#9733;</span> <!-- Filled star -->
+                                        }
+                                        else
+                                        {
+                                            <span class="text-secondary">&#9734;</span> <!-- Empty star -->
+                                        }
+                                    }
+                                </div>
+
+                                <!-- Description -->
+                                <p class="company-des">@company.Description?.TruncateWithEllipsis(100)</p>
+
+                                <!-- Team Size and Hourly Rate -->
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                         <div class="card-box d-flex justify-center flex-column gap-2 ">
+                                            <span class="title">Number of Employees</span>
+                                            <span class="value txt-blue"> @company.TeamSize</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="card-box d-flex justify-center flex-column gap-2 ">
+                                            <span class="title">Hourly Rate</span>
+                                            <span class="value txt-blue">@company.HourlyRate</span>
+                                        </div>
+                                    </div>
+                                   
+                                    
+                                </div>
+
+                                <!-- Services -->
+                                @* <small class="text-muted mb-1 d-block">Services</small>
+                                <div class="row mb-3">
+                                    @foreach (var service in company.Services.Take(3))
+                                    {
+                                        <div class="col-12">
+                                            <span class="badge bg-info text-dark me-1">@service</span>
+                                        </div>
+                                    }
+                                    @if (company.Services.Count > 3)
+                                    {
+                                        <div class="col-12">
+                                            <small style="color: #007bff; cursor: pointer;">+ See more</small>
+                                        </div>
+                                    }
+                                </div> *@
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="card-footer bg-white border-top-0 d-flex justify-content-between p-3">
+                                <NavLink class="btn btn-outline-dark rounded-0" href="@($"/companyprofile/{company.Id}")">
+                                    View profile
+                                </NavLink>
+                                <NavLink class="btn btn-link" href="/contact">
+                                    Get In Touch
+                                </NavLink>
+                       
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
         }
-    </ul>
-}
-else
-{
-    <p>No companies found.</p>
-} *@
 
-<div class="d-flex justify-content-center mt-4">
-    <nav>
-        <ul class="pagination pagination-sm">
-
-            <!-- Previous Arrow -->
-            <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
-                <button class="page-link" @onclick="() => GoToPage(CurrentPage - 1)" aria-label="Previous">
-                    <span>&#x276E;</span> <!-- Left arrow -->
+        <!-- Load More Button -->
+        @if (Companiees.Results.Count > 0)
+        {
+            <div class="text-center mt-4">
+                <button class="btn btn-primary" @onclick="LoadMoreCompanies">
+                    Load More Companies
                 </button>
-            </li>
+            </div>
+        }
+         
+        <div class="d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination pagination-sm">
 
-            <!-- Page Numbers -->
-            @for (int i = 1; i <= TotalPages; i++)
-            {
-                if (i == 1 || i == TotalPages || Math.Abs(CurrentPage - i) <= 2)
-                {
-                    <li class="page-item @(i == CurrentPage ? "active" : "")">
-                        <button class="page-link" @onclick="() => GoToPage(i)">@i</button>
+                    <!-- Previous Arrow -->
+                    <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+                        <button class="page-link" @onclick="() => GoToPage(CurrentPage - 1)" aria-label="Previous">
+                            <span>&#x276E;</span> <!-- Left arrow -->
+                        </button>
                     </li>
-                }
-                else if (i == CurrentPage - 3 || i == CurrentPage + 3)
-                {
-                    <li class="page-item disabled">
-                        <span class="page-link">...</span>
-                    </li>
-                }
-            }
 
-            <!-- Next Arrow -->
-            <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
-                <button class="page-link" @onclick="() => GoToPage(CurrentPage + 1)" aria-label="Next">
-                    <span>&#x276F;</span> <!-- Right arrow -->
-                </button>
-            </li>
-        </ul>
-    </nav>
-</div>
+                    <!-- Page Numbers -->
+                    @for (int i = 1; i <= TotalPages; i++)
+                    {
+                        if (i == 1 || i == TotalPages || Math.Abs(CurrentPage - i) <= 2)
+                        {
+                            <li class="page-item @(i == CurrentPage ? "active" : "")">
+                                <button class="page-link" @onclick="() => GoToPage(i)">@i</button>
+                            </li>
+                        }
+                        else if (i == CurrentPage - 3 || i == CurrentPage + 3)
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        }
+                    }
+
+                    <!-- Next Arrow -->
+                    <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
+                        <button class="page-link" @onclick="() => GoToPage(CurrentPage + 1)" aria-label="Next">
+                            <span>&#x276F;</span> <!-- Right arrow -->
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+</section>
 
 @code {
     [Parameter] public string Country { get; set; } = "pakistan";
@@ -264,7 +295,7 @@ else
         {
             var pagedResult= await CompanyService.GenerateSampleCompanies();
             Companiees = pagedResult;
-            //CompanyCount = await CompanyService.GetTotalCompaniesAsync(companyFilter);
+            CompanyCount = Companiees.RowCount;
         }
         catch (Exception ex)
         {
@@ -299,5 +330,5 @@ else
             CurrentPage = page;
             // Call your data-fetching logic here
         }
-    }
+    } 
 }

@@ -4,13 +4,18 @@ using Master1Tech.Server.Models;
 using Master1Tech.Server.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using Quartz;
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServerConnection_DebugMode")));
@@ -23,8 +28,8 @@ builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
         Title = "Master1 Tech API",
         Version = "v1",
         Description = "CRUD API Services that act as the backend to the Master1 Tech website."
@@ -77,7 +82,7 @@ else
 }
 
 app.UseSwagger();
-app.UseSwaggerUI(c => 
+app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Master1Tech.api v1");
     c.DefaultModelsExpandDepth(-1);

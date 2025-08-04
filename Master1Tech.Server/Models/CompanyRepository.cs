@@ -1,13 +1,10 @@
 using Master1Tech.Models;
 using Master1Tech.Shared.Data;
-using Master1Tech.Shared.Models;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.Design;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Master1Tech.Server.Models
 {
-    public class CompanyRepository: ICompanyRepository
+    public class CompanyRepository : ICompanyRepository
     {
         private readonly AppDbContext _appDbContext;
 
@@ -41,8 +38,8 @@ namespace Master1Tech.Server.Models
 
         public PagedResult<Company> GetCompaniesFromDatabase()
         {
-            int page=0;
-            string? name= string.Empty;
+            int page = 0;
+            string? name = string.Empty;
             int pageSize = 6;
             if (page < 1) page = 1;
 
@@ -88,14 +85,18 @@ namespace Master1Tech.Server.Models
             return new PagedResult<Company>();
         }
 
-public Company GetCompaniesById(int id)
+        public async Task<Company?> GetCompaniesById(int id)
         {
 
 
-            var company =  _appDbContext.Companies
+            var company = await _appDbContext.Companies
                .Where(c => c.Id == id)
-               .FirstOrDefaultAsync().Result;
-            
+               .Include(x => x.CompanyServices).ThenInclude(x => x.Service)
+               .Include(x => x.FirstAnswerQuestions)
+               .Include(x => x.GetCompanyIndustryFocus)
+               .ThenInclude(x => x.Industry)
+               .FirstOrDefaultAsync();
+
             //        var company = await _appDbContext.Companies
             //.Where(c => c.Id == id)
             //.Select(c => new CompanyDTO
@@ -113,8 +114,6 @@ public Company GetCompaniesById(int id)
             //    //                             .Distinct()) // stays as IQueryable
             //}).AsNoTracking()
             //.FirstOrDefaultAsync();
-
-            if (company == null) return null;
 
             return company;
             //return new CompanyDTO

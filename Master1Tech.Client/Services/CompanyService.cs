@@ -1,15 +1,7 @@
-﻿using Master1Tech.Client.Pages.Company;
-using Master1Tech.Client.Shared;
+﻿using Master1Tech.Client.Shared;
 using Master1Tech.Models;
 using Master1Tech.Services;
 using Master1Tech.Shared.Data;
-using Master1Tech.Shared.Models;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 public class CompanyService : ICompanyService
 {
@@ -37,7 +29,7 @@ public class CompanyService : ICompanyService
             var companies = await _httpService.Get<PagedResult<Company>>("api/company/");
             return companies ?? new PagedResult<Company>();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Optionally log the error
             // _logger.LogError(ex, "Error fetching companies from API");
@@ -45,9 +37,9 @@ public class CompanyService : ICompanyService
         }
     }
 
-    public async Task<CompanyDTO?> GetCompanyByIdAsync(int id)
+    public async Task<Company?> GetCompanyByIdAsync(int id)
     {
-        var companies = await _httpService.Get<CompanyDTO>("api/company/" + id);
+        var companies = await _httpService.Get<Company>("api/company/" + id);
         return companies ?? null;
     }
 
@@ -158,8 +150,7 @@ public class CompanyService : ICompanyService
 
         return new List<Company>
             {
-                new Company
-                {
+                new() {
                     Id = 1,
                     Name = "ZAPTA Technologies",
                     Location = "Lahore, Pakistan",
@@ -172,8 +163,7 @@ public class CompanyService : ICompanyService
                     LogoText = "Z",
                     LogoColor = "#4a90e2"
                 },
-                new Company
-                {
+                new() {
                     Id = 2,
                     Name = "Eagle Alliance Technology Pvt. Ltd",
                     Location = "Rawalpindi, Pakistan",
@@ -186,8 +176,7 @@ public class CompanyService : ICompanyService
                     LogoText = "EA",
                     LogoColor = "#28a745"
                 },
-                new Company
-                {
+                new() {
                     Id = 3,
                     Name = "AppsNation",
                     Location = "Karachi, Pakistan",
@@ -200,8 +189,7 @@ public class CompanyService : ICompanyService
                     LogoText = "AN",
                     LogoColor = "#ff6b6b"
                 },
-                new Company
-                {
+                new() {
                     Id = 4,
                     Name = "DeviceBee Technologies",
                     Location = "Lahore, Pakistan",
@@ -214,8 +202,7 @@ public class CompanyService : ICompanyService
                     LogoText = "DB",
                     LogoColor = "#9c27b0"
                 },
-                new Company
-                {
+                new() {
                     Id = 5,
                     Name = "Zaavia",
                     Location = "Karachi, Pakistan",
@@ -228,8 +215,7 @@ public class CompanyService : ICompanyService
                     LogoText = "Z",
                     LogoColor = "#f39c12"
                 },
-                new Company
-                {
+                new() {
                     Id = 6,
                     Name = "Aptagon Technologies",
                     Location = "Okara, Pakistan",
@@ -242,8 +228,7 @@ public class CompanyService : ICompanyService
                     LogoText = "AT",
                     LogoColor = "#e74c3c"
                 },
-                new Company
-                {
+                new() {
                     Id = 7,
                     Name = "Phaedra Solutions",
                     Location = "Karachi, Pakistan",
@@ -256,8 +241,7 @@ public class CompanyService : ICompanyService
                     LogoText = "PS",
                     LogoColor = "#8e44ad"
                 },
-                new Company
-                {
+                new() {
                     Id = 8,
                     Name = "Arbisoft",
                     Location = "Lahore, Pakistan",
@@ -270,8 +254,7 @@ public class CompanyService : ICompanyService
                     LogoText = "AS",
                     LogoColor = "#2c3e50"
                 },
-                new Company
-                {
+                new() {
                     Id = 9,
                     Name = "Design Bub",
                     Location = "Islamabad, Pakistan",
@@ -284,8 +267,7 @@ public class CompanyService : ICompanyService
                     LogoText = "DB",
                     LogoColor = "#16a085"
                 },
-                new Company
-        {
+                new() {
             Id = 10,
             Name = "Techlogix Pakistan",
             Location = "Karachi, Pakistan",
@@ -298,8 +280,7 @@ public class CompanyService : ICompanyService
             LogoText = "TL",
             LogoColor = "#3498db"
         },
-                new Company
-        {
+                new() {
             Id = 11,
             Name = "Cloudways",
             Location = "Lahore, Pakistan",

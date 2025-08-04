@@ -6,9 +6,9 @@ namespace Master1Tech.Services
     public interface ICompanyService
     {
         //Task<int> GetTotalCompaniesAsync(CompanyFilter? filter = null);
-       // Task<PagedResult<Company>> GetCompaniesAsync(CompanyFilter? filter = null, int page = 1, int pageSize = 9);
+        // Task<PagedResult<Company>> GetCompaniesAsync(CompanyFilter? filter = null, int page = 1, int pageSize = 9);
         Task<PagedResult<Company>> GenerateSampleCompanies();
-        Task<CompanyDTO?> GetCompanyByIdAsync(int id);
+        Task<Company?> GetCompanyByIdAsync(int id);
         //Task<PagedResult<Company>> GetCompaniesAsync(string? name, int page);
         //Task<int> GetCompanyCountAsync(string name, string page);
     }
