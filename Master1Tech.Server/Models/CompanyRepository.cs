@@ -1,13 +1,10 @@
 using Master1Tech.Models;
 using Master1Tech.Shared.Data;
-using Master1Tech.Shared.Models;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.Design;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Master1Tech.Server.Models
 {
-    public class CompanyRepository: ICompanyRepository
+    public class CompanyRepository : ICompanyRepository
     {
         private readonly AppDbContext _appDbContext;
 
@@ -39,63 +36,101 @@ namespace Master1Tech.Server.Models
         //}
 
 
-        public PagedResult<Company> GetCompaniesFromDatabase()
+        public PagedResult<Company> GetCompaniesFromDatabase(
+        string? location = null,
+        string? services = null,
+        string? teamSize = null,
+        string? hourlyRate = null,
+        string? sortBy = null,
+        int page = 1,
+        int pageSize = 12)
         {
-            int page=0;
-            string? name= string.Empty;
-            int pageSize = 6;
-            if (page < 1) page = 1;
 
-            if (!string.IsNullOrEmpty(name))
+
+            var query = _appDbContext.Companies/*.Include(x => x.CompanyServices).ThenInclude(cs => cs.Service)*/.AsQueryable();
+
+            if (!string.IsNullOrEmpty(location))
+                query = query.Where(c => c.Headquarter != null && c.Headquarter.ToLower().StartsWith(location.ToLower(), StringComparison.OrdinalIgnoreCase));
+
+            // If you have a real Services property, adjust this filter accordingly
+            //if (!string.IsNullOrEmpty(services))
+            //    query = query.Where(c => c.CompanyServices.Any(cs => cs.Service.Name.Contains(services, StringComparison.OrdinalIgnoreCase)));
+
+            if (!string.IsNullOrEmpty(teamSize))
+                query = query.Where(c => c.TeamSize == teamSize);
+
+            if (!string.IsNullOrEmpty(hourlyRate))
+                query = query.Where(c => c.HourlyRate == hourlyRate);
+
+            query = sortBy?.ToLower() switch
             {
-                return _appDbContext.Companies
-                    .Where(p => p.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase))
-                //.Include(c => c.CompanyServices)
-                //    .ThenInclude(cs => cs.Service)
-                //.Include(c => c.CompanyCategories)
-                //    .ThenInclude(cc => cc.Category)
-                //.Include(c => c.Technologies)
-                //    .ThenInclude(ct => ct.Technology)
-                //.Include(c => c.Reviews)
-                //.Include(c => c.Contacts)
-                //.Include(c => c.Projects)
-                //.Include(c => c.TeamMembers)
-                //.Include(c => c.Locations)
-        .GetPaged(page, pageSize);
-            }
-            else
-            {
-                IQueryable<Company> query = _appDbContext.Companies;
-                return query.GetPaged(page, pageSize);
-                //return _appDbContext.Companies.GetPaged(page, pageSize);
-            }
-            //    else
-            //    {
-            //        return _appDbContext.Companies
-            //        .Include(c => c.CompanyServices)
-            //            .ThenInclude(cs => cs.Service)
-            //        .Include(c => c.CompanyCategories)
-            //            .ThenInclude(cc => cc.Category)
-            //        .Include(c => c.Technologies)
-            //            .ThenInclude(ct => ct.Technology)
-            //        .Include(c => c.Reviews)
-            //        .Include(c => c.Contacts)
-            //        .Include(c => c.Projects)
-            //        .Include(c => c.TeamMembers)
-            //        .Include(c => c.Locations)
-            //                .GetPaged(page, pageSize);
-            //    }
-            return new PagedResult<Company>();
+                "name" => query.OrderBy(c => c.Name),
+                "rating" => query.OrderByDescending(c => c.Rating),
+                "teamsize" => query.OrderBy(c => c.TeamSize),
+                _ => query.OrderBy(c => c.Id)
+            };
+
+            return query.GetPaged(page, pageSize);
+            //string? name = string.Empty;
+
+            //if (page < 1) page = 1;
+
+            //if (!string.IsNullOrEmpty(name))
+            //{
+            //    return _appDbContext.Companies
+            //        .Where(p => p.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase))
+            //    //.Include(c => c.CompanyServices)
+            //    //    .ThenInclude(cs => cs.Service)
+            //    //.Include(c => c.CompanyCategories)
+            //    //    .ThenInclude(cc => cc.Category)
+            //    //.Include(c => c.Technologies)
+            //    //    .ThenInclude(ct => ct.Technology)
+            //    //.Include(c => c.Reviews)
+            //    //.Include(c => c.Contacts)
+            //    //.Include(c => c.Projects)
+            //    //.Include(c => c.TeamMembers)
+            //    //.Include(c => c.Locations)
+            //    .GetPaged(page, pageSize);
+            //}
+            //else
+            //{
+            //    IQueryable<Company> query = _appDbContext.Companies;
+            //    return query.GetPaged(page, pageSize);
+            //    //return _appDbContext.Companies.GetPaged(page, pageSize);
+            //}
+            ////    else
+            ////    {
+            ////        return _appDbContext.Companies
+            ////        .Include(c => c.CompanyServices)
+            ////            .ThenInclude(cs => cs.Service)
+            ////        .Include(c => c.CompanyCategories)
+            ////            .ThenInclude(cc => cc.Category)
+            ////        .Include(c => c.Technologies)
+            ////            .ThenInclude(ct => ct.Technology)
+            ////        .Include(c => c.Reviews)
+            ////        .Include(c => c.Contacts)
+            ////        .Include(c => c.Projects)
+            ////        .Include(c => c.TeamMembers)
+            ////        .Include(c => c.Locations)
+            ////                .GetPaged(page, pageSize);
+            ////    }
+            //return new PagedResult<Company>();
         }
 
-public Company GetCompaniesById(int id)
+        public async Task<Company?> GetCompaniesById(int id)
         {
 
 
-            var company =  _appDbContext.Companies
+            var company = await _appDbContext.Companies
                .Where(c => c.Id == id)
-               .FirstOrDefaultAsync().Result;
-            
+               .Include(x => x.CompanyServices).ThenInclude(x => x.Service)
+               .Include(x => x.FirstAnswerQuestions)
+               .Include(x => x.CompanyTechnologies)
+                    .ThenInclude(x => x.Technology)
+               .Include(x => x.CompanyIndustryFocus)
+                    .ThenInclude(x => x.Industry)
+               .FirstOrDefaultAsync();
+
             //        var company = await _appDbContext.Companies
             //.Where(c => c.Id == id)
             //.Select(c => new CompanyDTO
@@ -113,8 +148,6 @@ public Company GetCompaniesById(int id)
             //    //                             .Distinct()) // stays as IQueryable
             //}).AsNoTracking()
             //.FirstOrDefaultAsync();
-
-            if (company == null) return null;
 
             return company;
             //return new CompanyDTO

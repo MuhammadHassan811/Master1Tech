@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Master1Tech.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Master1Tech.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Master1Tech.Shared.Models
 {

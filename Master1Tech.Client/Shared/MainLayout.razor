@@ -1,15 +1,82 @@
 @inherits LayoutComponentBase
 @inject IUserService UserService
 
-<nav class="navbar navbar-expand navbar-dark bg-dark">
+<header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+
+        <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+            <!-- Uncomment the line below if you also wish to use an image logo -->
+            <!-- <img src="assets/img/logo.png" alt=""> -->
+            <h1 class="sitename">Master1 Tech</h1>
+            <span>.</span>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li>
+                    <NavLink href="/" Match="NavLinkMatch.All" class="nav-item nav-link">Home</NavLink>
+                </li>
+                <li>
+                    <NavLink href="/person/1" class="nav-item nav-link">Data Entry</NavLink>
+                </li>
+                <li>
+                    <NavLink href="/upload/1" class="nav-item nav-link">File Management</NavLink>
+                </li>
+                <li>
+                    <NavLink href="/user/1" class="nav-item nav-link">Users</NavLink>
+                </li>
+                <li>
+                    <NavLink href="/companies/pakistan" class="nav-item nav-link">Companies</NavLink>
+                </li>
+                <li>
+                    <NavLink href="/swagger/index.html" class="nav-item nav-link" target="_blank">API</NavLink>
+                </li>
+               @*  <li class="dropdown">
+                    <a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                    <ul>
+                        <li><a href="#">Dropdown 1</a></li>
+                        <li class="dropdown">
+                            <a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li><a href="#">Deep Dropdown 1</a></li>
+                                <li><a href="#">Deep Dropdown 2</a></li>
+                                <li><a href="#">Deep Dropdown 3</a></li>
+                                <li><a href="#">Deep Dropdown 4</a></li>
+                                <li><a href="#">Deep Dropdown 5</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Dropdown 2</a></li>
+                        <li><a href="#">Dropdown 3</a></li>
+                        <li><a href="#">Dropdown 4</a></li>
+                    </ul>
+                </li> *@
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+        <div class="d-flex align-items-center gap-5">
+            @if (LoggedIn)
+            {
+                <NavLink href="/user/logout" class="nav-item nav-link">Logout</NavLink>
+            }
+            else
+            {
+                <NavLink href="/user/login" class="nav-item nav-link">Login</NavLink>
+            }
+            <a class="btn btn-getstarted" href="index.html#about">Get Started</a>
+        </div>
+       
+
+    </div>
+</header>
+@* <nav class="navbar navbar-expand navbar-dark bg-dark">
     <a class="navbar-brand" href="/">Master1 Tech</a>
     <div class="navbar-nav">
-        <NavLink href="/" Match="NavLinkMatch.All" class="nav-item nav-link">Home</NavLink>
-        <NavLink href="/person/1" class="nav-item nav-link">Data Entry</NavLink>
-        <NavLink href="/upload/1" class="nav-item nav-link">File Management</NavLink>
-        <NavLink href="/user/1" class="nav-item nav-link">Users</NavLink>
-        <NavLink href="/companies/pakistan" class="nav-item nav-link">Companies</NavLink>
-        <NavLink href="/swagger/index.html" class="nav-item nav-link" target="_blank">API</NavLink>
+       
+       
+        
+        
+        
+        
     </div>
     <div class="navbar-nav ml-auto">
         @if (LoggedIn)
@@ -21,25 +88,171 @@
             <NavLink href="/user/login" class="nav-item nav-link">Login</NavLink>
         }
     </div>
-</nav>
+</nav> *@
 
 <div class="app-container">
-    <div class="p-4">
-        <div class="container">
-            <Alert />
-            @Body
-        </div>
-    </div>
-    <footer class="footer">
+
+    <Alert />
+    @Body
+      
+@*     <footer class="footer">
         <div class="container text-center">
             <span class="text-muted">&copy; master1tech.com 2025</span>
+        </div>
+    </footer> *@
+
+
+    <footer class="app-footer mt-5">
+        <div class="container-fluid fwbx" data-v-c4348a34="">
+            <div data-v-c4348a34="">
+                <div class="featured box light">
+                    
+                    <div class="inner items-center">
+                        <div class="container">
+                            <div class="wrp">
+                                <div class="cnt">
+                                    <div class="section-title nomargin font-bold">
+                                        <div>Submit your project and get free quotes in 1-hour</div>
+                                    </div>
+                                    <a href="/project-submission" target="_self" class="btn btn-solid btn-blue inside">
+                                        <span class="txt">Start now!</span>
+                                    </a>
+                                    <p class="nomargin">Handpicked companies&nbsp;&nbsp;•&nbsp;&nbsp;No obligation to hire&nbsp;&nbsp;•&nbsp;&nbsp;100% risk-free</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ftr-wgts">
+            <div class="ftr-wgts__container">
+                <div class="container">
+                    <div class="d-flex flex-row justify-content-between">
+                        @foreach (var fSection in FooterSections)
+                        {
+                            <div class="ftr-wgts__item">
+                                <p class="ftr-wgts__title nomargin flex">
+                                    <strong>@fSection.Title</strong>
+                                </p>
+                                <ul class="cleanlist ftr-wgts__links">
+                                    @foreach (var link in fSection.Links)
+                                    {
+                                        <li>
+                                            <a href="@link.Url" class="" target="@link.Target" style="@link.Style" rel="@(link.External ? "noopener noreferrer" : null)">
+                                                <span class="txt">@link.Text</span>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div> <div class="ftr-copy">
+            <div class="container">
+                <div class="ftr-copy__inn f-space-between">
+                    <p class="ftr-copy__text">
+                        © Copyright @DateTime.Now.Date.Year <a href="/" class="txt-blue nuxt-link-active"><span>Master1 Tech</span></a>. Made in Germany by <a href="#" target="_blank" class="txt-blue">XYZ Company</a>
+                    </p>
+                </div>
+            </div>
         </div>
     </footer>
 </div>
 
 @code {
+
     public bool LoggedIn
     {
         get {return UserService.User != null;}
     }
+
+
+    public class FooterLink
+    {
+        public string Text { get; set; }
+        public string Url { get; set; }
+        public bool External { get; set; } = false;
+        public string? Target { get; set; }
+        public string? Style { get; set; }
+    }
+
+    public class FooterSection
+    {
+        public string Title { get; set; } = string.Empty;
+        public List<FooterLink> Links { get; set; } = new();
+    }
+
+    private List<FooterSection> FooterSections = new()
+    {
+        new FooterSection
+        {
+            Title = "Company",
+            Links = new()
+            {
+                new FooterLink { Text = "About Us", Url = "/about-us" },
+                new FooterLink { Text = "Contact us", Url = "/contact" },
+                new FooterLink { Text = "Careers", Url = "/careers" },
+                new FooterLink { Text = "FAQs", Url = "/faq" },
+                new FooterLink { Text = "Terms of Service", Url = "https://techbehemoths.com/terms", Target = "_self" },
+                new FooterLink { Text = "Improve Ranking", Url = "/improve-ranking" }
+            }
+        },
+        new FooterSection
+        {
+            Title = "Services",
+            Links = new()
+            {
+                new FooterLink { Text = "SEO", Url = "/companies/seo" },
+                new FooterLink { Text = "Web Design", Url = "/companies/web-design" },
+                new FooterLink { Text = "SMM", Url = "/companies/smm" },
+                new FooterLink { Text = "Web Development", Url = "/companies/web-development" },
+                new FooterLink { Text = "Content Marketing", Url = "/companies/content-marketing" },
+                new FooterLink { Text = "Mobile App Development", Url = "/companies/mobile-app-development" },
+                new FooterLink { Text = "See all", Url = "/services", Style = "text-decoration:underline;" }
+            }
+        },
+        new FooterSection
+        {
+            Title = "Countries",
+            Links = new()
+            {
+                new FooterLink { Text = "United States", Url = "/companies/united-states" },
+                new FooterLink { Text = "United Kingdom", Url = "/companies/united-kingdom" },
+                new FooterLink { Text = "India", Url = "/companies/india" },
+                new FooterLink { Text = "Canada", Url = "/companies/canada" },
+                new FooterLink { Text = "Australia", Url = "/companies/australia" },
+                new FooterLink { Text = "Germany", Url = "/companies/germany" },
+                new FooterLink { Text = "See all", Url = "/countries", Style = "text-decoration:underline;" }
+            }
+        },
+        new FooterSection
+        {
+            Title = "Cities",
+            Links = new()
+            {
+                new FooterLink { Text = "London", Url = "/companies/london" },
+                new FooterLink { Text = "New York", Url = "/companies/new-york" },
+                new FooterLink { Text = "Dubai", Url = "/companies/dubai" },
+                new FooterLink { Text = "Berlin", Url = "/companies/berlin" },
+                new FooterLink { Text = "New Delhi", Url = "/companies/new-delhi" },
+                new FooterLink { Text = "Warsaw", Url = "/companies/warsaw" },
+                new FooterLink { Text = "See all", Url = "/countries", Style = "text-decoration:underline;" }
+            }
+        },
+        new FooterSection
+        {
+            Title = "Insights",
+            Links = new()
+            {
+                new FooterLink { Text = "Blog", Url = "/blog" },
+                new FooterLink { Text = "LinkedIn", Url = "https://www.linkedin.com/company/techbehemoths/", External = true, Target = "_blank" },
+                new FooterLink { Text = "Facebook", Url = "https://www.facebook.com/techbehemoths", External = true, Target = "_blank" },
+                new FooterLink { Text = "X (Twitter)", Url = "https://twitter.com/TechBehemoths", External = true, Target = "_blank" },
+                new FooterLink { Text = "Instagram", Url = "https://www.instagram.com/techbehemoths/", External = true, Target = "_blank" }
+            }
+        }
+    };
 }

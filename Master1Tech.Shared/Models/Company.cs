@@ -70,7 +70,7 @@ namespace Master1Tech.Models
         public int? Rating { get; set; } = 0;
         public bool IsVerified { get; set; }
         public bool? IsTopCompany { get; set; }
-        
+
         public string? LogoText { get; set; }
         public string? LogoColor { get; set; }
         public string? EmployeesCount { get; set; }
@@ -82,5 +82,10 @@ namespace Master1Tech.Models
         public DateTime LastUpdated { get; set; }
 
         public ICollection<CompaniesService> CompanyServices { get; set; }
+        public ICollection<FirstAnswerQuestion> FirstAnswerQuestions { get; set; }
+        public ICollection<CompanyIndustryFocus> CompanyIndustryFocus { get; set; }
+        public ICollection<CompanyTechnology> CompanyTechnologies { get; set; }
+
+
     }
 }
