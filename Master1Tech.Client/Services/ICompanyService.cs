@@ -7,7 +7,7 @@ namespace Master1Tech.Services
     {
         //Task<int> GetTotalCompaniesAsync(CompanyFilter? filter = null);
         // Task<PagedResult<Company>> GetCompaniesAsync(CompanyFilter? filter = null, int page = 1, int pageSize = 9);
-        Task<PagedResult<Company>> GenerateSampleCompanies();
+        Task<PagedResult<Company>> GenerateSampleCompanies(CompanyFilter filter, int page, int pageSize);
         Task<Company?> GetCompanyByIdAsync(int id);
         //Task<PagedResult<Company>> GetCompaniesAsync(string? name, int page);
         //Task<int> GetCompanyCountAsync(string name, string page);

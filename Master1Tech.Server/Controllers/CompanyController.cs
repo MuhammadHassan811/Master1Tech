@@ -10,10 +10,11 @@ namespace Master1Tech.Server.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyRepository _CompanyRepository;
-
-        public CompanyController(ICompanyRepository CompanyRepository)
+        private readonly ILogger<CompanyController> _logger;
+        public CompanyController(ICompanyRepository CompanyRepository, ILogger<CompanyController> logger)
         {
             _CompanyRepository = CompanyRepository;
+            _logger = logger;
         }
 
         /// <summary>
@@ -21,17 +22,26 @@ namespace Master1Tech.Server.Controllers
         /// </summary>
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult GetCompaniesFromDatabase()
+        public ActionResult GetCompaniesFromDatabase(
+            [FromQuery] string? location,
+            [FromQuery] string? services,
+            [FromQuery] string? teamSize,
+            [FromQuery] string? hourlyRate,
+            [FromQuery] string? sortBy,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 12)
         {
             try
             {
-                var companies = _CompanyRepository.GetCompaniesFromDatabase();
+                var companies = _CompanyRepository.GetCompaniesFromDatabase(
+                    location, services, teamSize, hourlyRate, sortBy, page, pageSize
+                );
                 return Ok(companies);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Log the error if you have logging configured
-                // _logger.LogError(ex, "Error fetching companies");
+                _logger.LogError(ex, "Error fetching companies");
                 return StatusCode(500, "Internal server error");
             }
         }

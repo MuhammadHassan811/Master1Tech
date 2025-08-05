@@ -222,7 +222,7 @@
             </div>
         }
 
-        <!-- Load More Button -->
+      @*   <!-- Load More Button -->
         @if (Companiees.Results.Count > 0)
         {
             <div class="text-center mt-4">
@@ -230,11 +230,11 @@
                     Load More Companies
                 </button>
             </div>
-        }
+        } *@
          
         <div class="d-flex justify-content-center mt-4">
-            <nav>
-                <ul class="pagination pagination-sm">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
 
                     <!-- Previous Arrow -->
                     <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
@@ -246,10 +246,11 @@
                     <!-- Page Numbers -->
                     @for (int i = 1; i <= TotalPages; i++)
                     {
+                        int page = i;
                         if (i == 1 || i == TotalPages || Math.Abs(CurrentPage - i) <= 2)
                         {
                             <li class="page-item @(i == CurrentPage ? "active" : "")">
-                                <button class="page-link" @onclick="() => GoToPage(i)">@i</button>
+                                <button class="page-link" @onclick="() => GoToPage(page)">@i</button>
                             </li>
                         }
                         else if (i == CurrentPage - 3 || i == CurrentPage + 3)
@@ -280,6 +281,7 @@
     private CompanyFilter companyFilter = new();
     private int CompanyCount = 0;
     private bool IsLoading = false;
+    private int PageSize = 12;
 
     protected override async Task OnInitializedAsync()
     {
@@ -293,9 +295,14 @@
 
         try
         {
-            var pagedResult= await CompanyService.GenerateSampleCompanies();
+            var pagedResult = await CompanyService.GenerateSampleCompanies(
+                companyFilter,
+                CurrentPage,
+                PageSize
+            );
             Companiees = pagedResult;
             CompanyCount = Companiees.RowCount;
+            TotalPages = Companiees.PageCount;
         }
         catch (Exception ex)
         {
@@ -314,21 +321,23 @@
     }
 
     private async Task LoadMoreCompanies()
-    {
-        // Simulate loading more companies
-        await Task.Delay(500);
-        // In a real application, you would fetch more companies from the API
+    {   int page = CurrentPage + 1;
+        if (page >= 1 && page <= TotalPages)
+        {
+            CurrentPage = page;
+            await LoadCompanies();
+        }
     }
 
     int CurrentPage = 1;
     int TotalPages = 45;
 
-    void GoToPage(int page)
+    private async void GoToPage(int page)
     {
         if (page >= 1 && page <= TotalPages)
         {
             CurrentPage = page;
-            // Call your data-fetching logic here
+            await LoadCompanies();
         }
-    } 
+    }
 }

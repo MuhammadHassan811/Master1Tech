@@ -83,8 +83,8 @@ namespace Master1Tech.Models
 
         public ICollection<CompaniesService> CompanyServices { get; set; }
         public ICollection<FirstAnswerQuestion> FirstAnswerQuestions { get; set; }
-        public ICollection<CompanyIndustryFocus> GetCompanyIndustryFocus { get; set; }
-
+        public ICollection<CompanyIndustryFocus> CompanyIndustryFocus { get; set; }
+        public ICollection<CompanyTechnology> CompanyTechnologies { get; set; }
 
 
     }

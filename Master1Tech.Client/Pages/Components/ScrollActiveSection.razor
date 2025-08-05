@@ -1,0 +1,245 @@
+﻿@page "/company-profile"
+@inject IJSRuntime JS
+
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .tab-nav {
+        position: sticky;
+        top: 0;
+        background: #fff;
+        z-index: 999;
+        display: flex;
+        gap: 30px;
+        padding: 15px 25px;
+        border-bottom: 1px solid #ddd;
+    }
+
+        .tab-nav a {
+            text-decoration: none;
+            color: black;
+            padding-bottom: 10px;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+        }
+
+            .tab-nav a.active-tab {
+                color: #2563eb;
+                border-bottom: 3px solid #2563eb;
+            }
+
+    .section-block {
+        padding: 80px 20px;
+    }
+
+    .progress-bar {
+        background-color: #f3f3f3;
+        border-radius: 4px;
+        height: 10px;
+        margin-top: 5px;
+    }
+
+    .progress-fill {
+        background-color: #2563eb;
+        height: 10px;
+        border-radius: 4px;
+    }
+
+    .stats-grid, .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .tech-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .tech-tag {
+        background-color: #f0f0f0;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .quote-form .form-group {
+        margin-bottom: 10px;
+    }
+
+    .quote-btn {
+        background-color: #2563eb;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+</style>
+
+
+<section class="company-tabs-section">
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-md-9">
+
+                <!-- Sticky Tab Navigation -->
+                <div class="tab-nav">
+                    <a href="#locations" class="@GetActiveClass("locations")" @onclick="@(() => SetActiveSection("locations"))">Locations</a>
+                    <a href="#speciality" class="@GetActiveClass("speciality")" @onclick="@(() => SetActiveSection("speciality"))">Speciality</a>
+                    <a href="#stats" class="@GetActiveClass("stats")" @onclick="@(() => SetActiveSection("stats"))">Stats</a>
+                    <a href="#portfolio" class="@GetActiveClass("portfolio")" @onclick="@(() => SetActiveSection("portfolio"))">Portfolio</a>
+                    <a href="#reviews" class="@GetActiveClass("reviews")" @onclick="@(() => SetActiveSection("reviews"))">Reviews</a>
+                </div>
+
+                <!-- All Sections -->
+                <div class="card company-profile-container light-card">
+                    <div class="card-body">
+                        <div class="content-container">
+
+                            <!-- Locations -->
+                            <div id="locations" class="section-block" data-section="locations">
+                                <h2>Locations</h2>
+                                <p>Our office locations and service areas span across multiple cities and countries.</p>
+                                <div>
+                                    <div>🏢 New York, USA</div>
+                                    <div>🏢 London, UK</div>
+                                    <div>🏢 Tokyo, Japan</div>
+                                    <div>🏢 Sydney, Australia</div>
+                                </div>
+                            </div>
+
+                            <!-- Speciality -->
+                            <div id="speciality" class="section-block" data-section="speciality">
+                                <h2>Speciality</h2>
+                                <div class="tech-tags">
+                                    <span class="tech-tag">YouTube Advertising</span>
+                                    <span class="tech-tag">Adobe CMS</span>
+                                    <span class="tech-tag">Oracle WebCenter</span>
+                                    <span class="tech-tag">Zend</span>
+                                    <span class="tech-tag">WordPress</span>
+                                    <span class="tech-tag">VueJS</span>
+                                    <span class="tech-tag">Symfony</span>
+                                    <span class="tech-tag">Struts</span>
+                                    <span class="tech-tag">Spring MVC</span>
+                                    <span class="tech-tag">Sitecore</span>
+                                </div>
+
+                                <h3>Client Focus</h3>
+                                @foreach (var focus in clientFocus)
+                                {
+                                    <div class="focus-item">
+                                        <div>@focus.Label</div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: @focus.Percent%"></div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <h3>Industry Focus</h3>
+                                @foreach (var focus in industryFocus)
+                                {
+                                    <div class="focus-item">
+                                        <div>@focus.Label</div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: @focus.Percent%"></div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Stats -->
+                            <div id="stats" class="section-block" data-section="stats">
+                                <h2>Stats</h2>
+                                <div class="stats-grid">
+                                    <div><strong>150+</strong><br />Projects Completed</div>
+                                    <div><strong>98%</strong><br />Client Satisfaction</div>
+                                    <div><strong>50+</strong><br />Team Members</div>
+                                    <div><strong>5+</strong><br />Years Experience</div>
+                                </div>
+                            </div>
+
+                            <!-- Portfolio -->
+                            <div id="portfolio" class="section-block" data-section="portfolio">
+                                <h2>Portfolio</h2>
+                                <div class="portfolio-grid">
+                                    <div>E-commerce Platform</div>
+                                    <div>Mobile Banking App</div>
+                                    <div>Healthcare Dashboard</div>
+                                    <div>Social Media Platform</div>
+                                </div>
+                            </div>
+
+                            <!-- Reviews -->
+                            <div id="reviews" class="section-block" data-section="reviews">
+                                <h2>Reviews</h2>
+                                <div class="review-item">
+                                    <div>⭐⭐⭐⭐⭐</div>
+                                    <p>"Excellent service and outstanding results."</p>
+                                    <em>- John Smith, CEO</em>
+                                </div>
+                                <div class="review-item">
+                                    <div>⭐⭐⭐⭐⭐</div>
+                                    <p>"Professional team with great communication."</p>
+                                    <em>- Sarah Johnson, CTO</em>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@code {
+    private string currentSection = "locations";
+
+    private void SetActiveSection(string section)
+    {
+        currentSection = section;
+    }
+
+    private string GetActiveClass(string section)
+    {
+        return section == currentSection ? "active-tab" : "";
+    }
+
+    [JSInvokable]
+    public void UpdateSection(string id)
+    {
+        currentSection = id;
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("observeSections", DotNetObjectReference.Create(this));
+        }
+    }
+
+    private List<(string Label, int Percent)> clientFocus = new()
+    {
+        ("50% - Mid-market ($1M - $10M)", 50),
+        ("5% - General partnership ($200k - $500k)", 5),
+        ("5% - Starting to scale ($200K)", 5),
+        ("25% - Enterprise (>$10M)", 25),
+        ("15% - Small Business ($500k - $1M)", 15),
+    };
+
+    private List<(string Label, int Percent)> industryFocus = new()
+    {
+        ("30% - Technology Industry", 30),
+        ("25% - Healthcare", 25),
+        ("20% - Financial Services", 20)
+    };
+}

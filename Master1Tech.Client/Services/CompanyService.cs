@@ -22,11 +22,17 @@ public class CompanyService : ICompanyService
     //    _companies = await GenerateSampleCompanies();
     //}
 
-    public async Task<PagedResult<Company>> GenerateSampleCompanies()
+    public async Task<PagedResult<Company>> GenerateSampleCompanies(CompanyFilter filter, int page, int pageSize)
     {
         try
         {
-            var companies = await _httpService.Get<PagedResult<Company>>("api/company/");
+            var query = $"?page={page}&pageSize={pageSize}" +
+            $"&location={filter.Location}" +
+            $"&services={filter.Services}" +
+            $"&teamSize={filter.TeamSize}" +
+            $"&hourlyRate={filter.HourlyRate}" +
+            $"&sortBy={filter.SortBy}";
+            var companies = await _httpService.Get<PagedResult<Company>>($"api/company/{query}");
             return companies ?? new PagedResult<Company>();
         }
         catch (Exception)

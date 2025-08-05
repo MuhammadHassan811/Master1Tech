@@ -63,7 +63,7 @@
                             </div>
 
 
-                            <p class="company-description">@company.Description</p>
+                            <p class="company-description" style="line-height:1.5">@company.Description</p>
 
                             @if (company.FirstAnswerQuestions.Count > 0)
                             {
@@ -150,10 +150,20 @@
     </section>
 
     <CompanyHashRouter Company="company"/>
+    @* <ScrollActiveSection /> *@
    
 }
 else{
-    <p>Loading company profile...</p>
+       <section class="light-background">
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col-md-9">
+                    <p><i class="fas fa-spin fa-spinner mr-4"></i> Loading company profile...</p>
+                </div>
+            </div>
+            
+        </div>
+    </section>
 }
 @code {
   

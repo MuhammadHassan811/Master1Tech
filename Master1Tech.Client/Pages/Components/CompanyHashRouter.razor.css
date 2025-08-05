@@ -1,0 +1,145 @@
+﻿.company-profile-container {
+}
+
+.nav-tabs {
+ 
+    background-color: var(--background-color);
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 0;
+     
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+.nav-tab {
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    position: relative;
+}
+
+    .nav-tab:hover {
+        color: var(--accent-color);
+        background-color: #f8f9fa;
+    }
+
+    .nav-tab.active {
+        color: var(--accent-color);
+        background-color: white;
+    }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+        }
+
+#quote-tab-pane ::deep .contact-container {
+    max-width: 100%;
+    margin: unset;
+    padding:0;
+}
+
+::deep .contact-container .contact-form {
+    background-color: #f8f8f8;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-tabs .nav-link.active {
+    border: 3px solid var(--accent-color);
+}
+
+.nav-tabs .nav-link {
+    padding: 1rem;
+    border-radius: unset;
+    border: 3px solid transparent;
+    color: var(--nav-color);
+}
+
+    .nav-tabs .nav-link:hover:not(.active) {
+        background: #f3f3f3;
+        margin-bottom: unset;
+        border: 3px solid #f3f3f3;
+    }
+
+.nav-link:focus-visible {
+    outline: unset;
+    box-shadow: unset;
+}
+
+.card.light-background {
+
+    background: var(--background-color);
+}
+    .card.light-background .card-body {
+        padding:2rem;
+    }
+.inner-address {
+    min-height: 31.5rem !important;
+}
+
+
+@media (min-width: 80em) {
+    .services-box .services-list {
+        font-size: 1rem;
+    }
+}
+
+.services-box .services-list {
+    font-size: .9375rem;
+    line-height: 1em;
+    padding: 0 0 5px;
+}
+@media (min-width: 80em) {
+    .services-box .services-list a {
+        transition: all .15s ease-out;
+    }
+}
+
+.services-box .services-list a {
+    border-bottom: 2px solid #d8d8d8;
+    display: inline;
+    line-height: 1.8em;
+    padding: 0 0 2px;
+}
+.cleanlist {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.services-box .services-list li:not(:last-child) {
+    margin: 0 0 12px;
+}
+
+.box--item .itm--title {
+    border-bottom: 1px solid #e0e0e0;
+    font-size: .9375rem;
+    line-height: 1em;
+    padding: 1.5rem 2rem;
+}
+.box--item .itm--body {
+    padding: 13px 20px;
+}
+.box--item .font-medium {
+    font-weight: 500;
+}
+
+.progress, .progress-stacked {
+    height: 2rem;
+    overflow: hidden;
+    font-size: var(--bs-progress-font-size);
+    background-color: #eaf1ff;
+    border-radius: 0px;
+}

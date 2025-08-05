@@ -31,7 +31,7 @@ window.initializeScrollSpy = () => {
 
     function onScroll() {
         let currentSection = sections[0];
-        let scrollPosition = window.scrollY + 120; // adjust offset for sticky nav
+        let scrollPosition = window.scrollY + 620; // adjust offset for sticky nav
 
         for (let section of sections) {
             if (section.offsetTop <= scrollPosition) {
@@ -83,3 +83,22 @@ window.addEventListener('hashchange', function (e) {
         window.scrollToElement(hash);
     }
 });
+
+
+window.observeSections = function (dotnetHelper) {
+    const sections = document.querySelectorAll("[data-section]");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute("data-section");
+                dotnetHelper.invokeMethodAsync("UpdateSection", id);
+            }
+        });
+    }, {
+        rootMargin: "0px 0px -60% 0px",
+        threshold: 0.2
+    });
+
+    sections.forEach(sec => observer.observe(sec));
+};

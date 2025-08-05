@@ -2,479 +2,208 @@
 @inject NavigationManager Navigation
 @using Master1Tech.Models
 
-<section class="company-tabs-section">
+<div class="company-tabs-section">
     <div class="container">
         <div class="row justify-content-md-center">
-            <div class="col-md-9">
-                <!-- Navigation Tabs -->
-                <div class="nav-tabs light-card mb-4" id="navigation-tabs">
-                    <button class="nav-tab" data-target="locations" @onclick="@(() => ScrollToSection("locations"))">Locations</button>
-                    <button class="nav-tab" data-target="speciality" @onclick="@(() => ScrollToSection("speciality"))">Speciality</button>
-                    <button class="nav-tab" data-target="stats" @onclick="@(() => ScrollToSection("stats"))">Stats</button>
-                    <button class="nav-tab" data-target="portfolio" @onclick="@(() => ScrollToSection("portfolio"))">Portfolio</button>
-                    <button class="nav-tab" data-target="reviews" @onclick="@(() => ScrollToSection("reviews"))">Reviews</button>
-                    <button class="nav-tab" data-target="quote" @onclick="@(() => ScrollToSection("quote"))">Get a Quote</button>
-                </div>
+            <section class="company-tabs-section">
+                <div class="container">
+                    <div class="row justify-content-md-center">
+                        <div class="col-md-9">
+                            <ul class="nav nav-tabs light-card" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations-tab-pane" type="button" role="tab" aria-controls="locations-tab-pane" aria-selected="true">Locations</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="speciality-tab" data-bs-toggle="tab" data-bs-target="#speciality-tab-pane" type="button" role="tab" aria-controls="speciality-tab-pane" aria-selected="false">Speciality</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-tab-pane" type="button" role="tab" aria-controls="stats-tab-pane" aria-selected="false">Stats</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="portfolio-tab" data-bs-toggle="tab" data-bs-target="#portfolio-tab-pane" type="button" role="tab" aria-controls="portfolio-tab-pane" aria-selected="false">Portfolio</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews-tab-pane" type="button" role="tab" aria-controls="reviews-tab-pane" aria-selected="false">Reviews</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="quote-tab" data-bs-toggle="tab" data-bs-target="#quote-tab-pane" type="button" role="tab" aria-controls="quote-tab-pane" aria-selected="false">Get a Quote</button>
+                                </li>
 
-                <div class="card company-profile-container light-card">
-                    <div class="card-body">
-                        <div class="content-container ">
-                            <!-- Locations Section -->
-                            <div id="locations" class="" data-section="locations">
-                                <h2>Locations</h2>
-                                <div class="section-content">
-                                    <p>Our office locations and service areas span across multiple cities and countries, providing comprehensive coverage for our clients.</p>
-                                    <div class="location-list">
-                                        <div class="location-item">🏢 New York, USA</div>
-                                        <div class="location-item">🏢 London, UK</div>
-                                        <div class="location-item">🏢 Tokyo, Japan</div>
-                                        <div class="location-item">🏢 Sydney, Australia</div>
+                            </ul>
+                            <div class="tab-content mt-4" id="myTabContent">
+                                <div class="tab-pane fade show active" id="locations-tab-pane" role="tabpanel" aria-labelledby="locations-tab" tabindex="0">
+                                    <!-- Locations Section -->
+                                    <div id="locations" class="" data-section="locations">
+                                        <div class="card light-background">
+                                            <div class="card-body">
+                                                <div data-step="0" class="company-location d-flex gap-3">
+                                                    <div class="inner-address p-4 h-100 bg-white">
+                                                        <div class="inner">
+                                                            <p class="loc-title">HEADQUARTERS</p> 
+                                                            <p>
+                                                                <span itemprop="streetAddress">144/2, Block B, Bankers Society Near DHA Phase 4</span>
+                                                                <br> 
+                                                                <span itemprop="addressLocality">Lahore</span>
+                                                                <span itemprop="postalCode">54792</span>
+                                                                <br> 
+                                                                <span itemprop="addressCountry">Pakistan</span> 
+                                                                <span itemprop="telephone" class="hidden">+924237888403</span>
+                                                            </p>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="map-canvas"><!----> 
+                                                        <div class="map-canvas__ifr" style="">
+                                                            <div class="mapouter">
+                                                                <div class="gmap_canvas">
+                                                                    <iframe width="600" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=pakistan&t=&z=9&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe> 
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
-                            </div>
+                                <div class="tab-pane fade" id="speciality-tab-pane" role="tabpanel" aria-labelledby="speciality-tab" tabindex="0">
+                                    <!-- Speciality Section -->
+                                    <div id="speciality" class="" data-section="speciality">
 
-                            <!-- Speciality Section -->
-                            <div id="speciality" class="" data-section="speciality">
-                                <h2>Speciality</h2>
+                                        <div class="card light-background">
+                                            <div class="card-body">
+                                                <div class="box--item bg-white services-box">
+                                                    <div class="itm--title font-medium">Service Speciality List</div>
+                                                    <div class="itm--body">
+                                                        <ul class="cleanlist services-list">
+                                                            @if (Company.CompanyServices.Count > 0)
+                                                            {
+                                                                foreach (var item in Company.CompanyServices)
+                                                                {
+                                                                    <li>
+                                                                        <a href="#" class="">
+                                                                            <span class="txt">@item.Service.Name</span>
+                                                                        </a>
+                                                                    </li>
+                                                                }
 
-                                <!-- Technology Tags -->
-                                <div class="tech-tags">
-                                    <span class="tech-tag">YouTube Advertising</span>
-                                    <span class="tech-tag">Adobe CMS</span>
-                                    <span class="tech-tag">Oracle WebCenter</span>
-                                    <span class="tech-tag">Zend</span>
-                                    <span class="tech-tag">WordPress</span>
-                                    <span class="tech-tag">VueJS</span>
-                                    <span class="tech-tag">Symfony</span>
-                                    <span class="tech-tag">Struts</span>
-                                    <span class="tech-tag">Spring MVC</span>
-                                    <span class="tech-tag">Sitecore</span>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                               </div>
+                                                <div class="box--item bg-white services-box mt-4">
+                                                    <div class="itm--title font-medium">Industry Focus</div>
+                                                    <div class="itm--body">
+                                                        <ul class="cleanlist services-list">
+                                                            @if (Company.CompanyIndustryFocus.Count > 0)
+                                                            {
+                                                                foreach (var item in Company.CompanyIndustryFocus)
+                                                                {
+                                                                    <li>
+                                                                        <div class="d-flex gap-4 flex-row">
+                                                                            <span class="name align-self-center flex-grow-3 w-25">@item.Industry.Name</span>
+                                                                            <div class="flex-fill">
+                                                                                <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                                                                    <div class="progress-bar" style="width: @item.FocusPercentage%">  @item.FocusPercentage %</div>
+                                                                                </div>
+                                                                               
+                                                                            </div>
+                                                                            
+                                                                        </div>
+                                                                    </li>
+                                                                }
+
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                 
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
                                 </div>
+                                
+                                <div class="tab-pane fade" id="stats-tab-pane" role="tabpanel" aria-labelledby="stats-tab" tabindex="0">
 
-                                <a href="#" class="view-all-link">View All</a>
-
-                                <!-- Client Focus Section -->
-                                <div class="client-focus">
-                                    <h3>Client Focus</h3>
-
-                                    <div class="focus-item">
-                                        <div class="focus-label">50% - Mid-market ($1M - $10M)</div>
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 50%"></div>
+                                    <div class="card light-background">
+                                        <div class="card-body">
                                         </div>
                                     </div>
 
-                                    <div class="focus-item">
-                                        <div class="focus-label">5% - General partnership ($200k - $500k)</div>
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 5%"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="focus-item">
-                                        <div class="focus-label">5% - Starting to scale ($200K)</div>
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 5%"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="focus-item">
-                                        <div class="focus-label">25% - Enterprise (>$10M)</div>
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 25%"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="focus-item">
-                                        <div class="focus-label">15% - Small Business ($500k - $1M)</div>
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 15%"></div>
-                                        </div>
-                                    </div>
                                 </div>
+                                
+                                <div class="tab-pane fade" id="portfolio-tab-pane" role="tabpanel" aria-labelledby="portfolio-tab" tabindex="0">
+                                    <!-- Portfolio Section -->
+                                    <div id="portfolio" class="" data-section="portfolio">
 
-                                <!-- Industry Focus Section -->
-                                <div class="industry-focus">
-                                    <h3>Industry Focus</h3>
-                                    <div class="focus-item">
-                                        <div class="focus-label">30% - Technology Industry</div>
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 30%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="focus-item">
-                                        <div class="focus-label">25% - Healthcare</div>
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 25%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="focus-item">
-                                        <div class="focus-label">20% - Financial Services</div>
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" style="width: 20%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                        <div class="card light-background">
+                                            <div class="card-body">
 
-                            <!-- Stats Section -->
-                            <div id="stats" class="" data-section="stats">
-                                <h2>Stats</h2>
-                                <div class="section-content">
-                                    <div class="stats-grid">
-                                        <div class="stat-item">
-                                            <div class="stat-number">150+</div>
-                                            <div class="stat-label">Projects Completed</div>
+                                                <h2>Portfolio</h2>
+                                                <div class="section-content">
+                                                    <p>Explore our diverse portfolio of successful projects and case studies.</p>
+                                                    <div class="portfolio-grid">
+                                                        <div class="portfolio-item">E-commerce Platform</div>
+                                                        <div class="portfolio-item">Mobile Banking App</div>
+                                                        <div class="portfolio-item">Healthcare Dashboard</div>
+                                                        <div class="portfolio-item">Social Media Platform</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="stat-item">
-                                            <div class="stat-number">98%</div>
-                                            <div class="stat-label">Client Satisfaction</div>
-                                        </div>
-                                        <div class="stat-item">
-                                            <div class="stat-number">50+</div>
-                                            <div class="stat-label">Team Members</div>
-                                        </div>
-                                        <div class="stat-item">
-                                            <div class="stat-number">5+</div>
-                                            <div class="stat-label">Years Experience</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Portfolio Section -->
-                            <div id="portfolio" class="" data-section="portfolio">
-                                <h2>Portfolio</h2>
-                                <div class="section-content">
-                                    <p>Explore our diverse portfolio of successful projects and case studies.</p>
-                                    <div class="portfolio-grid">
-                                        <div class="portfolio-item">E-commerce Platform</div>
-                                        <div class="portfolio-item">Mobile Banking App</div>
-                                        <div class="portfolio-item">Healthcare Dashboard</div>
-                                        <div class="portfolio-item">Social Media Platform</div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <!-- Reviews Section -->
-                            <div id="reviews" class="" data-section="reviews">
-                                <h2>Reviews</h2>
-                                <div class="section-content">
-                                    <div class="review-item">
-                                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
-                                        <div class="review-text">"Excellent service and outstanding results. Highly recommended!"</div>
-                                        <div class="review-author">- John Smith, CEO</div>
-                                    </div>
-                                    <div class="review-item">
-                                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
-                                        <div class="review-text">"Professional team with great communication throughout the project."</div>
-                                        <div class="review-author">- Sarah Johnson, CTO</div>
-                                    </div>
                                 </div>
-                            </div>
+                                
+                                <div class="tab-pane fade" id="reviews-tab-pane" role="tabpanel" aria-labelledby="reviews-tab" tabindex="0">
 
-                            <!-- Get a Quote Section -->
-                            <div id="quote" class="" data-section="quote">
-                                <h2>Get a Quote</h2>
-                                <div class="section-content">
-                                    <p>Ready to start your project? Contact us for a personalized quote.</p>
-                                    <div class="quote-form">
-                                        <div class="form-group">
-                                            <label>Project Type</label>
-                                            <select class="form-control">
-                                                <option>Web Development</option>
-                                                <option>Mobile App</option>
-                                                <option>E-commerce</option>
-                                            </select>
+                                    <!-- Reviews Section -->
+                                    <div id="reviews" class="" data-section="reviews">
+
+                                        <div class="card light-background">
+                                            <div class="card-body">
+                                                <h2>Reviews</h2>
+                                                <div class="section-content">
+                                                    <div class="review-item">
+                                                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                                                        <div class="review-text">"Excellent service and outstanding results. Highly recommended!"</div>
+                                                        <div class="review-author">- John Smith, CEO</div>
+                                                    </div>
+                                                    <div class="review-item">
+                                                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                                                        <div class="review-text">"Professional team with great communication throughout the project."</div>
+                                                        <div class="review-author">- Sarah Johnson, CTO</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label>Budget Range</label>
-                                            <select class="form-control">
-                                                <option>$10k - $50k</option>
-                                                <option>$50k - $100k</option>
-                                                <option>$100k+</option>
-                                            </select>
-                                        </div>
-                                        <button class="quote-btn">Request Quote</button>
+
+                                        
                                     </div>
+
                                 </div>
+                                
+                                <div class="tab-pane fade" id="quote-tab-pane" role="tabpanel" aria-labelledby="quote-tab" tabindex="0">
+                                    <!-- Get a Quote Section -->
+                                   <Master1Tech.Client.Pages.Company.ContactPage />
+                                </div>
+                                
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     </div>
-</section>
+</div>
 
 
 <style>
-    .company-profile-container {
- 
-    }
-
-    .nav-tabs {
-        position: sticky;
-        top: 110px;
-        display: flex;
-        background-color: var(--background-color);
-        border-bottom: 1px solid #e9ecef;
-        margin-bottom: 0;
-        overflow-x: auto;
-        z-index: 1000;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-    }
-
-    .nav-tab {
-        padding: 12px 24px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        color: #6c757d;
-        transition: all 0.3s ease;
-        white-space: nowrap;
-        position: relative;
-    }
-
-    .nav-tab:hover {
-        color:var(--accent-color);;
-        background-color: #f8f9fa;
-    }
-
-    .nav-tab.active {
-        color:var(--accent-color);;
-        background-color: white;
-    }
-
-    .nav-tab.active::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background-color:var(--accent-color);;
-    }
-
-    .content-container {
-        padding: 0;
-    }
-
-    .section {
-        padding: 3rem 2rem;
-        min-height: 500px;
-        border-bottom: 1px solid #f1f1f1;
-    }
-
-    .section:last-child {
-        border-bottom: none;
-    }
-
-    .section h2 {
-        font-size: 1.8rem;
-        margin-bottom: 1.5rem;
-        color: #333;
-    }
-
-    .section h3 {
-        font-size: 1.2rem;
-        margin: 2rem 0 1rem 0;
-        color: #333;
-    }
-
-    .section-content {
-        margin-top: 1rem;
-    }
-
-    .tech-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 1rem;
-    }
-
-    .tech-tag {
-        background-color: #e9ecef;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        color: #495057;
-        white-space: nowrap;
-    }
-
-    .view-all-link {
-        color:var(--accent-color);;
-        text-decoration: underline;
-        font-size: 14px;
-        margin-bottom: 2rem;
-        display: inline-block;
-    }
-
-    .client-focus, .industry-focus {
-        margin-top: 2rem;
-    }
-
-    .focus-item {
-        margin-bottom: 1rem;
-    }
-
-    .focus-label {
-        font-size: 14px;
-        color: #495057;
-        margin-bottom: 4px;
-    }
-
-    .progress-bar {
-        width: 100%;
-        height: 8px;
-        background-color: #e9ecef;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background-color:var(--accent-color);;
-        border-radius: 4px;
-        transition: width 0.3s ease;
-    }
-
-    .location-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-    .location-item {
-        padding: 1rem;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        font-size: 14px;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 2rem;
-        margin-top: 2rem;
-    }
-
-    .stat-item {
-        text-align: center;
-        padding: 2rem 1rem;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-    }
-
-    .stat-number {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color:var(--accent-color);;
-    }
-
-    .stat-label {
-        font-size: 14px;
-        color: #6c757d;
-        margin-top: 0.5rem;
-    }
-
-    .portfolio-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
-        margin-top: 2rem;
-    }
-
-    .portfolio-item {
-        padding: 2rem;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        text-align: center;
-        font-weight: 500;
-    }
-
-    .review-item {
-        background-color: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-    }
-
-    .review-rating {
-        margin-bottom: 0.5rem;
-    }
-
-    .review-text {
-        font-style: italic;
-        margin-bottom: 0.5rem;
-    }
-
-    .review-author {
-        font-size: 14px;
-        color: #6c757d;
-    }
-
-    .quote-form {
-        max-width: 400px;
-        margin-top: 2rem;
-    }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    .quote-btn {
-        background-color:var(--accent-color);;
-        color: white;
-        padding: 0.75rem 2rem;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-    }
-
-    .quote-btn:hover {
-        background-color: var(--accent-color);;
-    }
-
-    @@media (max-width: 768px) {
-        .nav-tabs {
-            padding: 0;
-        }
-        
-        .nav-tab {
-            padding: 10px 16px;
-            font-size: 13px;
-        }
-
-        .section {
-            padding: 2rem 1rem;
-        }
-
-        .stats-grid, .portfolio-grid {
-            grid-template-columns: 1fr;
-        }
-    }
+    
 </style>
 
 @code {
