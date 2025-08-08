@@ -15,6 +15,7 @@ namespace Master1Tech.Server.Models
         int page = 1,
         int pageSize = 12);
         Task<Company?> GetCompaniesById(int id);
+        Task<Company?> GetCompaniesBySlug(string slug);
         //Task<Company> AddCompany(Company Company);
         //Task<Company?> UpdateCompany(Company Company);
         //Task<Company?> DeleteCompany(int CompanyId);

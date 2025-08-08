@@ -2,8 +2,10 @@
 @using Master1Tech.Client.Extension
 @using Master1Tech.Models
 @using Master1Tech.Services
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @inject ICompanyService CompanyService
 @inject IJSRuntime JSRuntime
+@inject IWebAssemblyHostEnvironment hostEnv
 
 <section>
     <div class="container">
@@ -117,19 +119,20 @@
             <div class="row comapny-cards">
                 @foreach (var company in Companiees.Results)
                 {
+                    string logoUrl = $"company/{company.Slug}.png";
                     <div class="col-12 col-sm-6 col-md-4 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
                                 <div class="d-flex gap-3 align-items-center">
                                     <figure class="company-img figure">
-                                        <a href="@($"/companyprofile/{company.Id}")" target="_self" title="@company.Name" aria-label="@company.Name">
+                                        <a href="@($"/companyprofile/{company.Slug}")" target="_self" title="@company.Name" aria-label="@company.Name">
                                             <picture class="s-imag loaded">
-                                                <img src="@( string.IsNullOrEmpty(company.LogoUrl) ? "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg" : company.LogoUrl)" alt="@company.LogoText" height="110" width="110" />
+                                                <img src="@(string.IsNullOrEmpty(logoUrl) ? "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg" : logoUrl)" alt="@company.LogoText" height="110" width="110" />
                                             </picture>
                                         </a>
                                     </figure>
                                     <div class="company-info d-flex flex-column gap-1">
-                                        <a href="@($"/companyprofile/{company.Id}")" aria-label="@company.Name Company Profile Page" target="_self" class="d-flex gap-2">
+                                        <a href="@($"/companyprofile/{company.Slug}")" aria-label="@company.Name Company Profile Page" target="_self" class="d-flex gap-2">
                                             @company.Name
                                             @if (company.IsVerified)
                                             {
@@ -208,7 +211,7 @@
 
                             <!-- Action Buttons -->
                             <div class="card-footer bg-white border-top-0 d-flex justify-content-between p-3">
-                                <NavLink class="btn btn-outline-dark rounded-0" href="@($"/companyprofile/{company.Id}")">
+                                <NavLink class="btn btn-outline-dark rounded-0" href="@($"/companyprofile/{company.Slug}")">
                                     View profile
                                 </NavLink>
                                 <NavLink class="btn btn-link" href="/contact">

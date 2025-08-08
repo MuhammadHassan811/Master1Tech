@@ -164,5 +164,53 @@ namespace Master1Tech.Server.Models
             //};
 
         }
+        public async Task<Company?> GetCompaniesBySlug(string slug)
+        {
+
+
+            var company = await _appDbContext.Companies
+               .Where(c => c.Slug == slug)
+               .Include(x => x.CompanyServices).ThenInclude(x => x.Service)
+               .Include(x => x.FirstAnswerQuestions)
+               .Include(x => x.CompanyTechnologies)
+                    .ThenInclude(x => x.Technology)
+               .Include(x => x.CompanyIndustryFocus)
+                    .ThenInclude(x => x.Industry)
+               .FirstOrDefaultAsync();
+
+            //        var company = await _appDbContext.Companies
+            //.Where(c => c.Id == id)
+            //.Select(c => new CompanyDTO
+            //{
+            //    Name = c.Name,
+            //    Description = c.Description,
+            //    TeamSize = c.TeamSize,
+            //    Headquarter = c.Headquarter,
+            //    HourlyRate = c.HourlyRate,
+            //    IsVerified = c.IsVerified,
+            //    FoundedYear = c.FoundedYear,
+            //    WebsiteURL = c.WebsiteURL//,
+            //    //Services = string.Join(", ", c.CompanyServices
+            //    //                              .Select(cs => cs.Service.Name)
+            //    //                             .Distinct()) // stays as IQueryable
+            //}).AsNoTracking()
+            //.FirstOrDefaultAsync();
+
+            return company;
+            //return new CompanyDTO
+            //{
+            //    Name = company.Name,
+            //    Description = company.Description,
+            //    TeamSize = company.TeamSize,
+            //    Headquarter = company.Headquarter,
+            //    HourlyRate = company.HourlyRate,
+            //    IsVerified = company.IsVerified,
+            //    FoundedYear = company.FoundedYear,
+            //    WebsiteURL = company.WebsiteURL,
+            //    Services = company.Services
+            //};
+
+        }
+
     }
 }
