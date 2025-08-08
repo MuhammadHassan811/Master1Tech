@@ -26,6 +26,7 @@ namespace Master1Tech.Models
         public string? FoundedYear { get; set; }
 
         public string? WebsiteURL { get; set; }
+        public string? Slug { get; set; }
 
         public string? Services { get; set; } = string.Empty;
     }

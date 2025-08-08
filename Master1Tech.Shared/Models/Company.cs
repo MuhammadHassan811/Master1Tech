@@ -77,7 +77,7 @@ namespace Master1Tech.Models
         public string? FoundedYear { get; set; }
 
         public string? WebsiteURL { get; set; }
-
+        public string? Slug { get; set; }
         public DateTime DateAdded { get; set; } = DateTime.Now;
         public DateTime LastUpdated { get; set; }
 
