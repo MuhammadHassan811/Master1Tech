@@ -229,21 +229,21 @@
     [Parameter, EditorRequired]
     public Company Company { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("initializeScrollSpy");
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (firstRender)
+    //     {
+    //         await JSRuntime.InvokeVoidAsync("initializeScrollSpy");
 
-            // Handle initial hash navigation
-            var uri = Navigation.Uri;
-            if (uri.Contains('#'))
-            {
-                var hash = uri.Split('#').Last();
-                await ScrollToElement(hash);
-            }
-        }
-    }
+    //         // Handle initial hash navigation
+    //         var uri = Navigation.Uri;
+    //         if (uri.Contains('#'))
+    //         {
+    //             var hash = uri.Split('#').Last();
+    //             await ScrollToElement(hash);
+    //         }
+    //     }
+    // }
 
     private async Task ScrollToSection(string sectionId)
     {
