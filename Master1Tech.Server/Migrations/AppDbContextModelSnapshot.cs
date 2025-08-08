@@ -84,6 +84,9 @@ namespace Master1Tech.Server.Migrations
                     b.Property<int?>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<string>("Slug")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TeamSize")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -704,7 +707,7 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.CompanyIndustryFocus", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany()
+                        .WithMany("CompanyIndustryFocus")
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -734,7 +737,7 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.CompanyTechnology", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany()
+                        .WithMany("CompanyTechnologies")
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -753,7 +756,7 @@ namespace Master1Tech.Server.Migrations
             modelBuilder.Entity("Master1Tech.Shared.Models.FirstAnswerQuestion", b =>
                 {
                     b.HasOne("Master1Tech.Models.Company", "Company")
-                        .WithMany()
+                        .WithMany("FirstAnswerQuestions")
                         .HasForeignKey("CompanyID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -796,7 +799,13 @@ namespace Master1Tech.Server.Migrations
 
             modelBuilder.Entity("Master1Tech.Models.Company", b =>
                 {
+                    b.Navigation("CompanyIndustryFocus");
+
                     b.Navigation("CompanyServices");
+
+                    b.Navigation("CompanyTechnologies");
+
+                    b.Navigation("FirstAnswerQuestions");
                 });
 
             modelBuilder.Entity("Master1Tech.Shared.Models.Category", b =>

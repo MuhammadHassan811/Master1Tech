@@ -302,6 +302,12 @@ public class CompanyService : ICompanyService
             };
     }
 
+    public async Task<Company?> GetCompanyBySlugAsync(string slug)
+    {
+        var companies = await _httpService.Get<Company>("api/company/get/" + slug);
+        return companies ?? null;
+    }
+
     #region
     //public List<Company> GenerateSampleCompanies()
     //{

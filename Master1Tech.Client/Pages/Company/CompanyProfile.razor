@@ -1,4 +1,4 @@
-﻿@page "/companyprofile/{id:int}"
+﻿@page "/companyprofile/{id}"
 @using Master1Tech.Models
 @using Master1Tech.Services
 @inject ICompanyService CompanyService
@@ -168,13 +168,13 @@ else{
 @code {
   
     [Parameter]
-    public int id { get; set; }
+    public string id { get; set; }
 
     private Company? company;
 
     protected override async Task OnInitializedAsync()
     {
-        company = await CompanyService.GetCompanyByIdAsync(id);
+        company = await CompanyService.GetCompanyBySlugAsync(id);
     }
 
 

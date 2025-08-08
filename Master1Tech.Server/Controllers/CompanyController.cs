@@ -66,6 +66,28 @@ namespace Master1Tech.Server.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet("get/{slug}")]
+        public async Task<ActionResult> GetCompanyBySlug(string slug)
+        {
+            try
+            {
+                Master1Tech.Models.Company? companies = await _CompanyRepository.GetCompaniesBySlug(slug);
+                if (companies == null)
+                    return NotFound();
+
+                return Ok(companies); // return the actual object
+            }
+            catch (Exception)
+            {
+                // Log the error if you have logging configured
+                // _logger.LogError(ex, "Error fetching companies");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
+
         ///// <summary>
         ///// Gets a specific Company by Id.
         ///// </summary>
