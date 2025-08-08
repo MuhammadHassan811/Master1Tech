@@ -73,7 +73,7 @@
                                         <div class="card light-background">
                                             <div class="card-body">
                                                 <div class="box--item bg-white services-box">
-                                                    <div class="itm--title font-medium">Service Speciality List</div>
+                                                    <h5 class="itm--title ">Service Speciality List</h5>
                                                     <div class="itm--body">
                                                         <ul class="cleanlist services-list">
                                                             @if (Company.CompanyServices.Count > 0)
@@ -91,8 +91,26 @@
                                                         </ul>
                                                     </div>
                                                </div>
+                                               <hr class="my-5"/>
+                                               <div class="mt-4 mb-5">
+                                                    <h5 class="mb-4">Focuses & Technologies</h5>
+                                                   <ul class="cleanlist d-flex gap-2 flex-wrap">
+                                                        @if (Company.CompanyTechnologies.Count > 0)
+                                                        {
+                                                            foreach (var item in Company.CompanyTechnologies)
+                                                            {
+                                                                <li>
+                                                                    <a href="#" class="btn btn-flat">
+                                                                        <span class="txt">@item.Technology.Name</span>
+                                                                    </a>
+                                                                </li>
+                                                            }
+
+                                                        }
+                                                   </ul>
+                                               </div>
                                                 <div class="box--item bg-white services-box mt-4">
-                                                    <div class="itm--title font-medium">Industry Focus</div>
+                                                    <h5 class="itm--title ">Industry Focus</h5>
                                                     <div class="itm--body">
                                                         <ul class="cleanlist services-list">
                                                             @if (Company.CompanyIndustryFocus.Count > 0)

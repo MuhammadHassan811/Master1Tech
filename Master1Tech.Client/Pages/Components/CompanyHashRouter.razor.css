@@ -125,7 +125,7 @@
 
 .box--item .itm--title {
     border-bottom: 1px solid #e0e0e0;
-    font-size: .9375rem;
+    /*font-size: .9375rem;*/
     line-height: 1em;
     padding: 1.5rem 2rem;
 }
@@ -142,4 +142,12 @@
     font-size: var(--bs-progress-font-size);
     background-color: #eaf1ff;
     border-radius: 0px;
+}
+
+.btn-flat {
+    background: #eaf1ff;
+    font-size: .875rem;
+    height: 2.1875rem; 
+    line-height: 2.1875rem; 
+    padding: 0 1.25rem;
 }

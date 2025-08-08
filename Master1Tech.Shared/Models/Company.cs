@@ -87,5 +87,6 @@ namespace Master1Tech.Models
         public ICollection<CompanyTechnology> CompanyTechnologies { get; set; }
 
 
+
     }
 }
