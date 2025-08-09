@@ -47,8 +47,8 @@ namespace Master1Tech.Server.Services
 
                 try
                 {
-                    List<Person> people = JsonSerializer.Deserialize<List<Person>>(base64Decoded) ?? new List<Person>();;
-                    foreach (Person p in people)
+                    List<Master1Tech.Shared.Models.Person> people = JsonSerializer.Deserialize<List<Master1Tech.Shared.Models.Person>>(base64Decoded) ?? new List<Master1Tech.Shared.Models.Person>();;
+                    foreach (Master1Tech.Shared.Models.Person p in people)
                     {
                         _appDbContext.People.Add(p);
                     }

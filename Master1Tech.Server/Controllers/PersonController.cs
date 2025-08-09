@@ -1,5 +1,7 @@
 using Master1Tech.Server.Authorization;
 using Master1Tech.Server.Models;
+using Master1Tech.Server.Services.Person;
+using Master1Tech.Shared.DTOs.Person;
 using Master1Tech.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +12,11 @@ namespace Master1Tech.Server.Controllers
     [Route("api/[controller]")]
     public class PersonController : ControllerBase
     {
-        private readonly IPersonRepository _personRepository;
+        private readonly IPersonService _personService;
 
-        public PersonController(IPersonRepository personRepository)
+        public PersonController(IPersonService personService)
         {
-            _personRepository = personRepository;
+            _personService = personService;
         }
 
         /// <summary>
@@ -24,7 +26,7 @@ namespace Master1Tech.Server.Controllers
         [HttpGet]
         public ActionResult GetPeople([FromQuery] string? name, int page)
         {
-            return Ok(_personRepository.GetPeople(name, page));
+            return Ok(_personService.GetPeople(name, page));
         }
 
         /// <summary>
@@ -34,25 +36,25 @@ namespace Master1Tech.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetPerson(int id)
         {
-            return Ok(await _personRepository.GetPerson(id));
+            return Ok(await _personService.GetPersonAsync(id));
         }
 
         /// <summary>
         /// Creates a person with child addresses.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult> AddPerson(Person person)
+        public async Task<ActionResult> AddPerson(PersonCreateDto personCreateDto)
         {
-            return Ok(await _personRepository.AddPerson(person));
+            return Ok(await _personService.AddPersonAsync(personCreateDto));
         }
         
         /// <summary>
         /// Updates a person with a specific Id.
         /// </summary>
         [HttpPut]
-        public async Task<ActionResult> UpdatePerson(Person person)
+        public async Task<ActionResult> UpdatePerson(PersonUpdateDto personUpdateDto)
         {
-            return Ok(await _personRepository.UpdatePerson(person));
+            return Ok(await _personService.UpdatePersonAsync(personUpdateDto));
         }
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace Master1Tech.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePerson(int id)
         {
-            return Ok(await _personRepository.DeletePerson(id));
+            return Ok(await _personService.DeletePersonAsync(id));
         }
     }
 }

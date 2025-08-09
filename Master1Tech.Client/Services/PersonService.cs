@@ -14,7 +14,7 @@ namespace Master1Tech.Client.Services
             _httpService = httpService;
         }
 
-        public async Task<PagedResult<Person>> GetPeople(string name, string page)
+        public async Task<PagedResult<Person>> GetPeople(string? name, int page)
         {
             return await _httpService.Get<PagedResult<Person>>("api/person" + "?page=" + page + "&name=" + name);
         }
