@@ -3,8 +3,12 @@
 /* Fonts */
 :root {
     --default-font: Familjen Grotesk,sans-serif;
+    --body-font: Familjen Grotesk,sans-serif !important;
     --heading-font: "Source Sans Pro", sans-serif;
     --nav-font: "Poppins", sans-serif;
+    --type-ramp-base-line-height: 1.4 !important;
+    --default-line-height: 1.44 !important;
+    --type-ramp-base-font-size: 1rem !important;
 }
 
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
@@ -520,13 +524,18 @@ section,
 body {
     color: var(--default-color);
     background-color: var(--background-color);
-    font-family: var(--default-font);
-
+    font-family: var(--default-font) !important;
     -webkit-font-smoothing: antialiased;
     font-size: 1rem;
     font-weight: 400;
-    line-height: 1.444;
+    line-height: var(--default-line-height) !important;
     text-rendering: optimizeLegibility
+}
+
+p {
+    font-size: var(--type-ramp-base-font-size);
+    line-height: var(--default-line-height);
+    font-family: var(--default-font) !important;
 }
 
 a {

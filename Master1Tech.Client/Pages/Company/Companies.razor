@@ -9,7 +9,7 @@
 
 <section>
     <div class="container">
-        <div class="d-flex flex-row-reverse gap-5">
+        <div class="d-flex flex-column flex-md-row-reverse gap-5">
             <div class="loc-intro__cov fsz-0 relative">
                 
                 <picture>
@@ -31,65 +31,140 @@
         </div>
     </div>
 </section>
+ 
 <section class="light-background">
     <div class="container">
 
         <div class="filter-bar">
             <div class="filter-group">
-        <div class="filter-item">
-            <span>Location <b>(@(!string.IsNullOrEmpty(companyFilter.Location) ? "1" : "0"))</b></span>
-            <select @bind="companyFilter.Location">
-                <option value="">All</option>
-                <option value="Lahore">Lahore</option>
-                <option value="Karachi">Karachi</option>
-                <option value="Rawalpindi">Rawalpindi</option>
-                <option value="Okara">Okara</option>
-            </select>
-        </div>
+@*                 <div class="filter-item">
+                    <span>Location <b>(@(!string.IsNullOrEmpty(companyFilter.Location) ? "1" : "0"))</b></span>
+                    <select @bind="companyFilter.Location">
+                        <option value="">All</option>
+                        <option value="Lahore">Lahore</option>
+                        <option value="Karachi">Karachi</option>
+                        <option value="Rawalpindi">Rawalpindi</option>
+                        <option value="Okara">Okara</option>
+                    </select>
+                </div> *@
+                <FluentAutocomplete TOption="Company"
+                                    AutoComplete="off"
+                                    Autofocus="true"
+                                    Label="Services"
+                                    Width="200px"
+                                    KeepOpen="true"
+                                    Placeholder="Search"
+                                    OnOptionsSearch="@OnSearchAsync"
+                                    MaximumSelectedOptions="_maximumSelectedOptions"
+                                    OptionText="@(item => item.Name)"
+                                    @bind-SelectedOptions="@SelectedItems">
+                        <OptionTemplate>
+                            <FluentCheckbox Value="@SelectedItems.Contains(context)" Label="@context.Name"/>
+                        </OptionTemplate>
+                        
+                </FluentAutocomplete>
 
-        <div class="filter-item">
-            <span>Services</span>
-            <select @bind="companyFilter.Services">
-                <option value="">All</option>
-                <option value="Web Development">Web Development</option>
-                <option value="Mobile App Development">Mobile App Development</option>
-                <option value="Custom Software Development">Custom Software Development</option>
-            </select>
-        </div>
+                <FluentAutocomplete TOption="Company"
+                                    AutoComplete="off"
+                                    Autofocus="true"
+                                    Label="Tools & Technologies"
+                                    Width="200px"
+                                    KeepOpen="true"
+                                    Placeholder="Search"
+                                    OnOptionsSearch="@OnSearchAsync"
+                                    MaximumSelectedOptions="_maximumSelectedOptions"
+                                    OptionText="@(item => item.Name)"
+                                    @bind-SelectedOptions="@SelectedItems">
+                        <OptionTemplate>
+                            <FluentCheckbox Value="@SelectedItems.Contains(context)" Label="@context.Name"/>
+                        </OptionTemplate>
+                        
+                </FluentAutocomplete>
 
-        <div class="filter-item active">
-            <span>Team size</span>
-            <select @bind="companyFilter.TeamSize">
-                <option value="">All</option>
-                <option value="10-49">10-49</option>
-                <option value="50-249">50-249</option>
-                <option value="250-999">250-999</option>
-            </select>
-        </div>
+                <FluentAutocomplete TOption="Company"
+                                    AutoComplete="off"
+                                    Autofocus="true"
+                                    Label="Industry Focus"
+                                    Width="200px"
+                                    KeepOpen="true"
+                                    Placeholder="Search"
+                                    OnOptionsSearch="@OnSearchAsync"
+                                    MaximumSelectedOptions="_maximumSelectedOptions"
+                                    OptionText="@(item => item.Name)"
+                                    @bind-SelectedOptions="@SelectedItems">
+                        <OptionTemplate>
+                            <FluentCheckbox Value="@SelectedItems.Contains(context)" Label="@context.Name"/>
+                        </OptionTemplate>
+                        
+                </FluentAutocomplete>
 
-        <div class="filter-item">
-            <span>Hourly rate</span>
-            <select @bind="companyFilter.HourlyRate">
-                <option value="">All</option>
-                <option value="0-49">0-49</option>
-                <option value="50-99">50-99</option>
-            </select>
-        </div>
+                <FluentAutocomplete TOption="Company"
+                                    AutoComplete="off"
+                                    Autofocus="true"
+                                    Label="Founding Year"
+                                    Width="200px"
+                                    KeepOpen="true"
+                                    Placeholder="Search"
+                                    OnOptionsSearch="@OnSearchAsync"
+                                    MaximumSelectedOptions="_maximumSelectedOptions"
+                                    OptionText="@(item => item.Name)"
+                                    @bind-SelectedOptions="@SelectedItems">
+                        <OptionTemplate>
+                            <FluentCheckbox Value="@SelectedItems.Contains(context)" Label="@context.Name"/>
+                        </OptionTemplate>
+                        
+                </FluentAutocomplete>
 
-        <div class="filter-item sort">
-            <span>Sort by</span>
-            <select @bind="companyFilter.SortBy">
-                <option value="Featured">Featured</option>
-                <option value="Name">Name</option>
-                <option value="Rating">Rating</option>
-                <option value="Team Size">Team Size</option>
-            </select>
-        </div>
+                
+                <div class="sort-by">
+                    <FluentSelect TOption="SortBy"
+                                  Label="Sort by"
+                                  Items="@SortBies.ToList()"
+                                  Width="200px"
+                                  OptionValue="@(p => p.Name)"
+                                  OptionText="@(p => p.Name)"
+                                  @bind-Value="@SelectedSortByValue"
+                                  @bind-SelectedOption="@SelectedSortBy">
+                    </FluentSelect>
+                </div>
 
-        <button @onclick="ApplyFilters" class="btn-filter">Filter</button>
-    </div>
-        </div>
+               @*  <div class="filter-item">
+                    <span>Services</span>
+                    <select @bind="companyFilter.Services">
+                        <option value="">All</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Mobile App Development">Mobile App Development</option>
+                        <option value="Custom Software Development">Custom Software Development</option>
+                    </select>
+                </div>
 
+                <div class="filter-item active">
+                    <span>Team size</span>
+                    <select @bind="companyFilter.TeamSize">
+                        <option value="">All</option>
+                        <option value="10-49">10-49</option>
+                        <option value="50-249">50-249</option>
+                        <option value="250-999">250-999</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <span>Hourly rate</span>
+                    <select @bind="companyFilter.HourlyRate">
+                        <option value="">All</option>
+                        <option value="0-49">0-49</option>
+                        <option value="50-99">50-99</option>
+                    </select>
+                </div> *@
+
+               
+                               
+                <button @onclick="ApplyFilters" class="btn btn-filter">Filter</button>
+            </div>
+
+           
+
+        </div>
         <!-- Header Section -->
         <h2 class="mb-4">
             Explore Top Companies in <span style="color: #007bff;">@Country.ToUpper()</span>
@@ -120,7 +195,7 @@
                 @foreach (var company in Companiees.Results)
                 {
                     string logoUrl = $"company/{company.Slug}.png";
-                    <div class="col-12 col-sm-6 col-md-4 mb-4">
+                    <div class="col-12 col-lg-4 mb-4">
                         <div class="card h-100">
                             <div class="card-body">
                                 <div class="d-flex gap-3 align-items-center">
@@ -190,7 +265,7 @@
                                    
                                     
                                 </div>
-
+                                 
                                 <!-- Services -->
                                 @* <small class="text-muted mb-1 d-block">Services</small>
                                 <div class="row mb-3">
@@ -286,6 +361,8 @@
     private bool IsLoading = false;
     private int PageSize = 12;
 
+    private int _maximumSelectedOptions = 0;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadCompanies();
@@ -343,4 +420,42 @@
             await LoadCompanies();
         }
     }
+
+    private async Task OnSearchAsync(OptionsSearchEventArgs<Company> e)
+    {
+
+        e.Items = Companiees.Results.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+                              .OrderBy(i => i.Name);
+        _maximumSelectedOptions = e.Items.Count();
+    }
+
+    bool AutoHeight = true;
+    IEnumerable<Company> SelectedItems = Array.Empty<Company>();
+
+
+    public class SortBy
+    {
+        public string Name { get; set; } = null!;       
+    }
+    SortBy? SelectedSortBy;
+    string? SelectedSortByValue;
+    private List<SortBy> SortBies = new()
+    {        
+        new SortBy() {
+            Name = "Name"
+        },
+        new SortBy
+        {
+            Name = "Team Size"
+        },
+        new SortBy()
+        {
+            Name = "Rating"
+        },
+
+        new SortBy() {
+            Name = "Featured"
+        },
+
+    };
 }

@@ -1,0 +1,970 @@
+﻿@* @page "/filters"
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<div class="filter-container">
+    <div class="filter-header">
+        <div class="filter-controls">
+            <FluentButton Appearance="Appearance.Neutral" @onclick="() => showFilters = !showFilters">
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Filter())" />
+                Location (1)
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronDown())" />
+            </FluentButton>
+
+            <FluentButton Appearance="Appearance.Neutral" @onclick="() => showServices = !showServices">
+                Services
+                <FluentIcon Value="@(showServices ? new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronUp() : new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronUp())" />
+            </FluentButton>
+
+            <FluentButton Appearance="Appearance.Neutral">
+                Team size
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronDown())" />
+            </FluentButton>
+
+            <FluentButton Appearance="Appearance.Neutral">
+                Hourly rate
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronDown())" />
+            </FluentButton>
+        </div>
+
+        <div class="sort-controls">
+            <FluentButton>
+                Sort by
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronDown())" />
+            </FluentButton>
+
+            <FluentButton Appearance="Appearance.Accent" @onclick="CloseFilters">
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Dismiss())" />
+                Close
+            </FluentButton>
+        </div>
+    </div>
+
+    @if (showServices)
+    {
+        <div class="services-panel">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Location (1)</h3>
+                </div>
+
+                <div class="sidebar-section active">
+                    <h3>Services</h3>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Tools & Technologies</h3>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Team size</h3>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Hourly rate</h3>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Profile score</h3>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Founding Year</h3>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Industry Focus</h3>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Reviews</h3>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>More</h3>
+                </div>
+
+                <FluentButton Appearance="Appearance.Accent" class="apply-button" @onclick="ApplyFilters">
+                    Apply Filters
+                </FluentButton>
+            </div>
+
+            <div class="content">
+                <div class="content-header">
+                    <h2>Services</h2>
+                    <p>Select the service you are looking for</p>
+
+                    <div class="display-options">
+                        <FluentCheckbox @bind-Value="onlyDisplayAvailable" Label="Only display available options" />
+                        <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Info())" />
+                    </div>
+
+                    <FluentTextField @bind-Value="searchText"
+                                     Placeholder="Search services"
+                                     @oninput="OnSearchInput"
+                                     class="search-field">
+                        <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Search())" Slot="start" />
+                    </FluentTextField>
+                </div>
+
+                <div class="service-tabs">
+                    <FluentButton Appearance="@(selectedTab == "web" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab("web"))"
+                                  class="tab-button">
+                        Web Applications
+                    </FluentButton>
+                    <FluentButton Appearance="@(selectedTab == "advertising" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab("advertising"))"
+                                  class="tab-button">
+                        Advertising
+                    </FluentButton>
+                    <FluentButton Appearance="@(selectedTab == "design" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab(" design"))"
+                                  class="tab-button">
+                        Design
+                    </FluentButton>
+                    <FluentButton Appearance="@(selectedTab == "software" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab("software"))"
+                                  class="tab-button">
+                        Software Development
+                    </FluentButton>
+                    <FluentButton Appearance="@(selectedTab == "business" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab("business"))"
+                                  class="tab-button">
+                        Business Services
+                    </FluentButton>
+                </div>
+
+                <div class="services-content">
+                    @if (selectedTab == "web")
+                    {
+                        <div class="service-category">
+                            <h3>Web Applications Services</h3>
+                            <div class="service-grid">
+                                @foreach (var service in GetFilteredServices(webApplicationServices))
+                                {
+                                    <FluentCheckbox @bind-Value="service.IsSelected"
+                                                    Label="@($"{service.Name} ({service.Count})")"
+                                                    class="service-checkbox" />
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (selectedTab == "advertising")
+                    {
+                        <div class="service-category">
+                            <h3>Advertising Services</h3>
+                            <div class="service-grid">
+                                @foreach (var service in GetFilteredServices(advertisingServices))
+                                {
+                                    <FluentCheckbox @bind-Value="service.IsSelected"
+                                                    Label="@($"{service.Name} ({service.Count})")"
+                                                    class="service-checkbox" />
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool showFilters = false;
+    private bool showServices = true;
+    private bool onlyDisplayAvailable = true;
+    private string searchText = "";
+    private string selectedTab = "web";
+
+    public class ServiceItem
+    {
+        public string Name { get; set; } = "";
+        public int Count { get; set; }
+        public bool IsSelected { get; set; }
+        public bool IsAvailable { get; set; } = true;
+    }
+
+    private List<ServiceItem> webApplicationServices = new()
+    {
+        new ServiceItem { Name = "Web Development", Count = 687, IsSelected = false },
+        new ServiceItem { Name = "Progressive Web Apps", Count = 15, IsSelected = false },
+        new ServiceItem { Name = "No-Code Development", Count = 14, IsSelected = false },
+        new ServiceItem { Name = "Accelerated Mobile Pages", Count = 4, IsSelected = false }
+    };
+
+    private List<ServiceItem> advertisingServices = new()
+    {
+        new ServiceItem { Name = "SEO", Count = 615, IsSelected = false },
+        new ServiceItem { Name = "SMM", Count = 372, IsSelected = false },
+        new ServiceItem { Name = "Digital Marketing", Count = 295, IsSelected = false },
+        new ServiceItem { Name = "Pay Per Click", Count = 244, IsSelected = false },
+        new ServiceItem { Name = "Content Marketing", Count = 203, IsSelected = false },
+        new ServiceItem { Name = "Advertising", Count = 200, IsSelected = false },
+        new ServiceItem { Name = "Digital Strategy", Count = 194, IsSelected = false },
+        new ServiceItem { Name = "Email Marketing", Count = 163, IsSelected = false },
+        new ServiceItem { Name = "Marketing Strategy", Count = 151, IsSelected = false },
+        new ServiceItem { Name = "Mobile & App Marketing", Count = 129, IsSelected = false },
+        new ServiceItem { Name = "Other Marketing", Count = 91, IsSelected = false },
+        new ServiceItem { Name = "Market Research", Count = 91, IsSelected = false },
+        new ServiceItem { Name = "PR", Count = 70, IsSelected = false },
+        new ServiceItem { Name = "Conversion Optimization", Count = 67, IsSelected = false },
+        new ServiceItem { Name = "Affiliate Marketing", Count = 62, IsSelected = false },
+        new ServiceItem { Name = "Direct Marketing", Count = 54, IsSelected = false },
+        new ServiceItem { Name = "Event Marketing & Planning", Count = 42, IsSelected = false },
+        new ServiceItem { Name = "Media Planning & Buying", Count = 41, IsSelected = false }
+    };
+
+    private void SelectTab(string tab)
+    {
+        selectedTab = tab;
+    }
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        searchText = e.Value?.ToString() ?? "";
+    }
+
+    private List<ServiceItem> GetFilteredServices(List<ServiceItem> services)
+    {
+        var filtered = services.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            filtered = filtered.Where(s => s.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (onlyDisplayAvailable)
+        {
+            filtered = filtered.Where(s => s.IsAvailable);
+        }
+
+        return filtered.ToList();
+    }
+
+    private void ApplyFilters()
+    {
+        // Implement filter application logic
+        var selectedServices = webApplicationServices.Concat(advertisingServices)
+            .Where(s => s.IsSelected)
+            .Select(s => s.Name)
+            .ToList();
+
+        // You can emit an event or call a parent method here
+        Console.WriteLine($"Applied filters: {string.Join(", ", selectedServices)}");
+    }
+
+    private void CloseFilters()
+    {
+        showServices = false;
+        showFilters = false;
+    }
+}
+
+<style>
+    .filter-container {
+        background: #fff3cd;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .filter-header {
+         
+        background-color: #fff3cd;
+        border: 1px solid #f9d776;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .filter-controls, .sort-controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .services-panel {
+        display: flex;
+        min-height: 600px;
+    }
+
+    .sidebar {
+        width: 280px;
+        background: #f8f9fa;
+        padding: 24px;
+        border-right: 1px solid #e1e5e9;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar-section {
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .sidebar-section:hover {
+            background: #e1e5e9;
+        }
+
+        .sidebar-section.active {
+            background: #deecff;
+            color: #0078d4;
+            font-weight: 600;
+        }
+
+        .sidebar-section h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+    .apply-button {
+        margin-top: auto;
+        width: 100%;
+    }
+
+    .content {
+        flex: 1;
+        padding: 24px;
+    }
+
+    .content-header h2 {
+        margin: 0 0 8px 0;
+        font-size: 24px;
+        font-weight: 600;
+        color: #323130;
+    }
+
+    .content-header p {
+        margin: 0 0 24px 0;
+        color: #605e5c;
+        font-size: 14px;
+    }
+
+    .display-options {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .search-field {
+        margin-bottom: 24px;
+        max-width: 400px;
+    }
+
+    .service-tabs {
+        display: flex;
+        gap: 2px;
+        margin-bottom: 32px;
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .tab-button {
+        border-radius: 6px 6px 0 0 !important;
+        border-bottom: none !important;
+        padding: 12px 20px;
+    }
+
+    .services-content {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .service-category h3 {
+        margin: 0 0 20px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #323130;
+    }
+
+    .service-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px 32px;
+    }
+
+    .service-checkbox {
+        font-size: 14px;
+    }
+
+    /* Responsive design */
+@@media (max-width: 768px) {
+        .services-panel
+
+    {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        border-right: none;
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .service-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .filter-controls, .sort-controls {
+        justify-content: center;
+    }
+
+    }
+</style> *@
+@page "/filters"
+@using Microsoft.FluentUI.AspNetCore.Components
+
+<div class="filter-container">
+    <div class="filter-header">
+        <div class="filter-controls">
+            <FluentButton Appearance="Appearance.Neutral" @onclick="@(() => showFilters = !showFilters)">
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Filter())" />
+                Location (1)
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronDown())" />
+            </FluentButton>
+
+            <FluentButton Appearance="Appearance.Neutral" @onclick="@(() => showServices = !showServices)">
+                Services
+                <FluentIcon Value="@(showServices ? new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronUp() : new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronUp())" />
+            </FluentButton>
+
+            <FluentButton Appearance="Appearance.Neutral">
+                Team size
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronDown())" />
+            </FluentButton>
+
+            <FluentButton Appearance="Appearance.Neutral">
+                Hourly rate
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronDown())" />
+            </FluentButton>
+        </div>
+
+        <div class="sort-controls">
+            <FluentButton>
+                Sort by
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.ChevronDown())" />
+            </FluentButton>
+
+            <FluentButton Appearance="Appearance.Accent" @onclick="CloseFilters">
+                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Dismiss())" />
+                Close
+            </FluentButton>
+        </div>
+    </div>
+
+    @if (showServices)
+    {
+        <div class="services-panel">
+            <div class="sidebar">
+                <div class="sidebar-section @(activeFilterSection == "location" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("location"))">
+                    <h3>Location (1)</h3>
+                </div>
+
+                <div class="sidebar-section @(activeFilterSection == "services" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("services"))">
+                    <h3>Services</h3>
+                </div>
+
+                <div class="sidebar-section @(activeFilterSection == "tools" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("tools"))">
+                    <h3>Tools & Technologies</h3>
+                </div>
+
+                <div class="sidebar-section @(activeFilterSection == "teamsize" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("teamsize"))">
+                    <h3>Team size</h3>
+                </div>
+
+                <div class="sidebar-section @(activeFilterSection == "hourlyrate" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("hourlyrate"))">
+                    <h3>Hourly rate</h3>
+                </div>
+
+                <div class="sidebar-section @(activeFilterSection == "profilescore" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("profilescore"))">
+                    <h3>Profile score</h3>
+                </div>
+
+                <div class="sidebar-section @(activeFilterSection == "foundingyear" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("foundingyear"))">
+                    <h3>Founding Year</h3>
+                </div>
+
+                <div class="sidebar-section @(activeFilterSection == "industryfocus" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("industryfocus"))">
+                    <h3>Industry Focus</h3>
+                </div>
+
+                <div class="sidebar-section @(activeFilterSection == "reviews" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("reviews"))">
+                    <h3>Reviews</h3>
+                </div>
+
+                <div class="sidebar-section @(activeFilterSection == "more" ? "active" : "")"
+                     @onclick="@(() => SetActiveFilterSection("more"))">
+                    <h3>More</h3>
+                </div>
+
+                <FluentButton Appearance="Appearance.Accent" class="apply-button" @onclick="ApplyFilters">
+                    Apply Filters
+                </FluentButton>
+            </div>
+
+            <div class="content">
+                @* <div class="content-header">
+                    <h2>Services</h2>
+                    <p>Select the service you are looking for</p>
+
+                    <div class="display-options">
+                        <FluentCheckbox @bind-Value="onlyDisplayAvailable" Label="Only display available options" />
+                        <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Info())" />
+                    </div>
+
+                    <FluentTextField @bind-Value="searchText"
+                                     Placeholder="Search services"
+                                     @oninput="OnSearchInput"
+                                     class="search-field">
+                        <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Search())" Slot="start" />
+                    </FluentTextField>
+                </div>
+
+                <div class="service-tabs">
+                    <FluentButton Appearance="@(selectedTab == "web" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab("web"))"
+                                  class="tab-button">
+                        Web Applications
+                    </FluentButton>
+                    <FluentButton Appearance="@(selectedTab == "advertising" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab("advertising"))"
+                                  class="tab-button">
+                        Advertising
+                    </FluentButton>
+                    <FluentButton Appearance="@(selectedTab == "design" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab(" design"))"
+                                  class="tab-button">
+                        Design
+                    </FluentButton>
+                    <FluentButton Appearance="@(selectedTab == "software" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab(" software"))"
+                                  class="tab-button">
+                        Software Development
+                    </FluentButton>
+                    <FluentButton Appearance="@(selectedTab == "business" ? Appearance.Accent : Appearance.Neutral)"
+                                  @onclick="@(() => SelectTab("business"))"
+                                  class="tab-button">
+                        Business Services
+                    </FluentButton>
+                </div>
+ *@
+                <div class="services-content">
+                    @if (activeFilterSection == "services")
+                    {
+                        <div class="service-category">
+                            <h3>Web Applications Services</h3>
+                            <div class="service-grid">
+                                @foreach (var service in GetFilteredServices(webApplicationServices))
+                                {
+                                    <FluentCheckbox @bind-Value="service.IsSelected"
+                                                    Label="@($"{service.Name} ({service.Count})")"
+                                                    class="service-checkbox" />
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (activeFilterSection == "tools")
+                    {
+                        <div class="service-category">
+                            <h3>Advertising Services</h3>
+                            <div class="service-grid">
+                                @foreach (var service in GetFilteredServices(advertisingServices))
+                                {
+                                    <FluentCheckbox @bind-Value="service.IsSelected"
+                                                    Label="@($"{service.Name} ({service.Count})")"
+                                                    class="service-checkbox" />
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool showFilters = false;
+    private bool showServices = true;
+    private bool onlyDisplayAvailable = true;
+    private string searchText = "";
+    private string locationSearchText = "";
+    private string toolsSearchText = "";
+    private string selectedTab = "web";
+    private string activeFilterSection = "services";
+
+    public class ServiceItem
+    {
+        public string Name { get; set; } = "";
+        public int Count { get; set; }
+        public bool IsSelected { get; set; }
+        public bool IsAvailable { get; set; } = true;
+    }
+
+    private List<ServiceItem> webApplicationServices = new()
+    {
+        new ServiceItem { Name = "Web Development", Count = 687, IsSelected = false },
+        new ServiceItem { Name = "Progressive Web Apps", Count = 15, IsSelected = false },
+        new ServiceItem { Name = "No-Code Development", Count = 14, IsSelected = false },
+        new ServiceItem { Name = "Accelerated Mobile Pages", Count = 4, IsSelected = false }
+    };
+
+    private List<ServiceItem> advertisingServices = new()
+    {
+        new ServiceItem { Name = "SEO", Count = 615, IsSelected = false },
+        new ServiceItem { Name = "SMM", Count = 372, IsSelected = false },
+        new ServiceItem { Name = "Digital Marketing", Count = 295, IsSelected = false },
+        new ServiceItem { Name = "Pay Per Click", Count = 244, IsSelected = false },
+        new ServiceItem { Name = "Content Marketing", Count = 203, IsSelected = false },
+        new ServiceItem { Name = "Advertising", Count = 200, IsSelected = false },
+        new ServiceItem { Name = "Digital Strategy", Count = 194, IsSelected = false },
+        new ServiceItem { Name = "Email Marketing", Count = 163, IsSelected = false },
+        new ServiceItem { Name = "Marketing Strategy", Count = 151, IsSelected = false },
+        new ServiceItem { Name = "Mobile & App Marketing", Count = 129, IsSelected = false },
+        new ServiceItem { Name = "Other Marketing", Count = 91, IsSelected = false },
+        new ServiceItem { Name = "Market Research", Count = 91, IsSelected = false },
+        new ServiceItem { Name = "PR", Count = 70, IsSelected = false },
+        new ServiceItem { Name = "Conversion Optimization", Count = 67, IsSelected = false },
+        new ServiceItem { Name = "Affiliate Marketing", Count = 62, IsSelected = false },
+        new ServiceItem { Name = "Direct Marketing", Count = 54, IsSelected = false },
+        new ServiceItem { Name = "Event Marketing & Planning", Count = 42, IsSelected = false },
+        new ServiceItem { Name = "Media Planning & Buying", Count = 41, IsSelected = false }
+    };
+
+    private List<ServiceItem> locations = new()
+    {
+        new ServiceItem { Name = "United States", Count = 1240, IsSelected = false },
+        new ServiceItem { Name = "Canada", Count = 320, IsSelected = false },
+        new ServiceItem { Name = "United Kingdom", Count = 450, IsSelected = false },
+        new ServiceItem { Name = "Germany", Count = 280, IsSelected = false },
+        new ServiceItem { Name = "Australia", Count = 180, IsSelected = false },
+        new ServiceItem { Name = "India", Count = 890, IsSelected = false }
+    };
+
+    private List<ServiceItem> toolsAndTechnologies = new()
+    {
+        new ServiceItem { Name = ".NET", Count = 420, IsSelected = false },
+        new ServiceItem { Name = "React", Count = 380, IsSelected = false },
+        new ServiceItem { Name = "Angular", Count = 290, IsSelected = false },
+        new ServiceItem { Name = "Vue.js", Count = 220, IsSelected = false },
+        new ServiceItem { Name = "Python", Count = 450, IsSelected = false },
+        new ServiceItem { Name = "Java", Count = 380, IsSelected = false },
+        new ServiceItem { Name = "Node.js", Count = 340, IsSelected = false },
+        new ServiceItem { Name = "PHP", Count = 320, IsSelected = false },
+        new ServiceItem { Name = "WordPress", Count = 280, IsSelected = false },
+        new ServiceItem { Name = "Shopify", Count = 190, IsSelected = false }
+    };
+
+    private List<ServiceItem> teamSizes = new()
+    {
+        new ServiceItem { Name = "1-5 members", Count = 850, IsSelected = false },
+        new ServiceItem { Name = "6-10 members", Count = 420, IsSelected = false },
+        new ServiceItem { Name = "11-25 members", Count = 290, IsSelected = false },
+        new ServiceItem { Name = "26-50 members", Count = 180, IsSelected = false },
+        new ServiceItem { Name = "51-100 members", Count = 120, IsSelected = false },
+        new ServiceItem { Name = "100+ members", Count = 90, IsSelected = false }
+    };
+
+    private List<ServiceItem> hourlyRates = new()
+    {
+        new ServiceItem { Name = "$25-$49/hr", Count = 680, IsSelected = false },
+        new ServiceItem { Name = "$50-$99/hr", Count = 520, IsSelected = false },
+        new ServiceItem { Name = "$100-$149/hr", Count = 340, IsSelected = false },
+        new ServiceItem { Name = "$150-$199/hr", Count = 180, IsSelected = false },
+        new ServiceItem { Name = "$200+/hr", Count = 120, IsSelected = false }
+    };
+
+    private List<ServiceItem> profileScores = new()
+    {
+        new ServiceItem { Name = "90-100%", Count = 280, IsSelected = false },
+        new ServiceItem { Name = "80-89%", Count = 450, IsSelected = false },
+        new ServiceItem { Name = "70-79%", Count = 380, IsSelected = false },
+        new ServiceItem { Name = "60-69%", Count = 290, IsSelected = false },
+        new ServiceItem { Name = "Below 60%", Count = 150, IsSelected = false }
+    };
+
+    private void SetActiveFilterSection(string section)
+    {
+        activeFilterSection = section;
+    }
+
+    private void SelectTab(string tab)
+    {
+        selectedTab = tab;
+    }
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        searchText = e.Value?.ToString() ?? "";
+    }
+
+    private List<ServiceItem> GetFilteredServices(List<ServiceItem> services)
+    {
+        var filtered = services.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            filtered = filtered.Where(s => s.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (onlyDisplayAvailable)
+        {
+            filtered = filtered.Where(s => s.IsAvailable);
+        }
+
+        return filtered.ToList();
+    }
+
+    private List<ServiceItem> GetFilteredLocations()
+    {
+        var filtered = locations.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(locationSearchText))
+        {
+            filtered = filtered.Where(s => s.Name.Contains(locationSearchText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        return filtered.ToList();
+    }
+
+    private List<ServiceItem> GetFilteredTools()
+    {
+        var filtered = toolsAndTechnologies.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(toolsSearchText))
+        {
+            filtered = filtered.Where(s => s.Name.Contains(toolsSearchText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        return filtered.ToList();
+    }
+
+    private string GetSectionTitle(string section)
+    {
+        return section switch
+        {
+            "foundingyear" => "Founding Year",
+            "industryfocus" => "Industry Focus",
+            "reviews" => "Reviews",
+            "more" => "More Options",
+            _ => "Filter Options"
+        };
+    }
+
+    private void ApplyFilters()
+    {
+        // Collect all selected filters
+        var selectedServices = webApplicationServices.Concat(advertisingServices)
+            .Where(s => s.IsSelected)
+            .Select(s => s.Name)
+            .ToList();
+
+        var selectedLocations = locations.Where(l => l.IsSelected).Select(l => l.Name).ToList();
+        var selectedTools = toolsAndTechnologies.Where(t => t.IsSelected).Select(t => t.Name).ToList();
+        var selectedTeamSizes = teamSizes.Where(t => t.IsSelected).Select(t => t.Name).ToList();
+        var selectedRates = hourlyRates.Where(r => r.IsSelected).Select(r => r.Name).ToList();
+        var selectedScores = profileScores.Where(s => s.IsSelected).Select(s => s.Name).ToList();
+
+        // You can emit an event or call a parent method here
+        Console.WriteLine($"Applied filters:");
+        Console.WriteLine($"Services: {string.Join(", ", selectedServices)}");
+        Console.WriteLine($"Locations: {string.Join(", ", selectedLocations)}");
+        Console.WriteLine($"Tools: {string.Join(", ", selectedTools)}");
+        Console.WriteLine($"Team Sizes: {string.Join(", ", selectedTeamSizes)}");
+        Console.WriteLine($"Hourly Rates: {string.Join(", ", selectedRates)}");
+        Console.WriteLine($"Profile Scores: {string.Join(", ", selectedScores)}");
+    }
+
+    private void CloseFilters()
+    {
+        showServices = false;
+        showFilters = false;
+    }
+}
+
+<style>
+    .filter-container {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .filter-header {
+        background: #fef7e0;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .filter-controls, .sort-controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .services-panel {
+        display: flex;
+        min-height: 600px;
+    }
+
+    .sidebar {
+        width: 280px;
+        background: #f8f9fa;
+        padding: 24px;
+        border-right: 1px solid #e1e5e9;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar-section {
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .sidebar-section:hover {
+            background: #e1e5e9;
+        }
+
+        .sidebar-section.active {
+            background: #deecff;
+            color: #0078d4;
+            font-weight: 600;
+        }
+
+        .sidebar-section h3 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+    .apply-button {
+        margin-top: auto;
+        width: 100%;
+    }
+
+    .content {
+        flex: 1;
+        padding: 24px;
+    }
+
+    .content-header h2 {
+        margin: 0 0 8px 0;
+        font-size: 24px;
+        font-weight: 600;
+        color: #323130;
+    }
+
+    .content-header p {
+        margin: 0 0 24px 0;
+        color: #605e5c;
+        font-size: 14px;
+    }
+
+    .display-options {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .search-field {
+        margin-bottom: 24px;
+        max-width: 400px;
+    }
+
+    .service-tabs {
+        display: flex;
+        gap: 2px;
+        margin-bottom: 32px;
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .tab-button {
+        border-radius: 6px 6px 0 0 !important;
+        border-bottom: none !important;
+        padding: 12px 20px;
+    }
+
+    .services-content {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .service-category h3 {
+        margin: 0 0 20px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #323130;
+    }
+
+    .service-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px 32px;
+    }
+
+    .service-checkbox {
+        font-size: 14px;
+    }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .services-panel
+
+    {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        border-right: none;
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .service-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .filter-controls, .sort-controls {
+        justify-content: center;
+    }
+
+    }
+</style>
