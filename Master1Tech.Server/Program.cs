@@ -30,9 +30,9 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Master1 Tech API",
+        Title = "Master1Tech API",
         Version = "v1",
-        Description = "CRUD API Services that act as the backend to the Master1 Tech website."
+        Description = "CRUD API Services that act as the backend to the Master1Tech website."
     });
 
     // Set the comments path for the Swagger JSON and UI.

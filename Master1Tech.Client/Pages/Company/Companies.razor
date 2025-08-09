@@ -156,7 +156,7 @@
                                 </div>
                                 
                                 <!-- Rating -->
-                                <div class="text-end mb-2">
+                                @* <div class="text-end mb-2">
                                     @for (int i = 1; i <= 5; i++)
                                     {
                                         if (i <= company.Rating)
@@ -168,7 +168,7 @@
                                             <span class="text-secondary">&#9734;</span> <!-- Empty star -->
                                         }
                                     }
-                                </div>
+                                </div> *@
 
                                 <!-- Description -->
                                 <p class="company-des">@company.Description?.TruncateWithEllipsis(100)</p>

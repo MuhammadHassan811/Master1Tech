@@ -5,6 +5,7 @@
 
 @if (company != null)
 {
+    string logoUrl = $"company/{company.Slug}.png";
     <section class="light-background">
         <div class="container">
             <div class="row justify-content-md-center">
@@ -13,14 +14,14 @@
                         <div class="card-body p-4">
                             <div class="d-flex gap-3 align-items-center">
                                 <figure class="company-img figure">
-                                    <a href="@($"/companyprofile/{company.Id}")" target="_self" title="@company.Name" aria-label="@company.Name">
+                                    <a href="@($"/companyprofile/{company.Slug}")" target="_self" title="@company.Name" aria-label="@company.Name">
                                         <picture class="s-imag loaded">
-                                            <img src="@( string.IsNullOrEmpty(company.LogoUrl) ? "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg" : company.LogoUrl)" alt="@company.LogoText" height="110" width="110" />
+                                            <img src="@(string.IsNullOrEmpty(logoUrl) ? "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg" : logoUrl)" alt="@company.LogoText" height="110" width="110" />
                                         </picture>
                                     </a>
                                 </figure>
                                 <div class="company-info d-flex flex-column gap-1">
-                                    <a href="@($"/companyprofile/{company.Id}")" aria-label="@company.Name Company Profile Page" target="_self" class="d-flex gap-2">
+                                    <a href="@($"/companyprofile/{company.Slug}")" aria-label="@company.Name Company Profile Page" target="_self" class="d-flex gap-2">
                                         @company.Name
                                         @if (company.IsVerified)
                                         {

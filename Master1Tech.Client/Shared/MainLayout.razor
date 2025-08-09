@@ -7,7 +7,7 @@
         <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
             <!-- Uncomment the line below if you also wish to use an image logo -->
             <!-- <img src="assets/img/logo.png" alt=""> -->
-            <h1 class="sitename">Master1 Tech</h1>
+            <h1 class="sitename">Master1Tech</h1>
             <span>.</span>
         </a>
 
@@ -16,7 +16,7 @@
                 <li>
                     <NavLink href="/" Match="NavLinkMatch.All" class="nav-item nav-link">Home</NavLink>
                 </li>
-                <li>
+               @*  <li>
                     <NavLink href="/person/1" class="nav-item nav-link">Data Entry</NavLink>
                 </li>
                 <li>
@@ -24,13 +24,13 @@
                 </li>
                 <li>
                     <NavLink href="/user/1" class="nav-item nav-link">Users</NavLink>
-                </li>
+                </li> *@
                 <li>
                     <NavLink href="/companies/pakistan" class="nav-item nav-link">Companies</NavLink>
                 </li>
-                <li>
+               @*  <li>
                     <NavLink href="/swagger/index.html" class="nav-item nav-link" target="_blank">API</NavLink>
-                </li>
+                </li> *@
                @*  <li class="dropdown">
                     <a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
@@ -154,7 +154,7 @@
             <div class="container">
                 <div class="ftr-copy__inn f-space-between">
                     <p class="ftr-copy__text">
-                        © Copyright @DateTime.Now.Date.Year <a href="/" class="txt-blue nuxt-link-active"><span>Master1 Tech</span></a>. Made in Germany by <a href="#" target="_blank" class="txt-blue">XYZ Company</a>
+                        © Copyright @DateTime.Now.Date.Year <a href="https://master1tech.com/"  target="_blank" class="txt-blue nuxt-link-active"><span>Master1Tech</span></a>.@*  Made in Germany by <a href="#" target="_blank" class="txt-blue">XYZ Company</a> *@
                     </p>
                 </div>
             </div>
@@ -192,12 +192,12 @@
             Title = "Company",
             Links = new()
             {
-                new FooterLink { Text = "About Us", Url = "/about-us" },
-                new FooterLink { Text = "Contact us", Url = "/contact" },
-                new FooterLink { Text = "Careers", Url = "/careers" },
-                new FooterLink { Text = "FAQs", Url = "/faq" },
-                new FooterLink { Text = "Terms of Service", Url = "https://techbehemoths.com/terms", Target = "_self" },
-                new FooterLink { Text = "Improve Ranking", Url = "/improve-ranking" }
+                new FooterLink { Text = "About Us", Url = "#" },
+                new FooterLink { Text = "Contact us", Url = "#" },
+                new FooterLink { Text = "Careers", Url = "#" },
+                new FooterLink { Text = "FAQs", Url = "#" },
+                new FooterLink { Text = "Terms of Service", Url = "#", Target = "_self" },
+                new FooterLink { Text = "Improve Ranking", Url = "#" }
             }
         },
         new FooterSection
@@ -205,41 +205,41 @@
             Title = "Services",
             Links = new()
             {
-                new FooterLink { Text = "SEO", Url = "/companies/seo" },
-                new FooterLink { Text = "Web Design", Url = "/companies/web-design" },
-                new FooterLink { Text = "SMM", Url = "/companies/smm" },
-                new FooterLink { Text = "Web Development", Url = "/companies/web-development" },
-                new FooterLink { Text = "Content Marketing", Url = "/companies/content-marketing" },
-                new FooterLink { Text = "Mobile App Development", Url = "/companies/mobile-app-development" },
-                new FooterLink { Text = "See all", Url = "/services", Style = "text-decoration:underline;" }
+                new FooterLink { Text = "SEO", Url = "#" },
+                new FooterLink { Text = "Web Design", Url = "#" },
+                new FooterLink { Text = "SMM", Url = "#" },
+                new FooterLink { Text = "Web Development", Url = "#" },
+                new FooterLink { Text = "Content Marketing", Url = "#" },
+                new FooterLink { Text = "Mobile App Development", Url = "#" },
+                new FooterLink { Text = "See all", Url = "#", Style = "text-decoration:underline;" }
             }
         },
-        new FooterSection
-        {
-            Title = "Countries",
-            Links = new()
-            {
-                new FooterLink { Text = "United States", Url = "/companies/united-states" },
-                new FooterLink { Text = "United Kingdom", Url = "/companies/united-kingdom" },
-                new FooterLink { Text = "India", Url = "/companies/india" },
-                new FooterLink { Text = "Canada", Url = "/companies/canada" },
-                new FooterLink { Text = "Australia", Url = "/companies/australia" },
-                new FooterLink { Text = "Germany", Url = "/companies/germany" },
-                new FooterLink { Text = "See all", Url = "/countries", Style = "text-decoration:underline;" }
-            }
-        },
+        // new FooterSection
+        // {
+        //     Title = "Countries",
+        //     Links = new()
+        //     {
+        //         new FooterLink { Text = "United States", Url = "/companies/united-states" },
+        //         new FooterLink { Text = "United Kingdom", Url = "/companies/united-kingdom" },
+        //         new FooterLink { Text = "India", Url = "/companies/india" },
+        //         new FooterLink { Text = "Canada", Url = "/companies/canada" },
+        //         new FooterLink { Text = "Australia", Url = "/companies/australia" },
+        //         new FooterLink { Text = "Germany", Url = "/companies/germany" },
+        //         new FooterLink { Text = "See all", Url = "/countries", Style = "text-decoration:underline;" }
+        //     }
+        // },
         new FooterSection
         {
             Title = "Cities",
             Links = new()
             {
-                new FooterLink { Text = "London", Url = "/companies/london" },
-                new FooterLink { Text = "New York", Url = "/companies/new-york" },
-                new FooterLink { Text = "Dubai", Url = "/companies/dubai" },
-                new FooterLink { Text = "Berlin", Url = "/companies/berlin" },
-                new FooterLink { Text = "New Delhi", Url = "/companies/new-delhi" },
-                new FooterLink { Text = "Warsaw", Url = "/companies/warsaw" },
-                new FooterLink { Text = "See all", Url = "/countries", Style = "text-decoration:underline;" }
+                new FooterLink { Text = "Islamabad", Url = "#" },
+                new FooterLink { Text = "Karachi", Url = "#" },
+                new FooterLink { Text = "Lahore", Url = "#" },
+                new FooterLink { Text = "Multan", Url = "#" },
+                new FooterLink { Text = "Faislabad", Url = "#" },
+                new FooterLink { Text = "Peshawar", Url = "#" },
+                new FooterLink { Text = "See all", Url = "#", Style = "text-decoration:underline;" }
             }
         },
         new FooterSection
@@ -247,11 +247,11 @@
             Title = "Insights",
             Links = new()
             {
-                new FooterLink { Text = "Blog", Url = "/blog" },
-                new FooterLink { Text = "LinkedIn", Url = "https://www.linkedin.com/company/techbehemoths/", External = true, Target = "_blank" },
-                new FooterLink { Text = "Facebook", Url = "https://www.facebook.com/techbehemoths", External = true, Target = "_blank" },
-                new FooterLink { Text = "X (Twitter)", Url = "https://twitter.com/TechBehemoths", External = true, Target = "_blank" },
-                new FooterLink { Text = "Instagram", Url = "https://www.instagram.com/techbehemoths/", External = true, Target = "_blank" }
+                new FooterLink { Text = "Blog", Url = "#" },
+                new FooterLink { Text = "LinkedIn", Url = "#", External = true, Target = "_blank" },
+                new FooterLink { Text = "Facebook", Url = "#", External = true, Target = "_blank" },
+                new FooterLink { Text = "X (Twitter)", Url = "#", External = true, Target = "_blank" },
+                new FooterLink { Text = "Instagram", Url = "#", External = true, Target = "_blank" }
             }
         }
     };
