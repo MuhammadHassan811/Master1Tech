@@ -3,7 +3,7 @@ using Master1Tech.Shared.Models;
 
 namespace Master1Tech.Client.Services
 {
-    public interface IPersonService
+    public interface IPersonServiceEndpoint
     {
         Task<PagedResult<Person>> GetPeople(string? name, int page);
         Task<Person> GetPerson(int id);

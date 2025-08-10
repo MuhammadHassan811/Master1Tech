@@ -1,10 +1,6 @@
 using Master1Tech.Server.Authorization;
-using Master1Tech.Server.Models;
-using Master1Tech.Server.Services.Industry;
 using Master1Tech.Server.Services.Service;
-using Master1Tech.Shared.DTOs.Industry;
 using Master1Tech.Shared.DTOs.Service;
-using Master1Tech.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Master1Tech.Server.Controllers
@@ -56,7 +52,7 @@ namespace Master1Tech.Server.Controllers
         {
             return Ok(await _serviceService.AddServiceAsync(serviceCreateDto));
         }
-        
+
         /// <summary>
         /// Updates a Industry with a specific Id.
         /// </summary>
@@ -87,7 +83,7 @@ namespace Master1Tech.Server.Controllers
             {
                 return Conflict(new { message = ex.Message });
             }
-           
+
         }
 
         /// <summary>

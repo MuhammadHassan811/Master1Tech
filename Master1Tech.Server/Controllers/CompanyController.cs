@@ -1,3 +1,4 @@
+using Master1Tech.Models;
 using Master1Tech.Server.Authorization;
 using Master1Tech.Server.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -21,21 +22,15 @@ namespace Master1Tech.Server.Controllers
         /// Returns a list of paginated people with a default page size of 5.
         /// </summary>
         [AllowAnonymous]
-        [HttpGet]
-        public ActionResult GetCompaniesFromDatabase(
-            [FromQuery] string? location,
-            [FromQuery] string? services,
-            [FromQuery] string? teamSize,
-            [FromQuery] string? hourlyRate,
-            [FromQuery] string? sortBy,
+        [HttpGet("search")]
+        public async Task<ActionResult> GetCompaniesFromDatabase(
+            [FromQuery] CompanyFilter filter,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 12)
         {
             try
             {
-                var companies = _CompanyRepository.GetCompaniesFromDatabase(
-                    location, services, teamSize, hourlyRate, sortBy, page, pageSize
-                );
+                var companies = await _CompanyRepository.GetCompaniesFromDatabase(filter, page, pageSize);
                 return Ok(companies);
             }
             catch (Exception ex)

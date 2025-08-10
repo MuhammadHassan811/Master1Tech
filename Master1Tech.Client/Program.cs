@@ -4,23 +4,30 @@ using Master1Tech.Client.Shared;
 using Master1Tech.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<IPersonServiceEndpoint, PersonServiceEndpoint>();
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IServiceServiceEndpoint, ServiceServiceEndpoint>();
 builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
-builder.Services.AddScoped(x => {
+
+builder.Services.AddScoped<IIndustryServiceEndpoint, IndustryServiceEndpoint>();
+builder.Services.AddScoped<ITechnologyServiceEndpoint, TechnologyServiceEndpoint>();
+
+builder.Services.AddScoped(x =>
+{
     var apiUrl = new Uri("http://localhost:5001");
-    return new HttpClient() {BaseAddress = apiUrl};
+    return new HttpClient() { BaseAddress = apiUrl };
 });
 builder.Services.AddSingleton<PageHistoryState>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
+builder.Services.AddFluentUIComponents();
 await builder.Build().RunAsync();
