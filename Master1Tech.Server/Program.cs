@@ -105,6 +105,12 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Master1Tech.api v1");
+        c.DefaultModelsExpandDepth(-1);
+    });
 }
 else
 {
@@ -113,12 +119,7 @@ else
     app.UseHsts();
 }
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Master1Tech.api v1");
-    c.DefaultModelsExpandDepth(-1);
-});
+
 
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
