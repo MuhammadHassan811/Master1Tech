@@ -1,15 +1,14 @@
 using Master1Tech.Client.Shared;
 using Master1Tech.Shared.Data;
 using Master1Tech.Shared.Models;
-using Microsoft.AspNetCore.Components;
 
 namespace Master1Tech.Client.Services
 {
-    public class PersonService: IPersonService
+    public class PersonServiceEndpoint : IPersonServiceEndpoint
     {
         private IHttpService _httpService;
 
-        public PersonService(IHttpService httpService)
+        public PersonServiceEndpoint(IHttpService httpService)
         {
             _httpService = httpService;
         }

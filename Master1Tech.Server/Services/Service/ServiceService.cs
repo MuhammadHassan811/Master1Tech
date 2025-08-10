@@ -1,7 +1,7 @@
 ﻿using Master1Tech.Server.Models;
-using Master1Tech.Shared.DTOs.Service;
-using Master1Tech.Shared.DTOs;
 using Master1Tech.Server.Services.Mapping.ServiceMapping;
+using Master1Tech.Shared.DTOs;
+using Master1Tech.Shared.DTOs.Service;
 
 namespace Master1Tech.Server.Services.Service
 {

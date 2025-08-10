@@ -1,5 +1,4 @@
-﻿using Master1Tech.Client.Services;
-using Master1Tech.Client.Services.Mapping;
+﻿using Master1Tech.Client.Services.Mapping;
 using Master1Tech.Server.Authorization;
 using Master1Tech.Server.Helpers;
 using Master1Tech.Server.Models;
@@ -7,8 +6,10 @@ using Master1Tech.Server.Services;
 using Master1Tech.Server.Services.Industry;
 using Master1Tech.Server.Services.Mapping.IndustryMapping;
 using Master1Tech.Server.Services.Mapping.ServiceMapping;
+using Master1Tech.Server.Services.Mapping.TechnologyMapping;
+using Master1Tech.Server.Services.Person;
 using Master1Tech.Server.Services.Service;
-using Master1Tech.Shared.Models;
+using Master1Tech.Server.Services.Technology;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Quartz;
@@ -39,11 +40,16 @@ builder.Services.AddScoped<IIndustryMappingService, IndustryMappingService>();
 //builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("BlazorServerCRUD"));
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+
 builder.Services.AddScoped<IUploadRepository, UploadRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<IIndustryRepository, IndustryRepository>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+
+builder.Services.AddScoped<ITechnologyRepository, TechnologyRepository>();
+builder.Services.AddScoped<ITechnologyService, TechnologyService>();
+builder.Services.AddScoped<ITechnologyMappingService, TechnologyMappingService>();
 
 builder.Services.AddSwaggerGen(c =>
 {

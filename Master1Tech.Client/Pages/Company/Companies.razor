@@ -2,8 +2,10 @@
 @using Master1Tech.Client.Extension
 @using Master1Tech.Models
 @using Master1Tech.Services
+@using Master1Tech.Shared.DTOs.Service
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @inject ICompanyService CompanyService
+@inject IServiceServiceEndpoint ServiceService
 @inject IJSRuntime JSRuntime
 @inject IWebAssemblyHostEnvironment hostEnv
 
@@ -47,19 +49,19 @@
                         <option value="Okara">Okara</option>
                     </select>
                 </div> *@
-                <FluentAutocomplete TOption="Company"
+                <FluentAutocomplete TOption="ServiceSummaryDto"
                                     AutoComplete="off"
                                     Autofocus="true"
                                     Label="Services"
                                     Width="200px"
                                     KeepOpen="true"
                                     Placeholder="Search"
-                                    OnOptionsSearch="@OnSearchAsync"
-                                    MaximumSelectedOptions="_maximumSelectedOptions"
+                                    OnOptionsSearch="@OnServiceSearchAsync"
+                                    MaximumSelectedOptions="_maximumServiceSelectedOptions"
                                     OptionText="@(item => item.Name)"
-                                    @bind-SelectedOptions="@SelectedItems">
+                                    @bind-SelectedOptions="@SelectedServiceItems">
                         <OptionTemplate>
-                            <FluentCheckbox Value="@SelectedItems.Contains(context)" Label="@context.Name"/>
+                            <FluentCheckbox Value="@SelectedServiceItems.Contains(context)" Label="@context.Name"/>
                         </OptionTemplate>
                         
                 </FluentAutocomplete>
@@ -356,18 +358,33 @@
     [Parameter] public string Country { get; set; } = "pakistan";
 
     private PagedResult<Company> Companiees = new();
+    private List<ServiceSummaryDto> _services = new();
     private CompanyFilter companyFilter = new();
     private int CompanyCount = 0;
     private bool IsLoading = false;
     private int PageSize = 12;
 
     private int _maximumSelectedOptions = 0;
+    private int _maximumServiceSelectedOptions = 0;
+
 
     protected override async Task OnInitializedAsync()
     {
         await LoadCompanies();
+        await LoadServices();
     }
 
+    private async Task LoadServices()
+    {
+        try
+        {
+            _services = await ServiceService.GetAllServicesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading services: {ex.Message}");
+        }
+    }
     private async Task LoadCompanies()
     {
         IsLoading = true;
@@ -421,17 +438,30 @@
         }
     }
 
+
+    IEnumerable<Company> SelectedItems = Array.Empty<Company>();
+    IEnumerable<ServiceSummaryDto> SelectedServiceItems = Array.Empty<ServiceSummaryDto>();
+
+    private async Task OnServiceSearchAsync(OptionsSearchEventArgs<ServiceSummaryDto> e)
+    {
+
+        e.Items = _services.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+                              .OrderBy(i => i.Name);
+        _maximumServiceSelectedOptions = e.Items.Count();
+    }
+
     private async Task OnSearchAsync(OptionsSearchEventArgs<Company> e)
     {
 
         e.Items = Companiees.Results.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
                               .OrderBy(i => i.Name);
-        _maximumSelectedOptions = e.Items.Count();
+        _maximumServiceSelectedOptions = e.Items.Count();
     }
 
-    bool AutoHeight = true;
-    IEnumerable<Company> SelectedItems = Array.Empty<Company>();
 
+
+    bool AutoHeight = true;
+    
 
     public class SortBy
     {
