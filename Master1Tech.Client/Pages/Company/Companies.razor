@@ -57,6 +57,7 @@
                     </select>
                 </div> *@
                 <FluentAutocomplete TOption="ServiceSummaryDto"
+                                    MaximumOptionsSearch="25"
                                     AutoComplete="off"
                                     Autofocus="true"
                                     Label="@(companyFilter?.Services?.Count > 0 ? $"Services ({companyFilter.Services.Count})": "Services")"
@@ -74,6 +75,7 @@
                 </FluentAutocomplete>
 
                 <FluentAutocomplete TOption="TechnologySummaryDto"
+                                    MaximumOptionsSearch="25"
                                     AutoComplete="off"
                                     Autofocus="true"
                                     Label="@(companyFilter?.Technologies?.Count > 0 ? $"Tools & Technologies ({companyFilter.Technologies.Count})": "Tools & Technologies")"
@@ -91,7 +93,8 @@
                 </FluentAutocomplete>
 
                 <FluentAutocomplete TOption="IndustryDto"
-                                    AutoComplete="off"
+                                    AutoComplete="off" 
+                                    MaximumOptionsSearch="25"
                                     Autofocus="true"
                                     Label="@(companyFilter?.Industries?.Count > 0 ? $"Industry Focus ({companyFilter.Industries.Count})": "Industry Focus")"
                                     Width="200px"
@@ -108,7 +111,8 @@
                 </FluentAutocomplete>
 
                 <FluentAutocomplete TOption="FoundedYearDto"
-                                    AutoComplete="off"
+                                    AutoComplete="off" 
+                                    MaximumOptionsSearch="25"
                                     Autofocus="true"
                                     Label="@(companyFilter?.Year?.Count > 0 ? $"Founding Year ({companyFilter.Year.Count})": "Founding Year")"
                                     Width="200px"
@@ -132,12 +136,14 @@
                                   Width="200px"
                                   OptionValue="@(p => p.Name)"
                                   OptionText="@(p => p.Name)"
-                                  @bind-Value="@SelectedSortByValue"
+                                  @bind-Value="@_selectedSortByValue"
                                   @bind-SelectedOption="@SelectedSortBy">
                     </FluentSelect>
                 </div>
-                   
-                <button @onclick="ApplyFilters" class="btn-filter ms-auto">Filter</button>
+                <div class="ms-auto">
+                    <button @onclick="ResetFilters" class="btn btn-outline-secondary ms-auto">Clear</button>
+                    <button @onclick="ApplyFilters" class="btn btn-primary ms-auto">Filter</button>
+                </div>
             </div>
 
            
@@ -351,7 +357,7 @@
     private int _maximumIndustrySelectedOptions = 25;
     private int _maximumTechnologySelectedOptions = 25;
     private int _maximumFoundedYearsSelectedOptions = 25;
-
+    private string _selectedSortByValue = "Name";
 
 
     protected override async Task OnInitializedAsync()
@@ -373,18 +379,27 @@
             Console.WriteLine($"Error loading services: {ex.Message}");
         }
     }
-    private async Task LoadCompanies()
+
+    private async Task LoadCompanies(bool isClearFilter = false)
     {
         IsLoading = true;
         StateHasChanged();
 
         try
         {
-            companyFilter.Services = SelectedServiceItems.Select(x => x.ServiceID).ToList();
-            companyFilter.Technologies = SelectedTechnologyServiceItems.Select(x => x.TechnologyID).ToList();
-            companyFilter.Industries = SelectedIndustryServiceItems.Select(x => x.Id).ToList();
-            companyFilter.Year = SelectedFoundedYearServiceItems.Select(x => x.Year).ToList();
-            companyFilter.SortBy = SelectedSortByValue;
+            if (isClearFilter)
+            {
+                companyFilter = new();
+                companyFilter.SortBy = _selectedSortByValue;
+            }
+            else
+            {
+                companyFilter.Services = SelectedServiceItems.Select(x => x.ServiceID).ToList();
+                companyFilter.Technologies = SelectedTechnologyServiceItems.Select(x => x.TechnologyID).ToList();
+                companyFilter.Industries = SelectedIndustryServiceItems.Select(x => x.Id).ToList();
+                companyFilter.Year = SelectedFoundedYearServiceItems.Select(x => x.Year).ToList();
+                companyFilter.SortBy = _selectedSortByValue;
+            }
             var pagedResult = await CompanyService.GenerateSampleCompanies(
                 companyFilter,
                 CurrentPage,
@@ -433,6 +448,18 @@
     {
         await LoadCompanies();
     }
+
+    private async Task ResetFilters()
+    {
+        SelectedFoundedYearServiceItems = Array.Empty<FoundedYearDto>();
+        SelectedIndustryServiceItems = Array.Empty<IndustryDto>();
+        SelectedTechnologyServiceItems = Array.Empty<TechnologySummaryDto>();
+        SelectedServiceItems = Array.Empty<ServiceSummaryDto>();
+        _selectedSortByValue = "Name";
+        await LoadCompanies(true);
+    }
+
+
 
     private async Task LoadMoreCompanies()
     {   int page = CurrentPage + 1;
@@ -500,7 +527,7 @@
     
      
     SortByDto? SelectedSortBy;
-    string? SelectedSortByValue = "Name";
+
     private List<SortByDto> SortBies = new()
     {        
         new SortByDto() {

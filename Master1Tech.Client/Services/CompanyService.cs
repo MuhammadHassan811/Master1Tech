@@ -45,7 +45,7 @@ public class CompanyService : ICompanyService
             // This is a simplified representation of how you'd add list parameters.
             // A real implementation would need a more robust query string builder.
             string servicesQuery = filter.Services != null ? string.Join("&", filter.Services.Select(s => $"Services={s}")) : "";
-            string technologiesQuery = filter.Technologies != null ? string.Join("&", filter.Technologies.Select(t => $"Techlogogies={t}")) : "";
+            string technologiesQuery = filter.Technologies != null ? string.Join("&", filter.Technologies.Select(t => $"Technologies={t}")) : "";
             string industriesQuery = filter.Industries != null ? string.Join("&", filter.Industries.Select(i => $"Industries={i}")) : "";
             string yearsQuery = filter.Year != null ? string.Join("&", filter.Year.Select(y => $"Year={y}")) : "";
 

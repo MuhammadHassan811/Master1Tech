@@ -60,7 +60,7 @@
 
 .filter-group {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     flex-wrap: wrap;
     gap: 1rem;
 }
@@ -97,7 +97,7 @@
     background-color: #286ef1;
     color: white;
     border: none;
-    padding: 1rem 2rem;
+    padding: .5rem 1rem;
     border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
