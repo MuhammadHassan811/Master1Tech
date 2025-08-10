@@ -25,11 +25,19 @@ namespace Master1Tech.Server.Controllers
         /// Returns a list of paginated people with a default page size of 5.
         /// </summary>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("paged")]
         public ActionResult GetTechnology([FromQuery] string? name, string? category, int page)
         {
             return Ok(_technologyService.GetTechnologies(name, category, page));
         }
+
+        [AllowAnonymous]
+        [HttpGet("all")]
+        public async Task<ActionResult> GetAllTechnology()
+        {
+            return Ok(await _technologyService.GetAllTechnologiesAsync());
+        }
+
 
         /// <summary>
         /// Gets a specific Technology by Id.
