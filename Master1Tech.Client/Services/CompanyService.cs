@@ -1,20 +1,18 @@
 ﻿using Master1Tech.Client.Shared;
+using Master1Tech.DTOs.Company;
 using Master1Tech.Models;
 using Master1Tech.Services;
 using Master1Tech.Shared.Data;
 
 public class CompanyService : ICompanyService
 {
-    private bool _isInitialized;
-
 
     private readonly IHttpService _httpService;
-    private PagedResult<Company> _companies;
-
-    public CompanyService(IHttpService httpService)
+    private readonly ILogger<CompanyService> _logger;
+    public CompanyService(IHttpService httpService, ILogger<CompanyService> logger)
     {
         _httpService = httpService;
-        //_ = InitializeAsync(); // fire and forget (or better: call from a method in the component)
+        _logger = logger;
     }
 
     //private async Task InitializeAsync()
@@ -22,24 +20,57 @@ public class CompanyService : ICompanyService
     //    _companies = await GenerateSampleCompanies();
     //}
 
-    public async Task<PagedResult<Company>> GenerateSampleCompanies(CompanyFilter filter, int page, int pageSize)
+    public async Task<PagedResult<CompanyDto>> GenerateSampleCompanies(CompanyFilter filter, int page, int pageSize)
     {
         try
         {
-            var query = $"?page={page}&pageSize={pageSize}" +
-            $"&location={filter.Location}" +
-            $"&services={filter.Services}" +
-            $"&teamSize={filter.TeamSize}" +
-            $"&hourlyRate={filter.HourlyRate}" +
-            $"&sortBy={filter.SortBy}";
-            var companies = await _httpService.Get<PagedResult<Company>>($"api/company/{query}");
-            return companies ?? new PagedResult<Company>();
+            //var query = $"?page={page}&pageSize={pageSize}" +
+            //$"&location={filter.Location}" +
+            //$"&services={filter.Services}" +
+            //$"&teamSize={filter.TeamSize}" +
+            //$"&hourlyRate={filter.HourlyRate}" +
+            //$"&sortBy={filter.SortBy}";
+            //var companies = await _httpService.Get<PagedResult<Company>>($"api/company/{query}");
+            //return companies ?? new PagedResult<Company>();
+
+            // The ideal way is to use a helper that builds the query string.
+            // For example, using System.Net.Http.HttpClient and a helper method:
+            var queryParams = new Dictionary<string, string>
+            {
+                { "page", page.ToString() },
+                { "pageSize", pageSize.ToString() },
+                { "SortBy", filter.SortBy }
+            };
+
+            // This is a simplified representation of how you'd add list parameters.
+            // A real implementation would need a more robust query string builder.
+            string servicesQuery = filter.Services != null ? string.Join("&", filter.Services.Select(s => $"Services={s}")) : "";
+            string technologiesQuery = filter.Technologies != null ? string.Join("&", filter.Technologies.Select(t => $"Techlogogies={t}")) : "";
+            string industriesQuery = filter.Industries != null ? string.Join("&", filter.Industries.Select(i => $"Industries={i}")) : "";
+            string yearsQuery = filter.Year != null ? string.Join("&", filter.Year.Select(y => $"Year={y}")) : "";
+
+            string finalQuery = string.Join("&", new[] { servicesQuery, technologiesQuery, industriesQuery, yearsQuery }.Where(s => !string.IsNullOrEmpty(s)));
+            string fullUrl = string.Empty;
+            if (!string.IsNullOrEmpty(finalQuery))
+            {
+                fullUrl = $"api/company/search?page={page}&pageSize={pageSize}&SortBy={filter.SortBy}&{finalQuery}";
+            }
+            else
+            {
+                fullUrl = $"api/company/search?page={page}&pageSize={pageSize}&SortBy={filter.SortBy}";
+            }
+
+
+            // Assuming your httpService has a Get method.
+            var result = await _httpService.Get<PagedResult<CompanyDto>>(fullUrl);
+
+            return result ?? new PagedResult<CompanyDto>();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Optionally log the error
-            // _logger.LogError(ex, "Error fetching companies from API");
-            return new PagedResult<Company>(); // Return empty if it fails
+            _logger.LogError(ex, "Error fetching companies from API");
+            return new PagedResult<CompanyDto>(); // Return empty if it fails
         }
     }
 
@@ -50,7 +81,7 @@ public class CompanyService : ICompanyService
     }
 
 
-    public PagedResult<Company> GetCompanies() => _companies ?? new PagedResult<Company>();
+    //public PagedResult<Company> GetCompanies() => _companies ?? new PagedResult<Company>();
     //public CompanyService()
     //{
     //    _companies = GenerateSampleCompanies();

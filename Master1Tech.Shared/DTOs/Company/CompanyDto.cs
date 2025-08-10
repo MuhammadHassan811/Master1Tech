@@ -1,21 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Master1Tech.Models
+﻿namespace Master1Tech.DTOs.Company
 {
-    public class CompanyDTO
+    public class CompanyDto
     {
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
         public string? Location { get; set; } = string.Empty;
         public string? Country { get; set; } = string.Empty;
         public string? LogoUrl { get; set; } = string.Empty;
-        
+
         public string TeamSize { get; set; } = string.Empty;
 
         public string Headquarter { get; set; }
-        
+
         public string HourlyRate { get; set; } = string.Empty;
- 
+
         public int? Rating { get; set; } = 0;
         public bool IsVerified { get; set; }
         public bool? IsTopCompany { get; set; }
@@ -29,5 +28,8 @@ namespace Master1Tech.Models
         public string? Slug { get; set; }
 
         public string? Services { get; set; } = string.Empty;
+
+        public DateTime DateAdded { get; set; }
+        public DateTime LastUpdated { get; set; }
     }
 }

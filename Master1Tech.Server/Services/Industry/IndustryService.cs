@@ -2,6 +2,7 @@
 using Master1Tech.Shared.DTOs.Industry;
 using Master1Tech.Shared.DTOs;
 using Master1Tech.Server.Services.Mapping.IndustryMapping;
+using Master1Tech.Shared.DTOs.Technology;
 
 namespace Master1Tech.Server.Services.Industry
 {
@@ -74,6 +75,12 @@ namespace Master1Tech.Server.Services.Industry
         public async Task<bool> IndustryNameExistsAsync(string name, int? excludeId = null)
         {
             return await _industryRepository.IndustryNameExistsAsync(name, excludeId);
+        }
+
+        public async Task<List<IndustryDto>> GetAllIndustryAsync()
+        {
+            var industries = await _industryRepository.GetAllIndustry();
+            return industries.Select(_mappingService.MapToIndustryDto).ToList();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Master1Tech.Client.Services
 
         public async Task<List<ServiceSummaryDto>> GetAllServicesAsync()
         {
-            var companies = await _httpService.Get<List<ServiceSummaryDto>>($"api/Services/GetAllServices");
+            var companies = await _httpService.Get<List<ServiceSummaryDto>>($"api/Services/all");
             return companies ?? new List<ServiceSummaryDto>();
         }
     }

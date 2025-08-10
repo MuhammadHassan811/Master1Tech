@@ -12,5 +12,6 @@ namespace Master1Tech.Server.Models
         Task<Industry?> DeleteIndustryAsync(int industryId);
         Task<bool> IndustryExistsAsync(int industryId);
         Task<bool> IndustryNameExistsAsync(string name, int? excludeId = null);
+        Task<List<Industry>> GetAllIndustry();
     }
 }

@@ -43,11 +43,11 @@
             }
         </select>
 
-        <!-- Filter Button -->
+       @*  <!-- Filter Button -->
         <button @onclick="OnFilterChange"
                 style="padding: 8px 16px; background-color: #3f51b5; color: white; border: none; border-radius: 4px;">
             Filter
-        </button>
+        </button> *@
     </div>
 </div>
 
@@ -115,17 +115,17 @@
         "Highest Rate"
     };
 
-    private async Task OnFilterChange()
-    {
-        var filter = new CompanyFilter
-            {
-                Location = SelectedLocation,
-                Services = SelectedService,
-                TeamSize = SelectedTeamSize,
-                HourlyRate = SelectedHourlyRate,
-                SortBy = SelectedSortBy
-            };
+    // private async Task OnFilterChange()
+    // {
+    //     var filter = new CompanyFilter
+    //         {
+    //             Location = SelectedLocation,
+    //             Services = SelectedService,
+    //             TeamSize = SelectedTeamSize,
+    //             HourlyRate = SelectedHourlyRate,
+    //             SortBy = SelectedSortBy
+    //         };
 
-        await OnFilterChanged.InvokeAsync(filter);
-    }
+    //     await OnFilterChanged.InvokeAsync(filter);
+    // }
 }

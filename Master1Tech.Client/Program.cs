@@ -17,6 +17,10 @@ builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IServiceServiceEndpoint, ServiceServiceEndpoint>();
 builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
+
+builder.Services.AddScoped<IIndustryServiceEndpoint, IndustryServiceEndpoint>();
+builder.Services.AddScoped<ITechnologyServiceEndpoint, TechnologyServiceEndpoint>();
+
 builder.Services.AddScoped(x =>
 {
     var apiUrl = new Uri("http://localhost:5001");

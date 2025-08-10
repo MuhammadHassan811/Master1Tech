@@ -100,7 +100,7 @@ namespace Master1Tech.Server.Models
         public async Task<List<Service>> GetAllServicesAsync()
         {
             return await _appDbContext.Services
-                .OrderBy(s => s.Name)
+                .OrderBy(s => s.ServiceID)
                 .ToListAsync();
         }
 

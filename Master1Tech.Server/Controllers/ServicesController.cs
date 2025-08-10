@@ -21,17 +21,17 @@ namespace Master1Tech.Server.Controllers
         /// Returns a list of paginated people with a default page size of 5.
         /// </summary>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("paged")]
         public ActionResult GetServices([FromQuery] string? name, int page)
         {
             return Ok(_serviceService.GetServices(name, page));
         }
 
         [AllowAnonymous]
-        [HttpGet("GetAllServices")]
-        public ActionResult GetAllServices()
+        [HttpGet("all")]
+        public async Task<ActionResult> GetAllServices()
         {
-            return Ok(_serviceService.GetAllServicesAsync());
+            return Ok(await _serviceService.GetAllServicesAsync());
         }
 
         /// <summary>

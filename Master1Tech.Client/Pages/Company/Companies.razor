@@ -1,11 +1,18 @@
 ﻿@page "/companies/pakistan"
 @using Master1Tech.Client.Extension
+@using Master1Tech.DTOs.Company
 @using Master1Tech.Models
 @using Master1Tech.Services
+@using Master1Tech.Shared.DTOs.Common
+@using Master1Tech.Shared.DTOs.Industry
 @using Master1Tech.Shared.DTOs.Service
+@using Master1Tech.Shared.DTOs.Technology
+@using Master1Tech.Shared.Extentions.Common
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @inject ICompanyService CompanyService
 @inject IServiceServiceEndpoint ServiceService
+@inject ITechnologyServiceEndpoint TechnologyService
+@inject IIndustryServiceEndpoint IndustryService
 @inject IJSRuntime JSRuntime
 @inject IWebAssemblyHostEnvironment hostEnv
 
@@ -23,7 +30,7 @@
                 </picture>
             </div>
             <div>
-                <h1 class="loc-intro__title">There are <span class="txt-blue">1093</span> Companies in <span class="txt-blue dashed">Pakistan</span><br>that cover <span class="txt-blue">112</span> Services &amp; Industries!</h1> 
+                <h1 class="loc-intro__title">There are <span class="txt-blue">@Companiees.TotalRowCount</span> Companies in <span class="txt-blue dashed">Pakistan</span><br>that cover <span class="txt-blue">@_services.Count()</span> Services &amp; Industries!</h1> 
                 <div class="loc-intro__smry">
                     <p>Pakistan’s Information Technology (IT) sector has a promising future with its talented youth and is poised to become the largest export industry of the country, according to the Pakistani High Commissioner to the UK.&nbsp;</p>
                     <p>Based on this information, it is also important to mention that the average salary in the IT industry in Pakistan is estimated at around 378 USD/mo, making the country one of the most accessible and competitive in the region in terms of prices.</p>
@@ -52,7 +59,7 @@
                 <FluentAutocomplete TOption="ServiceSummaryDto"
                                     AutoComplete="off"
                                     Autofocus="true"
-                                    Label="Services"
+                                    Label="@(companyFilter?.Services?.Count > 0 ? $"Services ({companyFilter.Services.Count})": "Services")"
                                     Width="200px"
                                     KeepOpen="true"
                                     Placeholder="Search"
@@ -66,60 +73,60 @@
                         
                 </FluentAutocomplete>
 
-                <FluentAutocomplete TOption="Company"
+                <FluentAutocomplete TOption="TechnologySummaryDto"
                                     AutoComplete="off"
                                     Autofocus="true"
-                                    Label="Tools & Technologies"
+                                    Label="@(companyFilter?.Technologies?.Count > 0 ? $"Tools & Technologies ({companyFilter.Technologies.Count})": "Tools & Technologies")"
                                     Width="200px"
                                     KeepOpen="true"
                                     Placeholder="Search"
-                                    OnOptionsSearch="@OnSearchAsync"
-                                    MaximumSelectedOptions="_maximumSelectedOptions"
+                                    OnOptionsSearch="@OnSearchTechnologyAsync"
+                                    MaximumSelectedOptions="_maximumTechnologySelectedOptions"
                                     OptionText="@(item => item.Name)"
-                                    @bind-SelectedOptions="@SelectedItems">
+                                    @bind-SelectedOptions="@SelectedTechnologyServiceItems">
                         <OptionTemplate>
-                            <FluentCheckbox Value="@SelectedItems.Contains(context)" Label="@context.Name"/>
+                        <FluentCheckbox Value="@SelectedTechnologyServiceItems.Contains(context)" Label="@context.Name" />
                         </OptionTemplate>
                         
                 </FluentAutocomplete>
 
-                <FluentAutocomplete TOption="Company"
+                <FluentAutocomplete TOption="IndustryDto"
                                     AutoComplete="off"
                                     Autofocus="true"
-                                    Label="Industry Focus"
+                                    Label="@(companyFilter?.Industries?.Count > 0 ? $"Industry Focus ({companyFilter.Industries.Count})": "Industry Focus")"
                                     Width="200px"
                                     KeepOpen="true"
                                     Placeholder="Search"
-                                    OnOptionsSearch="@OnSearchAsync"
-                                    MaximumSelectedOptions="_maximumSelectedOptions"
+                                    OnOptionsSearch="@OnSearchIndustryAsync"
+                                    MaximumSelectedOptions="_maximumIndustrySelectedOptions"
                                     OptionText="@(item => item.Name)"
-                                    @bind-SelectedOptions="@SelectedItems">
+                                    @bind-SelectedOptions="@SelectedIndustryServiceItems">
                         <OptionTemplate>
-                            <FluentCheckbox Value="@SelectedItems.Contains(context)" Label="@context.Name"/>
+                            <FluentCheckbox Value="@SelectedIndustryServiceItems.Contains(context)" Label="@context.Name"/>
                         </OptionTemplate>
                         
                 </FluentAutocomplete>
 
-                <FluentAutocomplete TOption="Company"
+                <FluentAutocomplete TOption="FoundedYearDto"
                                     AutoComplete="off"
                                     Autofocus="true"
-                                    Label="Founding Year"
+                                    Label="@(companyFilter?.Year?.Count > 0 ? $"Founding Year ({companyFilter.Year.Count})": "Founding Year")"
                                     Width="200px"
                                     KeepOpen="true"
                                     Placeholder="Search"
-                                    OnOptionsSearch="@OnSearchAsync"
-                                    MaximumSelectedOptions="_maximumSelectedOptions"
-                                    OptionText="@(item => item.Name)"
-                                    @bind-SelectedOptions="@SelectedItems">
+                                    OnOptionsSearch="@OnSearchFoundedYearAsync"
+                                    MaximumSelectedOptions="_maximumFoundedYearsSelectedOptions"
+                                    OptionText="@(item => item.Year)"
+                                    @bind-SelectedOptions="@SelectedFoundedYearServiceItems">
                         <OptionTemplate>
-                            <FluentCheckbox Value="@SelectedItems.Contains(context)" Label="@context.Name"/>
+                            <FluentCheckbox Value="@SelectedFoundedYearServiceItems.Contains(context)" Label="@context.Year"/>
                         </OptionTemplate>
                         
                 </FluentAutocomplete>
 
                 
                 <div class="sort-by">
-                    <FluentSelect TOption="SortBy"
+                    <FluentSelect TOption="SortByDto"
                                   Label="Sort by"
                                   Items="@SortBies.ToList()"
                                   Width="200px"
@@ -129,39 +136,8 @@
                                   @bind-SelectedOption="@SelectedSortBy">
                     </FluentSelect>
                 </div>
-
-               @*  <div class="filter-item">
-                    <span>Services</span>
-                    <select @bind="companyFilter.Services">
-                        <option value="">All</option>
-                        <option value="Web Development">Web Development</option>
-                        <option value="Mobile App Development">Mobile App Development</option>
-                        <option value="Custom Software Development">Custom Software Development</option>
-                    </select>
-                </div>
-
-                <div class="filter-item active">
-                    <span>Team size</span>
-                    <select @bind="companyFilter.TeamSize">
-                        <option value="">All</option>
-                        <option value="10-49">10-49</option>
-                        <option value="50-249">50-249</option>
-                        <option value="250-999">250-999</option>
-                    </select>
-                </div>
-
-                <div class="filter-item">
-                    <span>Hourly rate</span>
-                    <select @bind="companyFilter.HourlyRate">
-                        <option value="">All</option>
-                        <option value="0-49">0-49</option>
-                        <option value="50-99">50-99</option>
-                    </select>
-                </div> *@
-
-               
-                               
-                <button @onclick="ApplyFilters" class="btn btn-filter">Filter</button>
+                   
+                <button @onclick="ApplyFilters" class="btn-filter ms-auto">Filter</button>
             </div>
 
            
@@ -357,21 +333,33 @@
 @code {
     [Parameter] public string Country { get; set; } = "pakistan";
 
-    private PagedResult<Company> Companiees = new();
+    private PagedResult<CompanyDto> Companiees = new();
     private List<ServiceSummaryDto> _services = new();
+    private List<TechnologySummaryDto> _technologies = new();
+    private List<IndustryDto> _industries = new();
+
+    private List<FoundedYearDto> _foundedYears = CommonExt.GetFoundedYears();
+
+
     private CompanyFilter companyFilter = new();
     private int CompanyCount = 0;
     private bool IsLoading = false;
     private int PageSize = 12;
 
-    private int _maximumSelectedOptions = 0;
-    private int _maximumServiceSelectedOptions = 0;
+    private int _maximumSelectedOptions = 25;
+    private int _maximumServiceSelectedOptions = 25;
+    private int _maximumIndustrySelectedOptions = 25;
+    private int _maximumTechnologySelectedOptions = 25;
+    private int _maximumFoundedYearsSelectedOptions = 25;
+
 
 
     protected override async Task OnInitializedAsync()
     {
         await LoadCompanies();
         await LoadServices();
+        await LoadTechnologies();
+        await LoadIndustries();
     }
 
     private async Task LoadServices()
@@ -392,6 +380,11 @@
 
         try
         {
+            companyFilter.Services = SelectedServiceItems.Select(x => x.ServiceID).ToList();
+            companyFilter.Technologies = SelectedTechnologyServiceItems.Select(x => x.TechnologyID).ToList();
+            companyFilter.Industries = SelectedIndustryServiceItems.Select(x => x.Id).ToList();
+            companyFilter.Year = SelectedFoundedYearServiceItems.Select(x => x.Year).ToList();
+            companyFilter.SortBy = SelectedSortByValue;
             var pagedResult = await CompanyService.GenerateSampleCompanies(
                 companyFilter,
                 CurrentPage,
@@ -411,6 +404,30 @@
             StateHasChanged();
         }
     }
+
+    private async Task LoadTechnologies()
+    {
+        try
+        {
+            _technologies = await TechnologyService.GetAllTechnologiesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading technologies: {ex.Message}");
+        }
+    }
+    private async Task LoadIndustries()
+    {
+        try
+        {
+            _industries = await IndustryService.GetAllIndustryAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading industries: {ex.Message}");
+        }
+    }
+
 
     private async Task ApplyFilters()
     {
@@ -441,49 +458,64 @@
 
     IEnumerable<Company> SelectedItems = Array.Empty<Company>();
     IEnumerable<ServiceSummaryDto> SelectedServiceItems = Array.Empty<ServiceSummaryDto>();
+    IEnumerable<TechnologySummaryDto> SelectedTechnologyServiceItems = Array.Empty<TechnologySummaryDto>();
+    IEnumerable<IndustryDto> SelectedIndustryServiceItems = Array.Empty<IndustryDto>();
+    IEnumerable<FoundedYearDto> SelectedFoundedYearServiceItems = Array.Empty<FoundedYearDto>();
 
     private async Task OnServiceSearchAsync(OptionsSearchEventArgs<ServiceSummaryDto> e)
     {
 
         e.Items = _services.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
                               .OrderBy(i => i.Name);
-        _maximumServiceSelectedOptions = e.Items.Count();
+        await Task.CompletedTask;
     }
 
-    private async Task OnSearchAsync(OptionsSearchEventArgs<Company> e)
+    private async Task OnSearchTechnologyAsync(OptionsSearchEventArgs<TechnologySummaryDto> e)
     {
 
-        e.Items = Companiees.Results.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+        e.Items = _technologies.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
                               .OrderBy(i => i.Name);
-        _maximumServiceSelectedOptions = e.Items.Count();
+        await Task.CompletedTask;
+    }
+    private async Task OnSearchFoundedYearAsync(OptionsSearchEventArgs<FoundedYearDto> e)
+    {
+
+        e.Items = _foundedYears.Where(i => i.Year.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+                              .OrderBy(i => i.Year);
+        await Task.CompletedTask;
+    }
+
+    private async Task OnSearchIndustryAsync(OptionsSearchEventArgs<IndustryDto> e)
+    {
+
+        e.Items = _industries.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+                              .OrderBy(i => i.Name);
+
+        await Task.CompletedTask;
     }
 
 
 
     bool AutoHeight = true;
     
-
-    public class SortBy
-    {
-        public string Name { get; set; } = null!;       
-    }
-    SortBy? SelectedSortBy;
-    string? SelectedSortByValue;
-    private List<SortBy> SortBies = new()
+     
+    SortByDto? SelectedSortBy;
+    string? SelectedSortByValue = "Name";
+    private List<SortByDto> SortBies = new()
     {        
-        new SortBy() {
+        new SortByDto() {
             Name = "Name"
         },
-        new SortBy
+        new SortByDto
         {
             Name = "Team Size"
         },
-        new SortBy()
+        new SortByDto()
         {
             Name = "Rating"
         },
 
-        new SortBy() {
+        new SortByDto() {
             Name = "Featured"
         },
 

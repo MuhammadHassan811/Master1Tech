@@ -80,5 +80,11 @@ namespace Master1Tech.Server.Models
 
             return await query.AnyAsync();
         }
+        public async Task<List<Industry>> GetAllIndustry()
+        {
+            return await _appDbContext.Industries
+                .OrderBy(t => t.Id)
+                .ToListAsync();
+        }
     }
 }
