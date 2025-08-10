@@ -6,7 +6,7 @@ namespace Master1Tech.Shared.Extentions.Common
     {
         public static List<FoundedYearDto> GetFoundedYears()
         {
-            const int startYear = 1970;
+            const int startYear = 1990;
             int endYear = DateTime.Now.Year;
 
             return Enumerable.Range(startYear, endYear - startYear + 1)
