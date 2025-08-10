@@ -1,4 +1,5 @@
 ﻿using Master1Tech.Client.Services.Mapping;
+using Master1Tech.Client.Shared;
 using Master1Tech.Server.Authorization;
 using Master1Tech.Server.Helpers;
 using Master1Tech.Server.Models;
@@ -7,9 +8,9 @@ using Master1Tech.Server.Services.Industry;
 using Master1Tech.Server.Services.Mapping.IndustryMapping;
 using Master1Tech.Server.Services.Mapping.ServiceMapping;
 using Master1Tech.Server.Services.Mapping.TechnologyMapping;
-using Master1Tech.Server.Services.Person;
 using Master1Tech.Server.Services.Service;
 using Master1Tech.Server.Services.Technology;
+using Master1Tech.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Quartz;
@@ -27,6 +28,7 @@ builder.Services.AddControllersWithViews().AddJsonOptions(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServerConnection_DebugMode")));
+builder.Services.AddScoped<IHttpService, HttpService>();
 
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IPersonMappingService, PersonMappingService>();
@@ -35,9 +37,14 @@ builder.Services.AddScoped<IPersonMappingService, PersonMappingService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceMappingService, ServiceMappingService>();
 
+
+builder.Services.AddScoped<ITechnologyService, TechnologyService>();
+builder.Services.AddScoped<ITechnologyMappingService, TechnologyMappingService>();
+
 builder.Services.AddScoped<IIndustryService, IndustryService>();
 builder.Services.AddScoped<IIndustryMappingService, IndustryMappingService>();
 //builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("BlazorServerCRUD"));
+builder.Services.AddScoped<ITechnologyRepository, TechnologyRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 
