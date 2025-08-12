@@ -1,4 +1,13 @@
 ﻿@page "/contact"
+@using Master1Tech.Client.Extension
+@using Master1Tech.DTOs.Company
+@using Master1Tech.Models
+@using Master1Tech.Services
+@using Master1Tech.Shared.DTOs.Common
+@using Master1Tech.Shared.DTOs.Service
+@using Microsoft.AspNetCore.Components.Forms
+@inject IServiceServiceEndpoint ServiceService
+@inject HttpClient Http
 
 <div class="contact-container">
     <div class="contact-form">
@@ -6,7 +15,7 @@
 
         <div class="info-banner">
             <span class="info-icon">💬</span>
-            <span>Get in touch with <strong>Master 1 Tech</strong> and tell them more about your project.</span>
+            <span>Get in touch with <strong>Master1Tech</strong> and tell them more about your project.</span>
         </div>
 
         <EditForm Model="@contactModel" OnValidSubmit="@HandleSubmit">
@@ -20,21 +29,41 @@
                     <InputText @bind-Value="contactModel.Email" class="form-control" type="email" />
                 </div>
             </div>
-
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <InputText @bind-Value="contactModel.PhoneNo" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="companyName">Company Name</label>
+                    <InputText @bind-Value="contactModel.CompanyName" class="form-control" />
+                </div>
+            </div>
+         
+                <div class="form-group">
+                    <label for="jobTitle">Job Title</label>
+                    <InputText @bind-Value="contactModel.JobTitle" class="form-control" />
+                </div>
+              
+            
             <div class="form-group">
-                <label for="service">Select Service</label>
+                <label for="service">Project Type</label>
                 <InputSelect @bind-Value="contactModel.Service" class="form-control">
                     <option value="">Choose a service...</option>
-                    <option value="web-development">Web Development</option>
-                    <option value="mobile-app">Mobile App Development</option>
-                    <option value="consulting">IT Consulting</option>
-                    <option value="maintenance">System Maintenance</option>
-                    <option value="other">Other</option>
+                    @if (_services != null && _services.Any())
+                    {
+                        @foreach (var service in _services)
+                        {
+                            <option value="@service.ServiceID">@service.Name</option>
+                        }
+                    }
                 </InputSelect>
             </div>
 
             <div class="form-group">
-                <label for="description">Describe your Project</label>
+                <label for="description">
+                    Project Details
+                </label>
                 <InputTextArea @bind-Value="contactModel.ProjectDescription" class="form-control textarea" rows="8" />
             </div>
 
@@ -45,14 +74,29 @@
                     Yes, I want to get access to vetted companies that match my needs (highly recommended)
                 </label>
             </div>
+            <div class="form-group">
+                <label for="description">Attach Relevant Files (Optional: Word, Excel, PDF)</label>
+                <InputFile OnChange="HandleFileSelected" accept=".doc,.docx,.xls,.xlsx,.pdf" />
 
-            <button type="submit" class="btn-submit">Send Message</button>
+                @if (!string.IsNullOrEmpty(message))
+                {
+                    <p>@message</p>
+                }
+
+            </div>
+            <button type="submit" class="btn-submit">Launch Your Partnership</button>
+            <p>
+                Our experts will connect you with Pakistan’s elite IT companies within 24 hours—let’s transform your vision into reality.
+            </p>
         </EditForm>
     </div>
 </div>
 
 @code {
+    private List<ServiceSummaryDto> _services = new();
+    IEnumerable<ServiceSummaryDto> SelectedServiceItems = Array.Empty<ServiceSummaryDto>();
     private ContactModel contactModel = new();
+    private string? message;
 
     private async Task HandleSubmit()
     {
@@ -61,10 +105,47 @@
         // Add your form submission logic here
     }
 
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        if (file != null)
+        {
+            using var stream = file.OpenReadStream(maxAllowedSize: 10_000_000); // 10 MB
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
+
+            var content = new MultipartFormDataContent();
+            content.Add(new ByteArrayContent(fileBytes), "file", file.Name);
+
+            var response = await Http.PostAsync("api/files/upload", content);
+            message = await response.Content.ReadAsStringAsync();
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadServices();
+    }
+    private async Task LoadServices()
+    {
+        try
+        {
+            _services = await ServiceService.GetAllServicesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading services: {ex.Message}");
+        }
+    }
+
     public class ContactModel
     {
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string PhoneNo { get; set; } = string.Empty;
+        public string CompanyName { get; set; } = string.Empty;
+        public string JobTitle { get; set; } = string.Empty;
         public string Service { get; set; } = string.Empty;
         public string ProjectDescription { get; set; } = string.Empty;
         public bool GetVettedCompanies { get; set; } = true;
