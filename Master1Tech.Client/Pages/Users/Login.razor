@@ -1,8 +1,10 @@
 @page "/user/login"
 @inject Services.IUserService UserService
 @inject IAlertService AlertService
+@inject CustomAuthStateProvider AuthProvider
 @inject NavigationManager navManager
 @inject Master1Tech.Client.Shared.PageHistoryState PageHistoryState
+@layout AdminLayout
 
 <div class="col-md-6 offset-md-3 mt-5">
     <div class="card">
@@ -35,7 +37,6 @@
 @code {
     private Master1Tech.Client.Shared.Login loginModel = new Master1Tech.Client.Shared.Login();
     private bool loading;
-
     private async void OnValidSubmit()
     {
         // reset alerts on submit
@@ -45,6 +46,7 @@
         try
         {
             await UserService.Login(loginModel);
+
             var returnUrl = navManager.QueryString("returnUrl") ?? "";
             if (returnUrl != string.Empty)
             {
@@ -55,7 +57,8 @@
                     navManager.NavigateTo(PageHistoryState.GetGoBackPage());
                 }
                 else{
-                    navManager.NavigateTo("/user/1");
+                    navManager.NavigateTo("/test");
+                    //navManager.NavigateTo("/user/1");
                 }
             }
         }

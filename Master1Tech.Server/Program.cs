@@ -4,7 +4,10 @@ using Master1Tech.Server.Authorization;
 using Master1Tech.Server.Helpers;
 using Master1Tech.Server.Models;
 using Master1Tech.Server.Services;
+using Master1Tech.Server.Services.FileService;
+using Master1Tech.Server.Services.GetInTouch;
 using Master1Tech.Server.Services.Industry;
+using Master1Tech.Server.Services.Mapping.GetInTouchMapping;
 using Master1Tech.Server.Services.Mapping.IndustryMapping;
 using Master1Tech.Server.Services.Mapping.ServiceMapping;
 using Master1Tech.Server.Services.Mapping.TechnologyMapping;
@@ -29,10 +32,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServerConnection_DebugMode")));
 builder.Services.AddScoped<IHttpService, HttpService>();
-
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IPersonMappingService, PersonMappingService>();
 
+
+builder.Services.AddScoped<IGetInTouchService, GetInTouchService>();
+builder.Services.AddScoped<IGetInTouchMappingService, GetInTouchMappingService>();
 
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceMappingService, ServiceMappingService>();
@@ -44,6 +50,7 @@ builder.Services.AddScoped<ITechnologyMappingService, TechnologyMappingService>(
 builder.Services.AddScoped<IIndustryService, IndustryService>();
 builder.Services.AddScoped<IIndustryMappingService, IndustryMappingService>();
 //builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("BlazorServerCRUD"));
+builder.Services.AddScoped<IGetInTouchRepository, GetInTouchRepository>();
 builder.Services.AddScoped<ITechnologyRepository, TechnologyRepository>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
@@ -74,15 +81,18 @@ builder.Services.AddSwaggerGen(c =>
     c.CustomSchemaIds(r => r.FullName);
 });
 
-builder.Services.AddQuartz(q =>
-{
-    q.AddJobAndTrigger<UploadProcessorJob>(builder.Configuration);
-});
-builder.Services.AddQuartzHostedService(
-    q => q.WaitForJobsToComplete = true);
+//builder.Services.AddQuartz(q =>
+//{
+//    q.AddJobAndTrigger<UploadProcessorJob>(builder.Configuration);
+//});
+//builder.Services.AddQuartzHostedService(
+//    q => q.WaitForJobsToComplete = true);
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = 10_000_000; // 10 MB
+});
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -132,5 +142,14 @@ app.UseMiddleware<JwtMiddleware>();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
-
+// Ensure upload directory exists
+if (string.IsNullOrEmpty(app.Environment.WebRootPath))
+{
+    app.Environment.WebRootPath = Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+}
+var uploadPath = Path.Combine(app.Environment.WebRootPath, "uploads", "contacts");
+if (!Directory.Exists(uploadPath))
+{
+    Directory.CreateDirectory(uploadPath);
+}
 app.Run();

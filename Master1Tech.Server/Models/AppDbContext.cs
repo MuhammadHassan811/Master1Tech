@@ -32,7 +32,7 @@ namespace Master1Tech.Server.Models
         public DbSet<Industry> Industries { get; set; }
         public DbSet<FirstAnswerQuestion> FirstAnswerQuestions { get; set; }
         public DbSet<CompanyIndustryFocus> CompanyIndustryFocuses { get; set; }
-
+        public DbSet<GetInTouch> GetInTouches { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
