@@ -81,12 +81,11 @@ namespace Master1Tech.Models
         public DateTime DateAdded { get; set; } = DateTime.Now;
         public DateTime LastUpdated { get; set; }
 
+        public int TeamSizeMin { get; set; }
         public ICollection<CompaniesService> CompanyServices { get; set; }
         public ICollection<FirstAnswerQuestion> FirstAnswerQuestions { get; set; }
         public ICollection<CompanyIndustryFocus> CompanyIndustryFocus { get; set; }
         public ICollection<CompanyTechnology> CompanyTechnologies { get; set; }
-
-
 
     }
 }
