@@ -1,0 +1,409 @@
+﻿@* RangeSlider.razor - Reusable Range Slider Component *@
+
+<div class="range-slider-container">
+    <div class="range-slider-header">
+        <h2>@Title</h2>
+        @if (!string.IsNullOrEmpty(Description))
+        {
+            <p>@Description</p>
+        }
+    </div>
+
+    <div class="range-slider-wrapper">
+        <!-- Year labels with tooltips -->
+        <div class="year-labels">
+            <div class="year-label left" style="left: @(GetPercentage(MinValue))%">
+                <div class="year-tooltip">@GetDisplayValue(MinValue)</div>
+                <div class="year-pointer"></div>
+            </div>
+            <div class="year-label right" style="left: @(GetPercentage(MaxValue))%">
+                <div class="year-tooltip">@GetDisplayValue(MaxValue)</div>
+                <div class="year-pointer"></div>
+            </div>
+        </div>
+
+        <!-- Slider track -->
+        <div class="slider-track">
+            <div class="slider-track-active"
+                 style="left: @(GetPercentage(MinValue))%; width: @(GetPercentage(MaxValue) - GetPercentage(MinValue))%"></div>
+        </div>
+
+        <!-- Slider inputs -->
+        <input type="range"
+               class="slider slider-min"
+               min="@Min"
+               max="@Max"
+               step="@Step"
+               value="@MinValue"
+               @oninput="OnMinValueChanged" />
+
+        <input type="range"
+               class="slider slider-max"
+               min="@Min"
+               max="@Max"
+               step="@Step"
+               value="@MaxValue"
+               @oninput="OnMaxValueChanged" />
+
+       @*  <!-- Value markers on track -->
+        <div class="value-markers">
+            <div class="value-marker" style="left: 0%">@GetDisplayValue(Min)</div>
+            <div class="value-marker" style="left: 100%">@GetDisplayValue(Max)</div>
+        </div> *@
+    </div>
+
+    <!-- Input boxes -->
+    <div class="input-boxes">
+        <div class="input-box">
+            <span>@FromLabel <b> @GetDisplayValue(MinValue) </b> </span>
+        </div>
+        <div class="input-box">
+            <span>@ToLabel <b> @GetDisplayValue(MaxValue) </b></span>
+        </div>
+    </div>
+
+    @if (ShowSelectedRange)
+    {
+        <div class="selected-range">
+            <strong>Selected Range: @GetDisplayValue(MinValue) - @GetDisplayValue(MaxValue)</strong>
+        </div>
+    }
+</div>
+
+@code {
+    private int _minValue;
+    private int _maxValue;
+
+    [Parameter] public string Title { get; set; } = "Range Slider";
+    [Parameter] public string Description { get; set; } = "";
+    [Parameter] public int Min { get; set; } = 0;
+    [Parameter] public int Max { get; set; } = 100;
+    [Parameter] public int Step { get; set; } = 1;
+    [Parameter] public int InitialMinValue { get; set; } = 0;
+    [Parameter] public int InitialMaxValue { get; set; } = 100;
+    [Parameter] public string FromLabel { get; set; } = "From";
+    [Parameter] public string ToLabel { get; set; } = "To";
+    [Parameter] public bool ShowSelectedRange { get; set; } = false;
+    [Parameter] public string ValueSuffix { get; set; } = "";
+    [Parameter] public string ValuePrefix { get; set; } = "";
+    [Parameter] public EventCallback<(int min, int max)> OnRangeChanged { get; set; }
+
+    public int MinValue
+    {
+        get => _minValue;
+        private set
+        {
+            if (value <= MaxValue && value >= Min)
+            {
+                _minValue = value;
+                InvokeRangeChanged();
+            }
+        }
+    }
+
+    public int MaxValue
+    {
+        get => _maxValue;
+        private set
+        {
+            if (value >= MinValue && value <= Max)
+            {
+                _maxValue = value;
+                InvokeRangeChanged();
+            }
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_minValue == 0 && _maxValue == 0)
+        {
+            _minValue = InitialMinValue;
+            _maxValue = InitialMaxValue;
+        }
+    }
+
+    private async void OnMinValueChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int value))
+        {
+            MinValue = value;
+            StateHasChanged();
+        }
+    }
+
+    private async void OnMaxValueChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int value))
+        {
+            MaxValue = value;
+            StateHasChanged();
+        }
+    }
+
+    private async void InvokeRangeChanged()
+    {
+        if (OnRangeChanged.HasDelegate)
+        {
+            await OnRangeChanged.InvokeAsync((MinValue, MaxValue));
+        }
+    }
+
+    private double GetPercentage(int value)
+    {
+        return ((double)(value - Min) / (Max - Min)) * 100;
+    }
+
+    private string GetDisplayValue(int value)
+    {
+        return $"{ValuePrefix}{value}{ValueSuffix}";
+    }
+
+    // Public method to get current range
+    public (int min, int max) GetCurrentRange()
+    {
+        return (MinValue, MaxValue);
+    }
+
+    // Public method to set range programmatically
+    public void SetRange(int min, int max)
+    {
+        if (min >= Min && min <= Max && max >= Min && max <= Max && min <= max)
+        {
+            _minValue = min;
+            _maxValue = max;
+            StateHasChanged();
+            InvokeRangeChanged();
+        }
+    }
+}
+
+<style>
+    .range-slider-container {
+        width: 100%;
+        padding: 16px 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .range-slider-header h3 {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #323130;
+    }
+
+    .range-slider-header p {
+        margin: 0 0 24px 0;
+        font-size: 14px;
+        color: #605e5c;
+    }
+
+    .range-slider-wrapper {
+        position: relative;
+        margin: 1.5rem 0 1.8rem 0;
+    }
+
+    /* Year labels with tooltips */
+    .year-labels {
+        position: absolute;
+        top: -40px;
+        left: .6rem;
+        right: .6rem;
+        height: 35px;
+    }
+
+    .year-label {
+        position: absolute;
+        transform: translateX(-50%);
+        z-index: 10;
+    }
+
+    .year-tooltip {
+        background: var(--accent-color);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 0px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        position: relative;
+    }
+
+        .year-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--accent-color);
+        }
+
+    /* Slider track */
+    .slider-track {
+        height: 4px;
+        background: #e1e5e9;
+        border-radius: 2px;
+        position: relative;
+        margin: 15px 0;
+    }
+
+    .slider-track-active {
+        position: absolute;
+        height: 100%;
+        background: var(--accent-color);
+        border-radius: 2px;
+        transition: all 0.15s ease;
+    }
+
+    /* Slider inputs */
+    .slider {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        height: 4px;
+        background: transparent;
+        outline: none;
+        -webkit-appearance: none;
+        appearance: none;
+        pointer-events: none;
+        z-index: 5;
+        border:unset;
+    }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-color);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: all;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+            .slider::-webkit-slider-thumb:hover {
+                transform: scale(1.15);
+                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+            }
+
+            .slider::-webkit-slider-thumb:active {
+                transform: scale(1.25);
+            }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #0078d4;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: all;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .slider::-moz-range-track {
+            background: transparent;
+            height: 4px;
+        }
+
+        .slider::-ms-thumb {
+            width: 18px;
+            height: 18px;
+            background: #0078d4;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider::-ms-track {
+            background: transparent;
+            height: 4px;
+            border: none;
+            color: transparent;
+        }
+
+    /* Value markers */
+    .value-markers {
+        position: absolute;
+        top: 25px;
+        left: 0;
+        right: 0;
+        height: 16px;
+    }
+
+    .value-marker {
+        position: absolute;
+        font-size: 11px;
+        color: #605e5c;
+        transform: translateX(-50%);
+    }
+
+        .value-marker:first-child {
+            transform: translateX(0);
+        }
+
+        .value-marker:last-child {
+            transform: translateX(-100%);
+        }
+
+    /* Input boxes */
+    .input-boxes {
+        display: flex;
+        gap: 16px;
+        margin-top: 20px;
+        justify-content: space-between;
+    }
+
+    .input-box {
+        padding: 1rem;
+        border: 1px solid var(--accent-color);
+        border-radius: 0px;
+        background: white;
+        text-align: center;
+        font-size: 1rem;
+        color: #374151;
+    }
+
+        .input-box label {
+            font-weight: 500;
+            cursor: default;
+        }
+
+    /* Selected range display */
+    .selected-range {
+        margin-top: 16px;
+        padding: 10px;
+        background: #f3f4f6;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 13px;
+        color: #374151;
+    }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .range-slider-wrapper
+        {
+            margin: 40px 0 20px 0;
+        }
+
+    .year-tooltip {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+
+    .input-boxes {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    }
+</style>
