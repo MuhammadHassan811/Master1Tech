@@ -16,10 +16,10 @@
             Speciality
         </button>
 
-        <button class="tab-button @(activeTab == "stats" ? "active" : "")"
+        @* <button class="tab-button @(activeTab == "stats" ? "active" : "")"
                 @onclick="@(() => SetActiveTab("stats"))">
             Stats
-        </button>
+        </button> *@
 
         <button class="tab-button @(activeTab == "portfolio" ? "active" : "")"
                 @onclick="@(() => SetActiveTab("portfolio"))">
@@ -50,10 +50,10 @@
                 <CompanyProfile />
             </div>
         }
-        else if (activeTab == "stats")
+       @*  else if (activeTab == "stats")
         {
             <StatisticPage/>
-        }
+        } *@
         else if (activeTab == "portfolio")
         {
             <PortfolioPage/>

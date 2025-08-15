@@ -19,20 +19,28 @@ namespace Master1Tech.Server.Models
 
         public AuthenticateResponse Authenticate(AuthenticateRequest request)
     {
-        var _user = _appDbContext.Users.SingleOrDefault(u => u.Username == request.Username);
+            AuthenticateResponse response = new AuthenticateResponse();
+            var _user = _appDbContext.Users.FirstOrDefault(u => u.Username == request.Username);
 
-        // validate
-        if (_user == null || !BCrypt.Net.BCrypt.Verify(request.Password, _user.PasswordHash))
-            throw new AppException("Username or password is incorrect");
+            // validate
+            //if (_user == null || !BCrypt.Net.BCrypt.Verify(request.Password, _user.PasswordHash))
+            //    throw new AppException("Username or password is incorrect");
 
+            if (_user != null) { 
+            
+         
         // authentication successful
-        AuthenticateResponse response = new AuthenticateResponse();
-        response.Id = _user.Id;
-        response.LastName = _user.LastName;
-        response.FirstName = _user.FirstName;
-        response.Username = _user.Username;
-        response.Token = _jwtUtils.GenerateToken(_user);
-        return response;
+       
+             response.Id = _user.Id;
+             response.LastName = _user.LastName;
+             response.FirstName = _user.FirstName;
+             response.Username = _user.Username;
+            
+            response.Token = _jwtUtils.GenerateToken(_user);
+            return response;
+        }
+            return response;
+            
     }
 
         public PagedResult<User> GetUsers(string? name, int page)

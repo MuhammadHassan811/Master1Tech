@@ -558,3 +558,8 @@ h6 {
     color: var(--heading-color);
     font-family: var(--default-font);
 }
+
+.validation-message {
+    color: red;
+    font-size: 0.9rem;
+}

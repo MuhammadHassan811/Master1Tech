@@ -2,6 +2,7 @@ using Master1Tech.Client;
 using Master1Tech.Client.Services;
 using Master1Tech.Client.Shared;
 using Master1Tech.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.FluentUI.AspNetCore.Components;
@@ -26,6 +27,9 @@ builder.Services.AddScoped(x =>
     var apiUrl = new Uri("http://localhost:5001");
     return new HttpClient() { BaseAddress = apiUrl };
 });
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddSingleton<PageHistoryState>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

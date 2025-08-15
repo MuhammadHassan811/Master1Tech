@@ -91,7 +91,7 @@
                 <div class="tab-nav">
                     <a href="#locations" class="@GetActiveClass("locations")" @onclick="@(() => SetActiveSection("locations"))">Locations</a>
                     <a href="#speciality" class="@GetActiveClass("speciality")" @onclick="@(() => SetActiveSection("speciality"))">Speciality</a>
-                    <a href="#stats" class="@GetActiveClass("stats")" @onclick="@(() => SetActiveSection("stats"))">Stats</a>
+                   @*  <a href="#stats" class="@GetActiveClass("stats")" @onclick="@(() => SetActiveSection("stats"))">Stats</a> *@
                     <a href="#portfolio" class="@GetActiveClass("portfolio")" @onclick="@(() => SetActiveSection("portfolio"))">Portfolio</a>
                     <a href="#reviews" class="@GetActiveClass("reviews")" @onclick="@(() => SetActiveSection("reviews"))">Reviews</a>
                 </div>
@@ -153,7 +153,7 @@
                             </div>
 
                             <!-- Stats -->
-                            <div id="stats" class="section-block" data-section="stats">
+                            @* <div id="stats" class="section-block" data-section="stats">
                                 <h2>Stats</h2>
                                 <div class="stats-grid">
                                     <div><strong>150+</strong><br />Projects Completed</div>
@@ -161,7 +161,7 @@
                                     <div><strong>50+</strong><br />Team Members</div>
                                     <div><strong>5+</strong><br />Years Experience</div>
                                 </div>
-                            </div>
+                            </div> *@
 
                             <!-- Portfolio -->
                             <div id="portfolio" class="section-block" data-section="portfolio">

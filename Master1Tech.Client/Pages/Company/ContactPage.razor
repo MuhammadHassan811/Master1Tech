@@ -6,19 +6,33 @@
 @using Master1Tech.Shared.DTOs.Common
 @using Master1Tech.Shared.DTOs.Service
 @using Microsoft.AspNetCore.Components.Forms
+@inject IAlertService AlertService
 @inject IServiceServiceEndpoint ServiceService
 @inject HttpClient Http
 
 <div class="contact-container">
     <div class="contact-form">
-        <h2>Contact the company directly</h2>
+        <h2>Collaborate with Pakistan’s Leading IT Companies</h2>
 
         <div class="info-banner">
-            <span class="info-icon">💬</span>
-            <span>Get in touch with <strong>Master1Tech</strong> and tell them more about your project.</span>
+            <span>Unlock unmatched expertise, cost-effective innovation, and seamless partnerships with Pakistan’s top IT leaders empowering your business to thrive globally.</span>
         </div>
+        @if (showSuccessMessage)
+        {
+            <div class="alert alert-success">
+                <p>✓ Your request has been submitted successfully! Our experts will connect you with Pakistan's elite IT companies within 24 hours.</p>
+            </div>
+        }
 
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>❌ @errorMessage</p>
+            </div>
+        }
         <EditForm Model="@contactModel" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator />
+             <ValidationSummary class="text-danger" />
             <div class="form-row">
                 <div class="form-group">
                     <label for="fullName">Your Full Name</label>
@@ -27,25 +41,27 @@
                 <div class="form-group">
                     <label for="email">Your Email Address</label>
                     <InputText @bind-Value="contactModel.Email" class="form-control" type="email" />
+                    <ValidationMessage For="@(() => contactModel.Email)" class="text-danger"/>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label for="phoneNumber">Phone Number</label>
                     <InputText @bind-Value="contactModel.PhoneNo" class="form-control" />
+                    <ValidationMessage For="@(() => contactModel.PhoneNo)" class="text-danger" />
                 </div>
                 <div class="form-group">
                     <label for="companyName">Company Name</label>
                     <InputText @bind-Value="contactModel.CompanyName" class="form-control" />
                 </div>
             </div>
-         
-                <div class="form-group">
-                    <label for="jobTitle">Job Title</label>
-                    <InputText @bind-Value="contactModel.JobTitle" class="form-control" />
-                </div>
-              
-            
+
+            <div class="form-group">
+                <label for="jobTitle">Job Title</label>
+                <InputText @bind-Value="contactModel.JobTitle" class="form-control" />
+            </div>
+
+
             <div class="form-group">
                 <label for="service">Project Type</label>
                 <InputSelect @bind-Value="contactModel.Service" class="form-control">
@@ -65,6 +81,8 @@
                     Project Details
                 </label>
                 <InputTextArea @bind-Value="contactModel.ProjectDescription" class="form-control textarea" rows="8" />
+           <ValidationMessage For="@(() => contactModel.ProjectDescription)" class="text-danger"  />
+
             </div>
 
             <div class="checkbox-group">
@@ -77,16 +95,30 @@
             <div class="form-group">
                 <label for="description">Attach Relevant Files (Optional: Word, Excel, PDF)</label>
                 <InputFile OnChange="HandleFileSelected" accept=".doc,.docx,.xls,.xlsx,.pdf" />
-
-                @if (!string.IsNullOrEmpty(message))
+                @if (selectedFile != null)
                 {
-                    <p>@message</p>
+                    <small class="text-info">Selected: @selectedFile.Name (@(selectedFile.Size / 1024)KB)</small>
                 }
 
+                @if (!string.IsNullOrEmpty(fileMessage))
+                {
+                    <small class="text-info">@fileMessage</small>
+                }
+               
+
             </div>
-            <button type="submit" class="btn-submit">Launch Your Partnership</button>
+            <button type="submit" class="btn-submit" disabled="@isSubmitting">
+                @if (isSubmitting)
+                {
+                    <span>Processing...</span>
+                }
+                else
+                {
+                    <span>Launch Your Partnership</span>
+                }
+            </button>
             <p>
-                Our experts will connect you with Pakistan’s elite IT companies within 24 hours—let’s transform your vision into reality.
+                Our experts will connect you with Pakistan’s elite IT companies within 24 hours, let’s transform your vision into reality.
             </p>
         </EditForm>
     </div>
@@ -95,38 +127,126 @@
 @code {
     private List<ServiceSummaryDto> _services = new();
     IEnumerable<ServiceSummaryDto> SelectedServiceItems = Array.Empty<ServiceSummaryDto>();
-    private ContactModel contactModel = new();
+    private GetInTouch contactModel = new();
     private string? message;
+
+    private IBrowserFile? selectedFile;
+    private string? fileMessage;
+    private string? errorMessage;
+    private bool showSuccessMessage = false;
+    private bool isSubmitting = false;
+
 
     private async Task HandleSubmit()
     {
-        // Handle form submission here
-        Console.WriteLine($"Form submitted: {contactModel.FullName}, {contactModel.Email}");
-        // Add your form submission logic here
+        if (isSubmitting) return;
+
+        try
+        {
+            isSubmitting = true;
+            errorMessage = null;
+            showSuccessMessage = false;
+            StateHasChanged();
+
+            using var content = new MultipartFormDataContent();
+
+            // Add form data
+            content.Add(new StringContent(contactModel.FullName ?? ""), "FullName");
+            content.Add(new StringContent(contactModel.Email ?? ""), "Email");
+            content.Add(new StringContent(contactModel.PhoneNo ?? ""), "PhoneNo");
+            content.Add(new StringContent(contactModel.CompanyName ?? ""), "CompanyName");
+            content.Add(new StringContent(contactModel.JobTitle ?? ""), "JobTitle");
+            content.Add(new StringContent(contactModel.Service.ToString() ?? ""), "Service");
+            content.Add(new StringContent(contactModel.ProjectDescription ?? ""), "ProjectDescription");
+            content.Add(new StringContent(contactModel.GetVettedCompanies.ToString()), "GetVettedCompanies");
+
+            // Add file if selected
+            if (selectedFile != null)
+            {
+                var fileContent = new StreamContent(selectedFile.OpenReadStream(maxAllowedSize: 10_000_000));
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+                content.Add(fileContent, "AttachmentFile", selectedFile.Name);
+            }
+
+            var response = await Http.PostAsync("api/getintouch/submit", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                showSuccessMessage = true;
+                // Reset form
+                contactModel = new GetInTouch();
+                selectedFile = null;
+                fileMessage = null;
+                AlertService.Success("Form added successfully", keepAfterRouteChange: true);
+                // Scroll to top to show success message
+                //await JSRuntime.InvokeVoidAsync("window.scrollTo", 0, 0);
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                try
+                {
+                    var errorObj = System.Text.Json.JsonSerializer.Deserialize<dynamic>(errorContent);
+                    errorMessage = errorObj?.GetProperty("message").GetString() ?? "An error occurred while submitting the form.";
+                }
+                catch
+                {
+                    errorMessage = "An error occurred while submitting the form.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Network error occurred. Please check your connection and try again.";
+            Console.WriteLine($"Form submission error: {ex.Message}");
+        }
+        finally
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
     }
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        var file = e.File;
+        selectedFile = e.File;
 
-        if (file != null)
+        if (selectedFile != null)
         {
-            using var stream = file.OpenReadStream(maxAllowedSize: 10_000_000); // 10 MB
-            using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            var fileBytes = ms.ToArray();
+            // Validate file size
+            if (selectedFile.Size > 10_000_000) // 10 MB
+            {
+                fileMessage = "File size cannot exceed 10 MB";
+                selectedFile = null;
+                return;
+            }
 
-            var content = new MultipartFormDataContent();
-            content.Add(new ByteArrayContent(fileBytes), "file", file.Name);
+            // Validate file type
+            var allowedExtensions = new[] { ".doc", ".docx", ".xls", ".xlsx", ".pdf" };
+            var fileExtension = Path.GetExtension(selectedFile.Name).ToLowerInvariant();
 
-            var response = await Http.PostAsync("api/files/upload", content);
-            message = await response.Content.ReadAsStringAsync();
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                fileMessage = "Only Word, Excel, and PDF files are allowed";
+                selectedFile = null;
+                return;
+            }
+
+            fileMessage = $"File selected: {selectedFile.Name} ({selectedFile.Size / 1024:F1} KB)";
         }
+        else
+        {
+            fileMessage = null;
+        }
+
+        StateHasChanged();
     }
+
     protected override async Task OnInitializedAsync()
     {
         await LoadServices();
     }
+
     private async Task LoadServices()
     {
         try
@@ -139,17 +259,6 @@
         }
     }
 
-    public class ContactModel
-    {
-        public string FullName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string PhoneNo { get; set; } = string.Empty;
-        public string CompanyName { get; set; } = string.Empty;
-        public string JobTitle { get; set; } = string.Empty;
-        public string Service { get; set; } = string.Empty;
-        public string ProjectDescription { get; set; } = string.Empty;
-        public bool GetVettedCompanies { get; set; } = true;
-    }
 }
 
 <style>
