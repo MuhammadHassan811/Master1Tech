@@ -65,7 +65,7 @@ namespace Master1Tech.Server.Models
             query = (filter.SortBy?.ToLower()) switch
             {
                 "name" => query.OrderBy(c => c.Name),
-                "team size" => query.OrderBy(c => c.TeamSize),
+                "team size" => query.OrderByDescending(c => c.TeamSizeMin),
                 "rating" => query.OrderByDescending(c => c.Rating),
                 // A default sort order is crucial for consistent pagination.
                 _ => query.OrderBy(c => c.Id)

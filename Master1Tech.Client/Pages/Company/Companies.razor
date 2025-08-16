@@ -43,112 +43,9 @@
  
 <section class="light-background">
     <div class="container">
+         
+        <CompaniesFilters OnClickFilter="ApplyFilters" OnFilterClear="LoadCompanies"/>
 
-        <div class="filter-bar">
-            <div class="filter-group">
-@*                 <div class="filter-item">
-                    <span>Location <b>(@(!string.IsNullOrEmpty(companyFilter.Location) ? "1" : "0"))</b></span>
-                    <select @bind="companyFilter.Location">
-                        <option value="">All</option>
-                        <option value="Lahore">Lahore</option>
-                        <option value="Karachi">Karachi</option>
-                        <option value="Rawalpindi">Rawalpindi</option>
-                        <option value="Okara">Okara</option>
-                    </select>
-                </div> *@
-                <FluentAutocomplete TOption="ServiceSummaryDto"
-                                    MaximumOptionsSearch="25"
-                                    AutoComplete="off"
-                                    Autofocus="true"
-                                    Label="@(companyFilter?.Services?.Count > 0 ? $"Services ({companyFilter.Services.Count})": "Services")"
-                                    Width="200px"
-                                    KeepOpen="true"
-                                    Placeholder="Search"
-                                    OnOptionsSearch="@OnServiceSearchAsync"
-                                    MaximumSelectedOptions="_maximumServiceSelectedOptions"
-                                    OptionText="@(item => item.Name)"
-                                    @bind-SelectedOptions="@SelectedServiceItems">
-                        <OptionTemplate>
-                            <FluentCheckbox Value="@SelectedServiceItems.Contains(context)" Label="@context.Name"/>
-                        </OptionTemplate>
-                        
-                </FluentAutocomplete>
-
-                <FluentAutocomplete TOption="TechnologySummaryDto"
-                                    MaximumOptionsSearch="25"
-                                    AutoComplete="off"
-                                    Autofocus="true"
-                                    Label="@(companyFilter?.Technologies?.Count > 0 ? $"Tools & Technologies ({companyFilter.Technologies.Count})": "Tools & Technologies")"
-                                    Width="200px"
-                                    KeepOpen="true"
-                                    Placeholder="Search"
-                                    OnOptionsSearch="@OnSearchTechnologyAsync"
-                                    MaximumSelectedOptions="_maximumTechnologySelectedOptions"
-                                    OptionText="@(item => item.Name)"
-                                    @bind-SelectedOptions="@SelectedTechnologyServiceItems">
-                        <OptionTemplate>
-                        <FluentCheckbox Value="@SelectedTechnologyServiceItems.Contains(context)" Label="@context.Name" />
-                        </OptionTemplate>
-                        
-                </FluentAutocomplete>
-
-                <FluentAutocomplete TOption="IndustryDto"
-                                    AutoComplete="off" 
-                                    MaximumOptionsSearch="25"
-                                    Autofocus="true"
-                                    Label="@(companyFilter?.Industries?.Count > 0 ? $"Industry Focus ({companyFilter.Industries.Count})": "Industry Focus")"
-                                    Width="200px"
-                                    KeepOpen="true"
-                                    Placeholder="Search"
-                                    OnOptionsSearch="@OnSearchIndustryAsync"
-                                    MaximumSelectedOptions="_maximumIndustrySelectedOptions"
-                                    OptionText="@(item => item.Name)"
-                                    @bind-SelectedOptions="@SelectedIndustryServiceItems">
-                        <OptionTemplate>
-                            <FluentCheckbox Value="@SelectedIndustryServiceItems.Contains(context)" Label="@context.Name"/>
-                        </OptionTemplate>
-                        
-                </FluentAutocomplete>
-
-                <FluentAutocomplete TOption="FoundedYearDto"
-                                    AutoComplete="off" 
-                                    MaximumOptionsSearch="25"
-                                    Autofocus="true"
-                                    Label="@(companyFilter?.Year?.Count > 0 ? $"Founding Year ({companyFilter.Year.Count})": "Founding Year")"
-                                    Width="200px"
-                                    KeepOpen="true"
-                                    Placeholder="Search"
-                                    OnOptionsSearch="@OnSearchFoundedYearAsync"
-                                    MaximumSelectedOptions="_maximumFoundedYearsSelectedOptions"
-                                    OptionText="@(item => item.Year)"
-                                    @bind-SelectedOptions="@SelectedFoundedYearServiceItems">
-                        <OptionTemplate>
-                            <FluentCheckbox Value="@SelectedFoundedYearServiceItems.Contains(context)" Label="@context.Year"/>
-                        </OptionTemplate>
-                        
-                </FluentAutocomplete>
-
-                
-                <div class="sort-by">
-                    <FluentSelect TOption="SortByDto"
-                                  Label="Sort by"
-                                  Items="@SortBies.ToList()"
-                                  Width="200px"
-                                  OptionValue="@(p => p.Name)"
-                                  OptionText="@(p => p.Name)"
-                                  @bind-Value="@_selectedSortByValue"
-                                  @bind-SelectedOption="@SelectedSortBy">
-                    </FluentSelect>
-                </div>
-                <div class="ms-auto">
-                    <button @onclick="ResetFilters" class="btn btn-outline-secondary ms-auto">Clear</button>
-                    <button @onclick="ApplyFilters" class="btn btn-primary ms-auto">Filter</button>
-                </div>
-            </div>
-
-           
-
-        </div>
         <!-- Header Section -->
         <h2 class="mb-4">
             Explore Top Companies in <span style="color: #007bff;">@Country.ToUpper()</span>
@@ -403,19 +300,13 @@
                 companyFilter = new();
                 companyFilter.SortBy = _selectedSortByValue;
             }
-            else
-            {
-                companyFilter.Services = SelectedServiceItems.Select(x => x.ServiceID).ToList();
-                companyFilter.Technologies = SelectedTechnologyServiceItems.Select(x => x.TechnologyID).ToList();
-                companyFilter.Industries = SelectedIndustryServiceItems.Select(x => x.Id).ToList();
-                companyFilter.Year = SelectedFoundedYearServiceItems.Select(x => x.Year).ToList();
-                companyFilter.SortBy = _selectedSortByValue;
-            }
+            
             var pagedResult = await CompanyService.GenerateSampleCompanies(
                 companyFilter,
                 CurrentPage,
                 PageSize
             );
+
             Companiees = pagedResult;
             CompanyCount = Companiees.RowCount;
             TotalPages = Companiees.PageCount;
@@ -455,10 +346,13 @@
     }
 
 
-    private async Task ApplyFilters()
+    private async Task ApplyFilters(CompanyFilter company)
     {
+        companyFilter = company;
         await LoadCompanies();
-    }
+    } 
+
+
 
     private async Task ResetFilters()
     {

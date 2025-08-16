@@ -167,7 +167,7 @@ else{
     </section>
 }
 @code {
-  
+
     [Parameter]
     public string id { get; set; }
 
@@ -175,6 +175,7 @@ else{
 
     protected override async Task OnInitializedAsync()
     {
+        await Task.Delay(200);
         company = await CompanyService.GetCompanyBySlugAsync(id);
     }
 
