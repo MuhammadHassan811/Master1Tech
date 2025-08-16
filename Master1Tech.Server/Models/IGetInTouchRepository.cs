@@ -1,4 +1,6 @@
 ﻿using Master1Tech.Shared.Data;
+using Master1Tech.Shared.DTOs.GetInTouch;
+using Master1Tech.Shared.DTOs;
 using Master1Tech.Shared.Models;
 
 namespace Master1Tech.Server.Models
@@ -15,6 +17,8 @@ namespace Master1Tech.Server.Models
         Task<bool> GetInTouchExistsAsync(int id);
         Task<bool> EmailExistsAsync(string email, int? excludeId = null);
         Task<List<GetInTouch>> GetPendingRequestsAsync();
+        PagedResult<GetInTouch> GetInTouchQuery(string? name, int page);
+        Task<List<GetInTouch>> GetAllRequestsAsync();
         Task<List<GetInTouch>> GetCompletedRequestsAsync();
         Task<List<GetInTouch>> GetRequestsByServiceAsync(int serviceId);
         Task<int> GetRequestCountByStatusAsync(bool status);

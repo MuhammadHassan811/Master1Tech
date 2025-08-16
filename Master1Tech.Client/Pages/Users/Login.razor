@@ -4,7 +4,8 @@
 @inject CustomAuthStateProvider AuthProvider
 @inject NavigationManager navManager
 @inject Master1Tech.Client.Shared.PageHistoryState PageHistoryState
-@layout AdminLayout
+@inject ILocalStorageService LocalStorageService
+@layout MainLayout
 
 <div class="col-md-6 offset-md-3 mt-5">
     <div class="card">
@@ -22,6 +23,7 @@
                     <InputText @bind-Value="loginModel.Password" type="password" id="password" class="form-control" />
                     <ValidationMessage For="@(() => loginModel.Password)" />
                 </div>
+                <br />
                 <button disabled="@loading" class="btn btn-primary" id="login_button">
                     @if (loading) 
                     {
@@ -35,8 +37,11 @@
 </div>
 
 @code {
+
     private Master1Tech.Client.Shared.Login loginModel = new Master1Tech.Client.Shared.Login();
     private bool loading;
+    private ILocalStorageService _localStorageService;
+
     private async void OnValidSubmit()
     {
         // reset alerts on submit
@@ -45,20 +50,28 @@
         loading = true;
         try
         {
+            
             await UserService.Login(loginModel);
-
+            var user = await LocalStorageService.GetItem<User>("user");
             var returnUrl = navManager.QueryString("returnUrl") ?? "";
             if (returnUrl != string.Empty)
             {
                 navManager.NavigateTo(returnUrl);
+            }
+            else if (user.Username== null){
+                AlertService.Error("Username or Password not matched");
+                loading = false;
+                StateHasChanged();
+                return;
             }
                 else{
                 if (PageHistoryState.CanGoBack()){
                     navManager.NavigateTo(PageHistoryState.GetGoBackPage());
                 }
                 else{
-                    navManager.NavigateTo("/test");
-                    //navManager.NavigateTo("/user/1");
+                    navManager.NavigateTo($"/getintouch-list/1");
+
+
                 }
             }
         }

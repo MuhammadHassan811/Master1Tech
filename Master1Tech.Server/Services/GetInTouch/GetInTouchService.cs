@@ -3,6 +3,7 @@ using Master1Tech.Shared.DTOs.GetInTouch;
 using Master1Tech.Shared.DTOs;
 using Master1Tech.Server.Services.Mapping.GetInTouchMapping;
 using Master1Tech.Server.Services.FileService;
+using Master1Tech.Shared.DTOs.Industry;
 
 namespace Master1Tech.Server.Services.GetInTouch
 {
@@ -22,6 +23,13 @@ namespace Master1Tech.Server.Services.GetInTouch
         public PagedResultDto<GetInTouchDto> GetGetInTouchRequests(string? email, bool? status, bool? isCompleted, int? service, int page)
         {
             var result = _getInTouchRepository.GetGetInTouchRequests(email, status, isCompleted, service, page);
+            foreach (var request in result.Results)
+            {
+                if (!string.IsNullOrWhiteSpace(request.FilePath))
+                {
+                    request.FilePath = _fileService.GetFileUrl(request.FilePath);
+                }
+            }
             return _mappingService.MapToPagedResultDto(result);
         }
 
@@ -90,6 +98,18 @@ namespace Master1Tech.Server.Services.GetInTouch
         public async Task<bool> GetInTouchExistsAsync(int id)
         {
             return await _getInTouchRepository.GetInTouchExistsAsync(id);
+        }
+
+        public async Task<List<GetInTouchSummaryDto>> GetAllRequestsAsync()
+        {
+            var requests = await _getInTouchRepository.GetAllRequestsAsync();
+            return requests.Select(_mappingService.MapToGetInTouchSummaryDto).ToList();
+        }
+
+        public PagedResultDto<GetInTouchDto> GetInTouchQuery(string? name, int page)
+        {
+            var result = _getInTouchRepository.GetInTouchQuery(name, page);
+            return _mappingService.MapToPagedResultDto(result);
         }
 
         public async Task<List<GetInTouchSummaryDto>> GetPendingRequestsAsync()

@@ -18,8 +18,14 @@ namespace Master1Tech.Server.Models
             getInTouch.DateAdded = DateTime.UtcNow;
             getInTouch.DateUpdated = DateTime.UtcNow;
 
-
-
+            if (getInTouch.CompanyId == 0)
+            {
+                getInTouch.CompanyId = null;
+            }
+            if (getInTouch.ServiceId == 0)
+            {
+                getInTouch.ServiceId = null;
+            }
             var result = await _appDbContext.GetInTouches.AddAsync(getInTouch);
             await _appDbContext.SaveChangesAsync();
             return result.Entity;
@@ -39,7 +45,12 @@ namespace Master1Tech.Server.Models
 
         public async Task<GetInTouch?> GetGetInTouchAsync(int id)
         {
-            return await _appDbContext.GetInTouches.FirstOrDefaultAsync(g => g.Id == id);
+            return await _appDbContext.GetInTouches
+                .Include(g=> g.Service)
+               .Include(g => g.Company)
+               .FirstOrDefaultAsync(g => g.Id == id);
+
+            //return await _appDbContext.GetInTouches.FirstOrDefaultAsync(g => g.Id == id);
         }
 
         public async Task<GetInTouch?> GetGetInTouchWithCompanyAsync(int id)
@@ -72,8 +83,9 @@ namespace Master1Tech.Server.Models
 
             if (service.HasValue)
             {
-                query = query.Where(g => g.Service == service.Value);
+                query = query.Where(g => g.ServiceId == service.Value);
             }
+
 
             return query.OrderByDescending(g => g.DateAdded)
                        .GetPaged(page, pageSize);
@@ -145,7 +157,7 @@ namespace Master1Tech.Server.Models
         {
             return await _appDbContext.GetInTouches
                 .Include(g => g.Company)
-                .Where(g => g.Service == serviceId)
+                .Where(g => g.ServiceId == serviceId)
                 .OrderByDescending(g => g.DateAdded)
                 .ToListAsync();
         }
@@ -155,6 +167,28 @@ namespace Master1Tech.Server.Models
             return await _appDbContext.GetInTouches
                 .Where(g => g.Status == status)
                 .CountAsync();
+        }
+
+        public PagedResult<GetInTouch> GetInTouchQuery(string? name, int page)
+        {
+            int pageSize = 10;
+
+            var query = _appDbContext.GetInTouches.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(i => i.FullName != null && i.FullName.Contains(name, StringComparison.CurrentCultureIgnoreCase));
+            }
+
+            return query.OrderBy(i => i.FullName)
+                       .GetPaged(page, pageSize);
+        }
+
+        public async Task<List<GetInTouch>> GetAllRequestsAsync()
+        {
+            return await _appDbContext.GetInTouches
+                .OrderBy(t => t.Id)
+                .ToListAsync();
         }
     }
 }

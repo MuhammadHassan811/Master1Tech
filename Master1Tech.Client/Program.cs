@@ -15,6 +15,7 @@ builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<IAlertService, AlertService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IGetInTouchServiceEndpoint, GetInTouchServiceEndpoint>();
 builder.Services.AddScoped<IServiceServiceEndpoint, ServiceServiceEndpoint>();
 builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();

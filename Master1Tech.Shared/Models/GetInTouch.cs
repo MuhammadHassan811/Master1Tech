@@ -21,13 +21,15 @@ namespace Master1Tech.Shared.Models
         public string PhoneNo { get; set; } = string.Empty;
         public string? CompanyName { get; set; } = string.Empty;
         public string? JobTitle { get; set; } = string.Empty;
-        public int Service { get; set; }
+        public int? ServiceId { get; set; }
+        public Service? Service { get; set; }
+
         [MaxWords(1000, ErrorMessage = "Company description cannot exceed 1000 words")]
         public string? ProjectDescription { get; set; } = string.Empty;
-        public bool GetVettedCompanies { get; set; } = true;
+        public bool GetVettedCompanies { get; set; } = false;
         public string? FilePath { get; set; } = string.Empty;
         public string? FileName { get; set; } = string.Empty;
-        public string? CompanyId { get; set; }
+        public int? CompanyId { get; set; }
         public Company? Company { get; set; }
         public bool Status { get; set; } = false;
         public DateTime? DateAdded { get; set; } = DateTime.MinValue;

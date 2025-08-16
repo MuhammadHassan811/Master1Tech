@@ -27,7 +27,7 @@ namespace Master1Tech.Shared.DTOs.GetInTouch
         public string? JobTitle { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Service is required")]
-        public int Service { get; set; }
+        public int? ServiceId { get; set; }
 
         [MaxWords(1000, ErrorMessage = "Project description cannot exceed 1000 words")]
         public string? ProjectDescription { get; set; } = string.Empty;
@@ -36,6 +36,6 @@ namespace Master1Tech.Shared.DTOs.GetInTouch
 
         public string? FilePath { get; set; } = string.Empty;
 
-        public string? CompanyId { get; set; }
+        public int? CompanyId { get; set; }
     }
 }

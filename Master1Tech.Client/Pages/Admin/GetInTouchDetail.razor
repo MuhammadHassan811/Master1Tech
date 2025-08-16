@@ -1,0 +1,112 @@
+﻿@page "/getintouch/view/{id}"
+@using Master1Tech.Shared.DTOs.GetInTouch
+@inject IGetInTouchServiceEndpoint GetInTouchService
+@inject NavigationManager navManager
+@inject Master1Tech.Client.Shared.PageHistoryState PageHistoryState
+
+<h1>View Get In Touch</h1>
+<br />
+
+@if (getInTouch == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table col-md-8">
+        <tbody>
+            <tr>
+                <th scope="row">Id</th>
+                <td>@getInTouch.Id</td>
+            </tr>
+            <tr>
+                <th scope="row">Full Name</th>
+                <td>@getInTouch.FullName</td>
+            </tr>
+            <tr>
+                <th scope="row">Email</th>
+                <td>@getInTouch.Email</td>
+            </tr>
+            <tr>
+                <th scope="row">Phone No</th>
+                <td>@getInTouch.PhoneNo</td>
+            </tr>
+            <tr>
+                <th scope="row">Company Name</th>
+                <td>@getInTouch.CompanyName</td>
+            </tr>
+            <tr>
+                <th scope="row">Job Title</th>
+                <td>@getInTouch.JobTitle</td>
+            </tr>
+            <tr>
+                <th scope="row">Service</th>
+                <td>@getInTouch.ServiceDisplayName</td>
+            </tr>
+            <tr>
+                <th scope="row">Project Description</th>
+                <td>@getInTouch.ProjectDescription</td>
+            </tr>
+            <tr>
+                <th scope="row">Targeted Company</th>
+                <td>@getInTouch.CompanyDisplayName</td>
+            </tr>
+            <tr>
+                <th scope="row">Get Vetted Companies</th>
+                <td>@(getInTouch.GetVettedCompanies ? "Yes" : "No")</td>
+            </tr>
+            <tr>
+                <th scope="row">File</th>
+                <td>
+                    @if (!string.IsNullOrWhiteSpace(getInTouch.FilePath))
+                    {
+                        <a href="@getInTouch.FilePath" target="_blank">@getInTouch.FileName</a>
+                    }
+                    else
+                    {
+                        <span>No file uploaded</span>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Status</th>
+                <td>@(getInTouch.Status ? "Active" : "Inactive")</td>
+            </tr>
+            <tr>
+                <th scope="row">Date Added</th>
+                <td>@(getInTouch.DateAdded?.ToString("yyyy-MM-dd") ?? "-")</td>
+            </tr>
+            <tr>
+                <th scope="row">Date Updated</th>
+                <td>@(getInTouch.DateUpdated?.ToString("yyyy-MM-dd") ?? "-")</td>
+            </tr>
+            <tr>
+                <th scope="row">Is Completed</th>
+                <td>@(getInTouch.IsCompleted ? "Yes" : "No")</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        @if (PageHistoryState.CanGoBack())
+        {
+            <NavLink href="@PageHistoryState.GetGoBackPage()" class="btn btn-link">Back</NavLink>
+        }
+        else
+        {
+            <NavLink href="/getintouch-list/1" class="btn btn-link">Back</NavLink>
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    GetInTouchDto? getInTouch;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        getInTouch = await GetInTouchService.GetGetInTouch(int.Parse(Id));
+    }
+}

@@ -273,7 +273,7 @@
                                 <NavLink class="btn btn-outline-dark rounded-0" href="@($"/companyprofile/{company.Slug}")">
                                     View profile
                                 </NavLink>
-                                <NavLink class="btn btn-link" href="/contact">
+                                <NavLink class="btn btn-link" href="@($"/contact/{company.Id}")">
                                     Get In Touch
                                 </NavLink>
                        
@@ -332,9 +332,20 @@
                 </ul>
             </nav>
         </div>
-
+        <footer class="app-footer mt-5">
+            <div class="quote-banner text-center">
+                <h2>Submit your project and get free quotes in 1-hour</h2>
+                <a href="/contact" class="btn btn-primary btn-lg mt-3">Start now!</a>
+                <p class="banner-subtext mt-3">
+                    Handpicked companies &bull; No obligation to hire &bull; 100% risk-free
+                </p>
+            </div>
+        </footer>
     </div>
+
 </section>
+
+
 
 @code {
     [Parameter] public string Country { get; set; } = "pakistan";
@@ -548,3 +559,37 @@
 
     };
 }
+
+  <style>
+    .quote-banner {
+        background: linear-gradient(to bottom, #d6e4ff, #eaf4ff);
+        padding: 50px 20px;
+    }
+
+        .quote-banner h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        .quote-banner .btn-primary {
+            background-color: #1a73e8;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+
+            .quote-banner .btn-primary:hover {
+                background-color: #155ab6;
+            }
+
+    .banner-subtext {
+        font-size: 0.95rem;
+        color: #333;
+    }
+
+
+      </style>

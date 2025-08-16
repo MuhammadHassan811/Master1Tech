@@ -34,6 +34,7 @@ namespace Master1Tech.Shared.DTOs.GetInTouch
 
         public IFormFile? AttachmentFile { get; set; }
 
-        public string? CompanyId { get; set; }
+        public int? CompanyId { get; set; }
+        public int? ServiceId { get; set; }
     }
 }

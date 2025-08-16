@@ -22,7 +22,8 @@ namespace Master1Tech.Shared.DTOs.GetInTouch
 
         public string? JobTitle { get; set; } = string.Empty;
 
-        public int Service { get; set; }
+        public int? ServiceId { get; set; }
+        public string? ServiceDisplayName { get; set; }
 
         public string? ProjectDescription { get; set; } = string.Empty;
 
@@ -31,7 +32,7 @@ namespace Master1Tech.Shared.DTOs.GetInTouch
         public string? FilePath { get; set; } = string.Empty;
         public string? FileName { get; set; } = string.Empty;
 
-        public string? CompanyId { get; set; }
+        public int? CompanyId { get; set; }
 
         // Navigation property info
         public string? CompanyDisplayName { get; set; }

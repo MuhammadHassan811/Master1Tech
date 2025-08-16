@@ -20,7 +20,7 @@ namespace Master1Tech.Server.Models
         public AuthenticateResponse Authenticate(AuthenticateRequest request)
     {
             AuthenticateResponse response = new AuthenticateResponse();
-            var _user = _appDbContext.Users.FirstOrDefault(u => u.Username == request.Username);
+            var _user = _appDbContext.Users.FirstOrDefault(u => u.Username == request.Username && u.Password == request.Password);
 
             // validate
             //if (_user == null || !BCrypt.Net.BCrypt.Verify(request.Password, _user.PasswordHash))

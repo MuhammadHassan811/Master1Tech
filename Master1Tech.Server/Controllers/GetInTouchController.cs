@@ -2,6 +2,7 @@
 using Master1Tech.Shared.DTOs.GetInTouch;
 using Master1Tech.Shared.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Master1Tech.Server.Authorization;
 
 namespace Master1Tech.Server.Controllers
 {
@@ -16,6 +17,14 @@ namespace Master1Tech.Server.Controllers
             _getInTouchService = getInTouchService;
         }
 
+        [AllowAnonymous]
+        [HttpGet("paged")]
+        public ActionResult GetInTouchQuery([FromQuery] string? name, int page)
+        {
+            return Ok(_getInTouchService.GetInTouchQuery(name, page));
+        }
+
+
         [HttpGet]
         public ActionResult<PagedResultDto<GetInTouchDto>> GetGetInTouchRequests(
             string? email,
@@ -27,6 +36,13 @@ namespace Master1Tech.Server.Controllers
             var result = _getInTouchService.GetGetInTouchRequests(email, status, isCompleted, service, page);
             return Ok(result);
         }
+        [HttpGet("all")]
+        public async Task<ActionResult<List<GetInTouchSummaryDto>>> GetAllRequests()
+        {
+            var requests = await _getInTouchService.GetAllRequestsAsync();
+            return Ok(requests);
+        }
+
 
         [HttpGet("pending")]
         public async Task<ActionResult<List<GetInTouchSummaryDto>>> GetPendingRequests()

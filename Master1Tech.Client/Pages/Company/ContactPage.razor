@@ -1,4 +1,5 @@
 ﻿@page "/contact"
+@page "/contact/{id:int?}"
 @using Master1Tech.Client.Extension
 @using Master1Tech.DTOs.Company
 @using Master1Tech.Models
@@ -32,7 +33,7 @@
         }
         <EditForm Model="@contactModel" OnValidSubmit="@HandleSubmit">
             <DataAnnotationsValidator />
-             <ValidationSummary class="text-danger" />
+            <ValidationSummary class="text-danger" />
             <div class="form-row">
                 <div class="form-group">
                     <label for="fullName">Your Full Name</label>
@@ -64,7 +65,7 @@
 
             <div class="form-group">
                 <label for="service">Project Type</label>
-                <InputSelect @bind-Value="contactModel.Service" class="form-control">
+                <InputSelect @bind-Value="contactModel.ServiceId" class="form-control">
                     <option value="">Choose a service...</option>
                     @if (_services != null && _services.Any())
                     {
@@ -81,7 +82,7 @@
                     Project Details
                 </label>
                 <InputTextArea @bind-Value="contactModel.ProjectDescription" class="form-control textarea" rows="8" />
-           <ValidationMessage For="@(() => contactModel.ProjectDescription)" class="text-danger"  />
+                <ValidationMessage For="@(() => contactModel.ProjectDescription)" class="text-danger"  />
 
             </div>
 
@@ -104,7 +105,7 @@
                 {
                     <small class="text-info">@fileMessage</small>
                 }
-               
+
 
             </div>
             <button type="submit" class="btn-submit" disabled="@isSubmitting">
@@ -125,6 +126,9 @@
 </div>
 
 @code {
+    [Parameter]
+    public int? id { get; set; }
+
     private List<ServiceSummaryDto> _services = new();
     IEnumerable<ServiceSummaryDto> SelectedServiceItems = Array.Empty<ServiceSummaryDto>();
     private GetInTouch contactModel = new();
@@ -151,12 +155,20 @@
             using var content = new MultipartFormDataContent();
 
             // Add form data
+            if(id.HasValue){
+                contactModel.CompanyId = id.Value;
+                
+            }
+            else{
+                contactModel.CompanyId = 0;
+            }
+            content.Add(new StringContent(contactModel.CompanyId.ToString() ?? ""), "CompanyId");
             content.Add(new StringContent(contactModel.FullName ?? ""), "FullName");
             content.Add(new StringContent(contactModel.Email ?? ""), "Email");
             content.Add(new StringContent(contactModel.PhoneNo ?? ""), "PhoneNo");
             content.Add(new StringContent(contactModel.CompanyName ?? ""), "CompanyName");
             content.Add(new StringContent(contactModel.JobTitle ?? ""), "JobTitle");
-            content.Add(new StringContent(contactModel.Service.ToString() ?? ""), "Service");
+            content.Add(new StringContent(contactModel.ServiceId.ToString() ?? ""), "ServiceId");
             content.Add(new StringContent(contactModel.ProjectDescription ?? ""), "ProjectDescription");
             content.Add(new StringContent(contactModel.GetVettedCompanies.ToString()), "GetVettedCompanies");
 

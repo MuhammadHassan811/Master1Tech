@@ -2,6 +2,7 @@ using Master1Tech.Client.Shared;
 using Master1Tech.Shared.Data;
 using Master1Tech.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using System.Security.Claims;
 
 namespace Master1Tech.Client.Services
 {

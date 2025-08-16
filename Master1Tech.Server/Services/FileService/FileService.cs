@@ -133,6 +133,11 @@ namespace Master1Tech.Server.Services.FileService
             if (string.IsNullOrEmpty(filePath))
                 return null;
 
+            var fullPath = Path.Combine(_environment.WebRootPath, filePath.Replace('/', '\\'));
+            if (File.Exists(fullPath))
+            {
+                return fullPath;
+            }
             return $"/{filePath.Replace('\\', '/')}";
         }
 

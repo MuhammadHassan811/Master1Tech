@@ -34,5 +34,19 @@ namespace Master1Tech.Client.Services
             return Task.FromResult(new AuthenticationState(user));
         }
 
+        public void MarkUserAsAuthenticated(ClaimsPrincipal user)
+        {
+            var authenticatedUser = new ClaimsPrincipal(user);
+            var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
+            NotifyAuthenticationStateChanged(authState);
+        }
+
+        public void MarkUserAsLoggedOut()
+        {
+            var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
+            var authState = Task.FromResult(new AuthenticationState(anonymousUser));
+            NotifyAuthenticationStateChanged(authState);
+        }
+
     }
 }
