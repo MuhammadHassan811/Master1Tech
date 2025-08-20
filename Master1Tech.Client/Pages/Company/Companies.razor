@@ -16,6 +16,8 @@
 @inject IJSRuntime JSRuntime
 @inject IWebAssemblyHostEnvironment hostEnv
 
+@if(!IsFilterOpen)
+{
 <section>
     <div class="container">
         <div class="d-flex flex-column flex-md-row-reverse gap-5">
@@ -40,11 +42,11 @@
         </div>
     </div>
 </section>
- 
+ }
 <section class="light-background">
     <div class="container">
          
-        <CompaniesFilters OnClickFilter="ApplyFilters" OnFilterClear="LoadCompanies"/>
+        <CompaniesFilters OnClickFilter="ApplyFilters" OnFilterClear="LoadCompanies" OnFilterToggle="HandleFilterToggle"/>
 
         <!-- Header Section -->
         <h2 class="mb-4">
@@ -258,6 +260,7 @@
     private CompanyFilter companyFilter = new();
     private int CompanyCount = 0;
     private bool IsLoading = false;
+    private bool IsFilterOpen = false;
     private int PageSize = 12;
 
     private int _maximumSelectedOptions = 25;
@@ -274,6 +277,14 @@
         await LoadServices();
         await LoadTechnologies();
         await LoadIndustries();
+    }
+
+    private void HandleFilterToggle (bool isOpen)
+    {
+
+        IsFilterOpen = isOpen;
+
+        StateHasChanged();
     }
 
     private async Task LoadServices()

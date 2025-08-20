@@ -14,29 +14,6 @@ namespace Master1Tech.Server.Models
             _appDbContext = appDbContext;
         }
 
-        //public PagedResult<Company> GetPeople(string? name, int page)
-        //{
-        //    int pageSize = 5;
-
-        //    if (name != null)
-        //    {
-        //        return _appDbContext.People
-        //            .Where(p => p.FirstName.Contains(name, StringComparison.CurrentCultureIgnoreCase) ||
-        //                p.LastName.Contains(name, StringComparison.CurrentCultureIgnoreCase))
-        //            .OrderBy(p => p.CompanyId)
-        //            .Include(p => p.Addresses)
-        //            .GetPaged(page, pageSize);
-        //    }
-        //    else
-        //    {
-        //        return _appDbContext.People
-        //            .OrderBy(p => p.CompanyId)
-        //            .Include(p => p.Addresses)
-        //            .GetPaged(page, pageSize);
-        //    }
-        //}
-
-
         public async Task<PagedResult<CompanyDto>> GetCompaniesFromDatabase(
         CompanyFilter filter,
         int page = 1,
@@ -127,37 +104,8 @@ namespace Master1Tech.Server.Models
                     .ThenInclude(x => x.Industry)
                .FirstOrDefaultAsync();
 
-            //        var company = await _appDbContext.Companies
-            //.Where(c => c.Id == id)
-            //.Select(c => new CompanyDto
-            //{
-            //    Name = c.Name,
-            //    Description = c.Description,
-            //    TeamSize = c.TeamSize,
-            //    Headquarter = c.Headquarter,
-            //    HourlyRate = c.HourlyRate,
-            //    IsVerified = c.IsVerified,
-            //    FoundedYear = c.FoundedYear,
-            //    WebsiteURL = c.WebsiteURL//,
-            //    //Services = string.Join(", ", c.CompanyServices
-            //    //                              .Select(cs => cs.Service.Name)
-            //    //                             .Distinct()) // stays as IQueryable
-            //}).AsNoTracking()
-            //.FirstOrDefaultAsync();
-
             return company;
-            //return new CompanyDto
-            //{
-            //    Name = company.Name,
-            //    Description = company.Description,
-            //    TeamSize = company.TeamSize,
-            //    Headquarter = company.Headquarter,
-            //    HourlyRate = company.HourlyRate,
-            //    IsVerified = company.IsVerified,
-            //    FoundedYear = company.FoundedYear,
-            //    WebsiteURL = company.WebsiteURL,
-            //    Services = company.Services
-            //};
+           
 
         }
         public async Task<Company?> GetCompaniesBySlug(string slug)
@@ -174,37 +122,7 @@ namespace Master1Tech.Server.Models
                     .ThenInclude(x => x.Industry)
                .FirstOrDefaultAsync();
 
-            //        var company = await _appDbContext.Companies
-            //.Where(c => c.Id == id)
-            //.Select(c => new CompanyDto
-            //{
-            //    Name = c.Name,
-            //    Description = c.Description,
-            //    TeamSize = c.TeamSize,
-            //    Headquarter = c.Headquarter,
-            //    HourlyRate = c.HourlyRate,
-            //    IsVerified = c.IsVerified,
-            //    FoundedYear = c.FoundedYear,
-            //    WebsiteURL = c.WebsiteURL//,
-            //    //Services = string.Join(", ", c.CompanyServices
-            //    //                              .Select(cs => cs.Service.Name)
-            //    //                             .Distinct()) // stays as IQueryable
-            //}).AsNoTracking()
-            //.FirstOrDefaultAsync();
-
             return company;
-            //return new CompanyDto
-            //{
-            //    Name = company.Name,
-            //    Description = company.Description,
-            //    TeamSize = company.TeamSize,
-            //    Headquarter = company.Headquarter,
-            //    HourlyRate = company.HourlyRate,
-            //    IsVerified = company.IsVerified,
-            //    FoundedYear = company.FoundedYear,
-            //    WebsiteURL = company.WebsiteURL,
-            //    Services = company.Services
-            //};
 
         }
 

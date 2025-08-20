@@ -15,24 +15,10 @@ public class CompanyService : ICompanyService
         _logger = logger;
     }
 
-    //private async Task InitializeAsync()
-    //{
-    //    _companies = await GenerateSampleCompanies();
-    //}
-
     public async Task<PagedResult<CompanyDto>> GenerateSampleCompanies(CompanyFilter filter, int page, int pageSize)
     {
         try
         {
-            //var query = $"?page={page}&pageSize={pageSize}" +
-            //$"&location={filter.Location}" +
-            //$"&services={filter.Services}" +
-            //$"&teamSize={filter.TeamSize}" +
-            //$"&hourlyRate={filter.HourlyRate}" +
-            //$"&sortBy={filter.SortBy}";
-            //var companies = await _httpService.Get<PagedResult<Company>>($"api/company/{query}");
-            //return companies ?? new PagedResult<Company>();
-
             // The ideal way is to use a helper that builds the query string.
             // For example, using System.Net.Http.HttpClient and a helper method:
             var queryParams = new Dictionary<string, string>
@@ -79,107 +65,6 @@ public class CompanyService : ICompanyService
         var companies = await _httpService.Get<Company>("api/company/" + id);
         return companies ?? null;
     }
-
-
-    //public PagedResult<Company> GetCompanies() => _companies ?? new PagedResult<Company>();
-    //public CompanyService()
-    //{
-    //    _companies = GenerateSampleCompanies();
-    //}
-    //public CompanyService(IHttpService httpService)
-    //{
-    //    _httpService = httpService;
-
-    //}
-
-    //public async Task<PagedResult<Company>> GetCompaniesAsync(string name, string page)
-    //{
-    //    await Task.Delay(100); // Simulate API call
-
-    //     return await _httpService.Get<PagedResult<Company>>("api/company/" + "?page=" + page + "&name=" + name);
-    //    //var companies =
-    //    //var query = companies.AsQueryable();
-
-    //    //if (!string.IsNullOrEmpty(filter.Name))
-    //    //    query = query.Where(c => c.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase));
-
-    //    //if (!string.IsNullOrEmpty(filter.Headquarters))
-    //    //    query = query.Where(c => c.Headquarters.Contains(filter.Headquarters, StringComparison.OrdinalIgnoreCase));
-
-    //    //if (filter.FoundedYear.HasValue)
-    //    //    query = query.Where(c => c.FoundedYear == filter.FoundedYear);
-
-    //    //if (filter.EmployeesCount.HasValue)
-    //    //    query = query.Where(c => c.EmployeesCount >= filter.EmployeesCount);
-
-    //    //if (filter.IsVerified.HasValue)
-    //    //    query = query.Where(c => c.IsVerified == filter.IsVerified);
-
-    //    //return query.ToList();
-    //}
-
-    //public async Task<int> GetCompanyCountAsync(string name, string page)
-    //{
-    //    var companies = await GetCompaniesAsync(name, page);
-    //    return companies.RowCount;
-    //}
-
-    //public async Task<PagedResult<Company>> GetCompaniesAsync(CompanyFilter? filter = null, int page = 1, int pageSize = 9)
-    //{
-    //    await Task.Delay(100); // Simulate async operation
-
-    //    var query = _companies.Results;
-
-    //    if (filter != null)
-    //    {
-    //        if (!string.IsNullOrEmpty(filter.Location))
-    //            query = query.Where(c => c.Location.Contains(filter.Location, StringComparison.OrdinalIgnoreCase));
-
-    //        //if (!string.IsNullOrEmpty(filter.Services))
-    //        //    query = query.Where(c => c.Services.Any(s => s.Contains(filter.Services, StringComparison.OrdinalIgnoreCase)));
-
-    //        if (!string.IsNullOrEmpty(filter.TeamSize))
-    //            query = query.Where(c => c.TeamSize == filter.TeamSize);
-
-    //        if (!string.IsNullOrEmpty(filter.HourlyRate))
-    //            query = query.Where(c => c.HourlyRate == filter.HourlyRate);
-
-    //        // Apply sorting
-    //        query = filter.SortBy switch
-    //        {
-    //            "rating" => query.OrderByDescending(c => c.Rating),
-    //            "name" => query.OrderBy(c => c.Name),
-    //            "location" => query.OrderBy(c => c.Location),
-    //            _ => query.OrderBy(c => c.Id)
-    //        };
-    //    }
-
-    //    return query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-    //}
-
-    //public async Task<int> GetTotalCompaniesAsync(CompanyFilter? filter = null)
-    //{
-    //    await Task.Delay(50);
-
-    //    var query = _companies.AsQueryable();
-
-    //    if (filter != null)
-    //    {
-    //        if (!string.IsNullOrEmpty(filter.Location))
-    //            query = query.Where(c => c.Location.Contains(filter.Location, StringComparison.OrdinalIgnoreCase));
-
-    //        //if (!string.IsNullOrEmpty(filter.Services))
-    //        //    query = query.Where(c => c.Services.Any(s => s.Contains(filter.Services, StringComparison.OrdinalIgnoreCase)));
-
-    //        if (!string.IsNullOrEmpty(filter.TeamSize))
-    //            query = query.Where(c => c.TeamSize == filter.TeamSize);
-
-    //        if (!string.IsNullOrEmpty(filter.HourlyRate))
-    //            query = query.Where(c => c.HourlyRate == filter.HourlyRate);
-    //    }
-
-    //    return query.Count();
-    //}
 
     private List<Company> GenerateCompanies()
     {
@@ -339,6 +224,11 @@ public class CompanyService : ICompanyService
         return companies ?? null;
     }
 
+
+    public async Task AddCompany(Company company)
+    {
+        await _httpService.Post($"api/company/add", company);
+    }
     #region
     //public List<Company> GenerateSampleCompanies()
     //{
@@ -465,12 +355,3 @@ public class CompanyService : ICompanyService
     //}
     #endregion
 }
-
-//public class CompanyFilter
-//{
-//    public string Name { get; set; }
-//    public string Headquarters { get; set; }
-//    public int? FoundedYear { get; set; }
-//    public int? EmployeesCount { get; set; }
-//    public bool? IsVerified { get; set; }
-//}

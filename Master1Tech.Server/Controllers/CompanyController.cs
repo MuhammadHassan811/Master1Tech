@@ -93,14 +93,16 @@ namespace Master1Tech.Server.Controllers
         //    return Ok(await _CompanyRepository.GetCompany(id));
         //}
 
-        ///// <summary>
-        ///// Creates a Company with child addresses.
-        ///// </summary>
-        //[HttpPost]
-        //public async Task<ActionResult> AddCompany(Company Company)
-        //{
-        //    return Ok(await _CompanyRepository.AddCompany(Company));
-        //}
+        /// <summary>
+        /// Creates a Company with child addresses.
+        /// </summary>
+        [AllowAnonymous]
+        [HttpPost("add")]
+        public async Task<ActionResult> AddCompany(Company Company)
+        {
+            //await _CompanyRepository.AddCompany(Company)
+            return Ok();
+        }
 
         ///// <summary>
         ///// Updates a Company with a specific Id.

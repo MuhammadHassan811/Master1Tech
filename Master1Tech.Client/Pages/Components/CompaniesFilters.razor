@@ -258,6 +258,9 @@
     [Parameter]
     public EventCallback<bool> OnFilterClear { get; set; }
 
+    [Parameter] 
+    public EventCallback<bool> OnFilterToggle { get; set; }
+
     private List<ServiceSummaryDto>? _services = null;
     private List<TechnologySummaryDto>? _technologies = null;
     private List<IndustryDto>? _industries = null;
@@ -311,16 +314,19 @@
         }
     }
 
+
     private async Task ToggleServicesPanel(string activeFilterSection)
     {
         if (_activeFilterSection == activeFilterSection)
         {
             _showServices = !_showServices;
+            await OnFilterToggle.InvokeAsync(_showServices);
             return;
         }
         _activeFilterSection = activeFilterSection;
         _showServices = true;
 
+        await OnFilterToggle.InvokeAsync(_showServices);
 
         StateHasChanged();
 
@@ -493,6 +499,7 @@
     private async Task CloseFilters()
     {
         _showServices = !_showServices;
+        await OnFilterToggle.InvokeAsync(_showServices);
         await SetActiveFilterSection(_activeFilterSection);
     }
     private async Task ClearFilters()
