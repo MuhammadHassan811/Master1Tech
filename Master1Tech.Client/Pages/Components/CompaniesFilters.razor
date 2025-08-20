@@ -152,17 +152,24 @@
 
                         <div class="services-content">
                             <div class="service-category">
-                                @* <h3>Advertising Services</h3> *@
-                                <div class="service-grid">
-                                    @foreach (var technology in GetFilteredToolsAndTechnologies(_technologies))
-                                    {
-                                        bool isCehck = _companyFilter.Technologies?.Contains(technology.TechnologyID) ?? false;
-                                        <FluentCheckbox Label="@technology.Name"
-                                                        @bind-Value:get="@isCehck"
-                                                        @bind-Value:set="se => OnTechnologyCheckboxValueChanged(technology, se)" 
-                                                        class="service-checkbox" />
-                                    }
-                                </div>
+                                @{
+                                    var technologies = GetFilteredToolsAndTechnologies(_technologies);
+                                }
+                                @foreach (var item in technologies.OrderBy(x=>x.Category).Select(x=>x.Category).Distinct())
+                                {
+                                    <h3>@item</h3>
+                                    <div class="service-grid">
+                                        @foreach (var technology in technologies.Where(x=>x.Category == item).ToList())
+                                        {
+                                            bool isCehck = _companyFilter.Technologies?.Contains(technology.TechnologyID) ?? false;
+                                            <FluentCheckbox Label="@technology.Name"
+                                                            @bind-Value:get="@isCehck"
+                                                            @bind-Value:set="se => OnTechnologyCheckboxValueChanged(technology, se)" 
+                                                            class="service-checkbox" />
+                                        }
+                                    </div>
+                                }
+                                
                             </div>
                         </div>
                    

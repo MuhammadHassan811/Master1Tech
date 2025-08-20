@@ -66,8 +66,9 @@
 
 .content {
     flex: 1;
-    padding: 24px;
-    overflow:auto;
+    padding: 0px 1.5rem;
+    overflow: auto;
+    margin: 1.5rem 0px;
 }
 
 .content-header h2 {
@@ -124,6 +125,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px 32px;
+    margin-bottom:1rem;
 }
 
 .service-checkbox {
