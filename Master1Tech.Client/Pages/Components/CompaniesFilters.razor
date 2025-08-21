@@ -247,10 +247,10 @@
 
     private bool _showServices = false;
     private bool _onlyDisplayAvailable = true;
-    private string _searchText = "";
-    private string _industrySearchText = "";
-    private string _toolsSearchText = "";
-    private string _activeFilterSection = "services";
+    private string _searchText = string.Empty;
+    private string _industrySearchText = string.Empty;
+    private string _toolsSearchText = string.Empty;
+    private string _activeFilterSection = string.Empty;
 
     [Parameter]
     public EventCallback<CompanyFilter> OnClickFilter { get; set; }
