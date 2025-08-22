@@ -51,51 +51,51 @@
     </div>
 
     @if (_showServices)
-    {
-        <div class="services-panel">
-            <div class="sidebar">
-               
-                <div class="sidebar-section @(_activeFilterSection == "services" ? "active" : "")"
-                     @onclick="@(() => SetActiveFilterSection("services"))">
-                    <h3>Services</h3>
-                </div>
+{
+    <div class="services-panel">
+        <div class="sidebar">
 
-                <div class="sidebar-section @(_activeFilterSection == "tools" ? "active" : "")"
-                     @onclick="@(() => SetActiveFilterSection("tools"))">
-                    <h3>Tools & Technologies</h3>
-                </div>
+            <div class="sidebar-section @(_activeFilterSection == "services" ? "active" : "")"
+                 @onclick="@(() => SetActiveFilterSection("services"))">
+                <h3>Services</h3>
+            </div>
 
-                <div class="sidebar-section @(_activeFilterSection == "industry-focus" ? "active" : "")"
-                     @onclick="@(() => SetActiveFilterSection("industry-focus"))">
-                    <h3>Industry Focus</h3>
-                </div>
-                <div class="sidebar-section @(_activeFilterSection == "founding-year" ? "active" : "")"
-                     @onclick="@(() => SetActiveFilterSection("founding-year"))">
+            <div class="sidebar-section @(_activeFilterSection == "tools" ? "active" : "")"
+                 @onclick="@(() => SetActiveFilterSection("tools"))">
+                <h3>Tools & Technologies</h3>
+            </div>
+
+            <div class="sidebar-section @(_activeFilterSection == "industry-focus" ? "active" : "")"
+                 @onclick="@(() => SetActiveFilterSection("industry-focus"))">
+                <h3>Industry Focus</h3>
+            </div>
+            <div class="sidebar-section @(_activeFilterSection == "founding-year" ? "active" : "")"
+                 @onclick="@(() => SetActiveFilterSection("founding-year"))">
                     <h3>
                         Founding Year
                     </h3>
-                </div>
-                 
-                <FluentButton Appearance="Appearance.Accent" @onclick="ApplyFilters" BackgroundColor="var(--accent-color)">
-                    Apply Filters
-                </FluentButton>
             </div>
 
-            <div class="content">
-                @if (_activeFilterSection == "services")
+            <FluentButton Appearance="Appearance.Accent" @onclick="ApplyFilters" BackgroundColor="var(--accent-color)">
+                Apply Filters
+            </FluentButton>
+        </div>
+
+        <div class="content">
+            @if (_activeFilterSection == "services")
+            {
+                if (_services is null)
                 {
-                    if (_services is null)
-                    {
-                        <div class="spinner-div">
-                            <FluentProgressRing></FluentProgressRing>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="content-header">
+                    <div class="spinner-div">
+                        <FluentProgressRing></FluentProgressRing>
+                    </div>
+                }
+                else
+                {
+                    <div class="content-header">
                         <h2>Services</h2>
                         <p>Select the service you are looking for</p>
-                         
+
                         <FluentTextField @bind-Value="_searchText"
                                          Placeholder="Search services"
                                          @oninput="OnSearchInput"
@@ -107,138 +107,138 @@
                     <div class="services-content">
                         <div class="service-category">
                             @* <h3>Web Applications Services</h3> *@
-                            <div class="service-grid">
+                                <div class="service-grid">
                                 @foreach (var service in GetFilteredServices(_services))
-                                {
+                                    {
                                     bool isCehck = _companyFilter.Services?.Contains(service.ServiceID) ?? false;
-                                    <FluentCheckbox Label="@service.Name"
+                                        <FluentCheckbox Label="@service.Name"
                                                     @bind-Value:get="@isCehck"
-                                                    @bind-Value:set="se => OnServiceCheckboxValueChanged(service, se)" 
-                                                    class="service-checkbox" />
-                                }
-                            </div>
+                                                        @bind-Value:set="se => OnServiceCheckboxValueChanged(service, se)" 
+                                                        class="service-checkbox" />
+                                    }
+                                </div>
                         </div>
                     </div>
                     
-                    }
-
                 }
-                else if (_activeFilterSection == "tools")
-                {
+
+            }
+            else if (_activeFilterSection == "tools")
+            {
                     if (_technologies is null )
-                    {
-                        <div class="spinner-div">
-                            <FluentProgressRing></FluentProgressRing>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="content-header">
-                            <h2>Tools & Technologies</h2>
-                            <p>Select the technologies you are looking for</p>
+                {
+                    <div class="spinner-div">
+                        <FluentProgressRing></FluentProgressRing>
+                    </div>
+                }
+                else
+                {
+                    <div class="content-header">
+                        <h2>Tools & Technologies</h2>
+                        <p>Select the technologies you are looking for</p>
 
                             @*  <div class="display-options">
                                 <FluentCheckbox @bind-Value="_onlyDisplayAvailable" Label="Only display available options" />
                                 <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Info())" />
                             </div>
                             *@
-                            <FluentTextField @bind-Value="_toolsSearchText"
-                                                Placeholder="Tools & Technologies"
-                                                @oninput="OnToolSearchInput"
-                                                class="search-field">
-                                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Search())" Slot="start" />
-                            </FluentTextField>
-                        </div>
+                        <FluentTextField @bind-Value="_toolsSearchText"
+                                         Placeholder="Tools & Technologies"
+                                         @oninput="OnToolSearchInput"
+                                         class="search-field">
+                            <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Search())" Slot="start" />
+                        </FluentTextField>
+                    </div>
 
-                        <div class="services-content">
-                            <div class="service-category">
-                                @{
-                                    var technologies = GetFilteredToolsAndTechnologies(_technologies);
-                                }
+                    <div class="services-content">
+                        <div class="service-category">
+                            @{
+                                var technologies = GetFilteredToolsAndTechnologies(_technologies);
+                            }
                                 @foreach (var item in technologies.OrderBy(x=>x.Category).Select(x=>x.Category).Distinct())
-                                {
-                                    <h3>@item</h3>
-                                    <div class="service-grid">
-                                        @foreach (var technology in technologies.Where(x=>x.Category == item).ToList())
-                                        {
-                                            bool isCehck = _companyFilter.Technologies?.Contains(technology.TechnologyID) ?? false;
-                                            <FluentCheckbox Label="@technology.Name"
-                                                            @bind-Value:get="@isCehck"
-                                                            @bind-Value:set="se => OnTechnologyCheckboxValueChanged(technology, se)" 
-                                                            class="service-checkbox" />
-                                        }
-                                    </div>
-                                }
-                                
-                            </div>
-                        </div>
-                   
-                    }
-                    
-                }
-               
-                else if (_activeFilterSection == "industry-focus")
-                {
-                    if (_industries is null )
-                    {
-                        <div class="spinner-div">
-                            <FluentProgressRing></FluentProgressRing>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="content-header">
-                            <h2>Industry Focus</h2>
-                            <p>Select the industry you are looking for</p>
-                          
-                            <FluentTextField @bind-Value="_industrySearchText"
-                                             Placeholder="Search Industry"
-                                             @oninput="OnIndustrySearchInput"
-                                             class="search-field">
-                                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Search())" Slot="start" />
-                            </FluentTextField>
-                        </div>
-
-                        <div class="services-content">
-                            <div class="service-category">
-                                @* <h3>Advertising Services</h3> *@
+                            {
+                                <h3>@item</h3>
                                 <div class="service-grid">
-                                    @foreach (var industry in GetFilteredIndustryFocus(_industries))
+                                        @foreach (var technology in technologies.Where(x=>x.Category == item).ToList())
                                     {
-                                        bool isCehck = _companyFilter.Industries?.Contains(industry.Id) ?? false;
-                                        <FluentCheckbox Label="@industry.Name"
-                                                        @bind-Value:get="@isCehck"
-                                                        @bind-Value:set="se => OnIndustryFocusCheckboxValueChanged(industry, se)" 
+                                            bool isCehck = _companyFilter.Technologies?.Contains(technology.TechnologyID) ?? false;
+                                        <FluentCheckbox Label="@technology.Name"
+                                                            @bind-Value:get="@isCehck"
+                                                        @bind-Value:set="se => OnTechnologyCheckboxValueChanged(technology, se)" 
                                                         class="service-checkbox" />
                                     }
                                 </div>
-                            </div>
-                        </div>
-                    }
-                    
-
-                   
-                }
-                
-                else if (_activeFilterSection == "founding-year")
-                {
-                    <div class="services-content">
-                        <div class="service-category">
-                            <RangeSlider Title="Founding Year" 
-                                Description="Show companies by Founding year"
-                                Min="Convert.ToInt32(CommonExt.GetFoundedYears().First().Year)" 
-                                Max="Convert.ToInt32(CommonExt.GetFoundedYears().Last().Year)" 
-                                InitialMinValue="_minYear" 
-                                InitialMaxValue="_maxYear"
-                                FromLabel="From " 
-                                ToLabel="To "
-                                OnRangeChanged="OnFoundingYearChanged" />
+                            }
+                                
                         </div>
                     </div>
                    
                 }
+                    
+            }
+               
+            else if (_activeFilterSection == "industry-focus")
+            {
+                    if (_industries is null )
+                {
+                    <div class="spinner-div">
+                        <FluentProgressRing></FluentProgressRing>
+                    </div>
+                }
+                else
+                {
+                    <div class="content-header">
+                        <h2>Industry Focus</h2>
+                        <p>Select the industry you are looking for</p>
+
+                        <FluentTextField @bind-Value="_industrySearchText"
+                                         Placeholder="Search Industry"
+                                         @oninput="OnIndustrySearchInput"
+                                         class="search-field">
+                            <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Search())" Slot="start" />
+                        </FluentTextField>
+                    </div>
+
+                    <div class="services-content">
+                        <div class="service-category">
+                                @* <h3>Advertising Services</h3> *@
+                            <div class="service-grid">
+                                @foreach (var industry in GetFilteredIndustryFocus(_industries))
+                                {
+                                        bool isCehck = _companyFilter.Industries?.Contains(industry.Id) ?? false;
+                                    <FluentCheckbox Label="@industry.Name"
+                                                        @bind-Value:get="@isCehck"
+                                                    @bind-Value:set="se => OnIndustryFocusCheckboxValueChanged(industry, se)" 
+                                                    class="service-checkbox" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                    
+
+                   
+            }
                 
-            </div>
+            else if (_activeFilterSection == "founding-year")
+            {
+                <div class="services-content">
+                    <div class="service-category">
+                        <RangeSlider Title="Founding Year" 
+                                     Description="Show companies by Founding year"
+                                     Min="Convert.ToInt32(CommonExt.GetFoundedYears().First().Year)" 
+                                     Max="Convert.ToInt32(CommonExt.GetFoundedYears().Last().Year)" 
+                                     InitialMinValue="_minYear" 
+                                     InitialMaxValue="_maxYear"
+                                     FromLabel="From " 
+                                     ToLabel="To "
+                                     OnRangeChanged="OnFoundingYearChanged" />
+                    </div>
+                </div>
+
+                }
+
+    </div>
         </div>
     }
 </div>
@@ -321,6 +321,7 @@
         {
             _showServices = !_showServices;
             await OnFilterToggle.InvokeAsync(_showServices);
+            await LoadServices();
             return;
         }
         _activeFilterSection = activeFilterSection;
@@ -518,5 +519,4 @@
         _companyFilter.Year = new();
         _companyFilter.Year =  _foundedYears.Where(dto => int.Parse(dto.Year) >= range.min && int.Parse(dto.Year) <= range.max).Select(x=> x.Year).ToList();
      }
-}
- 
+} 
