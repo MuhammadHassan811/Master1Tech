@@ -24,7 +24,8 @@ namespace Master1Tech.Server.Services.Mapping.ServiceMapping
             {
                 ServiceID = service.ServiceID,
                 Name = service.Name,
-                Description = service.Description
+                Description = service.Description,
+                Category = service.Category ?? string.Empty
             };
         }
 

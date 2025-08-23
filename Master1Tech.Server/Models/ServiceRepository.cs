@@ -100,7 +100,8 @@ namespace Master1Tech.Server.Models
         public async Task<List<Service>> GetAllServicesAsync()
         {
             return await _appDbContext.Services
-                .OrderBy(s => s.Name)
+                .OrderBy(t => t.Category)
+                .ThenBy(t => t.Name)
                 .ToListAsync();
         }
 

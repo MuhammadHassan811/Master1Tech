@@ -84,43 +84,49 @@
         <div class="content">
             @if (_activeFilterSection == "services")
             {
-                if (_services is null)
-                {
-                    <div class="spinner-div">
-                        <FluentProgressRing></FluentProgressRing>
-                    </div>
-                }
-                else
-                {
-                    <div class="content-header">
-                        <h2>Services</h2>
-                        <p>Select the service you are looking for</p>
-
-                        <FluentTextField @bind-Value="_searchText"
-                                         Placeholder="Search services"
-                                         @oninput="OnSearchInput"
-                                         class="search-field">
-                            <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Search())" Slot="start" />
-                        </FluentTextField>
-                    </div>
-
-                    <div class="services-content">
-                        <div class="service-category">
-                            @* <h3>Web Applications Services</h3> *@
-                                <div class="service-grid">
-                                @foreach (var service in GetFilteredServices(_services))
-                                    {
-                                    bool isCehck = _companyFilter.Services?.Contains(service.ServiceID) ?? false;
-                                        <FluentCheckbox Label="@service.Name"
-                                                    @bind-Value:get="@isCehck"
-                                                        @bind-Value:set="se => OnServiceCheckboxValueChanged(service, se)" 
-                                                        class="service-checkbox" />
-                                    }
-                                </div>
+                    if (_services is null)
+                    {
+                        <div class="spinner-div">
+                            <FluentProgressRing></FluentProgressRing>
                         </div>
-                    </div>
-                    
-                }
+                    }
+                    else
+                    {
+                        <div class="content-header">
+                            <h2>Services</h2>
+                            <p>Select the service you are looking for</p>
+
+                            <FluentTextField @bind-Value="_searchText"
+                                             Placeholder="Search services"
+                                             @oninput="OnSearchInput"
+                                             class="search-field">
+                                <FluentIcon Value="@(new Microsoft.FluentUI.AspNetCore.Components.Icons.Regular.Size16.Search())" Slot="start" />
+                            </FluentTextField>
+                        </div>
+
+                        <div class="services-content">
+                            <div class="service-category">
+                                @{
+                                    var services = GetFilteredServices(_services);
+                                }
+                                @foreach (var item in services.OrderBy(x => x.Category).Select(x => x.Category).Distinct())
+                                {
+                                    <h3>@item</h3>
+                                    <div class="service-grid">
+                                        @foreach (var service in services.Where(x => x.Category == item).ToList())
+                                        {
+                                            bool isCehck = _companyFilter.Services?.Contains(service.ServiceID) ?? false;
+                                            <FluentCheckbox Label="@service.Name"
+                                                            @bind-Value:get="@isCehck"
+                                                            @bind-Value:set="se => OnServiceCheckboxValueChanged(service, se)"
+                                                            class="service-checkbox" />
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    }
 
             }
             else if (_activeFilterSection == "tools")
