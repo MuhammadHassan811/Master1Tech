@@ -489,6 +489,7 @@
     {
         _showServices = false;
         await OnClickFilter.InvokeAsync(_companyFilter); 
+        await OnFilterToggle.InvokeAsync(_showServices);
         if (_companyFilter.Year?.Count > 1)
         {
             _minYear = Convert.ToInt32(_companyFilter.Year.First());

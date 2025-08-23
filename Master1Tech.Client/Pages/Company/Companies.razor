@@ -48,6 +48,8 @@
          
         <CompaniesFilters OnClickFilter="ApplyFilters" OnFilterClear="LoadCompanies" OnFilterToggle="HandleFilterToggle"/>
 
+        @if(!IsFilterOpen)
+{
         <!-- Header Section -->
         <h2 class="mb-4">
             Explore Top Companies in <span style="color: #007bff;">@Country.ToUpper()</span>
@@ -240,6 +242,7 @@
                 </p>
             </div>
         </footer>
+        }
     </div>
 
 @* </section>
